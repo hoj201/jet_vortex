@@ -7,7 +7,7 @@
 %  POSSIBLY USEFULE PACKAGES
 %\usepackage{graphicx}
 %\usepackage{tensor}
-%\usepackage{todonotes}
+\usepackage{todonotes}
 
 %  NEW COMMANDS
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
@@ -30,8 +30,8 @@
 \DeclareMathOperator{\Ad}{Ad}
 
 %  TITLE, AUTHOR, DATE
-\title{TITLE}
-\author{Henry O. Jacobs}
+\title{Jet vortex methods}
+\author{Darryl D. Holm, Henry O. Jacobs}
 \date{\today}
 
 
@@ -42,6 +42,58 @@
 \begin{abstract}
   blah blah blah.
 \end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+\section{Background}
+
+\subsection{Vortex methods}
+
+\subsection{Regularized fluid modelling and turbulence}
+
+
+\section{The vortex blob method}
+\label{sec:vortex_blob}
+In this section we introduce the standard vortex blob method \todo{cite stuff}.
+We begin by considering the Euler's equations in vorticity variables
+\begin{align}
+  \partial_t \omega + u \cdot \nabla \omega = 0 \label{eq:eom1} \\
+  \omega = (L \Delta) \cdot \psi \label{eq:eom2} \\
+  u = \nabla^\perp \psi := (- \partial_y \psi, \partial_x \psi)
+\end{align}
+The ``proper'' way to view the vorticity, $\omega$, is as a distribution,
+in which case we could consider the ansatz
+\begin{align*}
+  omega = \Gamma_1 \delta_{z_1} + \cdots + \Gamma_n \delta_{z_n}
+\end{align*} 
+where $\Gamma_1,\dots,\Gamma_n \in \mathbb{R}$
+and $z_1,\dots,z_n \in \mathbb{C} \cong \mathbb{R}^2$.
+Substition of this ansatz into \eqref{eq:eom2} imples
+
+
+\section{The jet-vortex blob method}
+\label{sec:jet_vortex_blob}
+
+
+\section{Conserved quantities}
+\label{sec:conserved_quantities}
+
+
+\section{Conservation of circulation}
+\label{sec:circulation}
+
+
+\section{Approximation theory}
+\label{sec:approximation_theory}
+
+
+\section{Hamiltonians and symplectic structures}
+\label{sec:symplectic}
+
+
+\section{Conclusion}
+
 
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
