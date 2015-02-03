@@ -1,0 +1,570 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rmk}[thm]{Remark}
+
+%  MATH OPERATORS
+\DeclareMathOperator{\SDiff}{SDiff}
+\DeclareMathOperator{\Emb}{Emb}
+\DeclareMathOperator{\Jet}{Jet}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Orb}{Orb}
+
+%  TITLE, AUTHOR, DATE
+\title{Notes on jet vorticies}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  A derivation of the equations of motion for the jet vortex method
+  and its symplectic structure, as well as some approximation theory.
+\end{abstract}
+
+\section{Outline}
+
+Vortex blob is awesome.
+Vortex blob links to regularized fluid modelling (turbulence).
+We consider a generalization wherein the solution ansatz is (...).
+
+Comparison with moments (moment approximation does not close, so projection is neccessary).  We don't need to worry about closure.
+
+\begin{enumerate}
+\item Vortex blob
+\item EOM for k-vorts
+\item Circulation
+\item Ang+lin+energy
+\item Moments
+\item Higher order accuracy
+\item Symplecticity
+\end{enumerate}
+
+
+\section{Angular momentum}
+\label{sec:angular_momentum}
+Here are Darryl's calculations
+\begin{align*}
+  M &= \int \hat{z} \vec{x} \times u dx dy \\
+  &= \int \vec{x} \cdot \nabla \psi dx dy \\
+  &= -2 \int \psi dx dy 
+\end{align*}
+This is conserved because
+\begin{align*}
+  \frac{dM}{dt} &= \int \partial_t \psi dx dy\\
+  &= \int (L\Delta)^{-1} (\partial_t \omega) dx dy \\
+  &= \int (L \Delta)^{-1} ( u \cdot \nabla \omega) dx dy \\
+  &= \int (L \Delta)^{-1} ( {\rm div}( u \omega) - \omega {\rm div}(u) ) dxdy \\
+  &= \int {\rm div} \left( (L\Delta)^{-1}( u \omega) \right) dx dy \\
+   &= 0
+\end{align*}
+The last line follows by the divergence theorem.
+
+\section{Linear momentum}
+\label{sec:linear}
+Linear momentum is
+\begin{align*}
+  M^j = \int u^j dx dy
+\end{align*}
+and
+\begin{align*}
+  \frac{dM^j}{dt} &= \int \partial_t u^j dxdy \\
+  &= \int (\hat{z} \times \nabla) \partial_t \psi dxdy \\
+  &= \epsilon_{ij3} \int \partial_j( \partial_t \psi) dx dy \\
+\end{align*}
+... goes to zero by integration by parts.
+
+
+
+\section{List of accomplishments}
+So far we have accomplished the following
+\begin{enumerate}
+\item We found the equations of motion.
+\item We found a geometric description of the coadjoint orbits as submanifold of $M^{(k)} = [\Jet^{(k)}(\R^2,\R)^n]^*$.
+\item We found the symplectic structure on each orbit by invoking \cite{MarsdenWeinstein1983}.
+\item We found that the vorticity field can be approximated to $o(h^k)$ on a grid of $k$th order jet vortices.
+\end{enumerate}
+
+Extra things we could do are
+\begin{enumerate}
+\item Make some movies (Stefan's ``fluidx'' code is CUDA enabled)
+\item Calculate the improvement in computational efficiency obtained by using a smaller number of jet-vortices over a large number of vortices.
+  There would be fewer pair-wise interactions.
+\item Kelvin's theorem
+\item other conservation laws
+\item Boundary condition (method of images)
+\end{enumerate}
+
+
+\section{The equations of motion}
+\label{sec:eom}
+Let $\omega$ be a time-dependent distribution and consider the evolution equation
+\begin{align}
+  \frac{d\omega}{dt} + \pounds_u [\omega] = 0 \label{eq:eom}
+\end{align}
+where $u = \nabla^\perp \psi$ and $\omega = \Delta ( L[ \psi] )$ where $\psi \in [C^2(\R^2) / \R]$ is the stream function of $u$ and $L$ is some
+${\rm SE}(2)$ invariant psuedo-differential operator.
+Let $K \in C^2(\R^2)$ be the kernel of $\Delta \circ L$.
+
+If we consider the anstaz
+\begin{align*}
+  \omega = \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_\alpha \delta_{z_i}
+\end{align*}
+We find that
+\begin{align*}
+  \partial_t \omega = \sum_{|\alpha| \leq k} \frac{d\Gamma_i^\alpha}{dt} \partial_{\alpha}\delta_{z_i} - \Gamma_i^{\alpha}\dot{x}_i \partial_{\alpha x}\delta_{z_i} 
+  - \Gamma_i^{\alpha} \dot{y}_i \partial_{\alpha y} \delta_{z_i}
+\end{align*}
+and
+\begin{align*}
+  \pounds_u[\omega] = \sum_{|\alpha|\leq k}(-1)^{|\alpha|} \Gamma_i^\alpha  
+  \sum_{ [\alpha_1,\alpha_2] \in \Pi(\alpha,2)}
+  (-1)^{|\alpha_2|} \left(
+  \partial_{\alpha_1}u^x(z_i) \partial_{\alpha_2 x} \delta_{z_i} +
+  \partial_{\alpha_1}u^y(z_i) \partial_{\alpha_2 y} \delta_{z_i}
+  \right)
+\end{align*}
+We notice that both $\partial_t \omega$ and $\pounds_u [\omega]$
+are sums of $\partial_{\beta} \delta_{z_i}$ for $|\beta| \leq k$.
+Therefore the space of $\omega$'s of this form is invariant under
+the evolution of \eqref{eq:eom}.
+Due to this invariance, we may restrict to this finite-dimensional submanifold, and calculate an ODE.
+
+\begin{rmk}
+  The coefficient of  $\delta_{z_i}$
+  in $\partial_t \omega$ is $\frac{d\Gamma_i}{dt}$,
+  while the coefficient of $\delta_{z_i}$ in $\pounds_u[\omega]$ is $0$.
+  Therefore, if $\partial_t \omega + \pounds_{u}[\omega] = 0$
+  it must be the case that $\frac{d\Gamma_i}{dt} = 0$.
+\end{rmk}
+\begin{rmk}
+  The coefficient of $\partial_{\alpha x} \delta_{z_i}$ for $|\alpha|=k$
+  in $\partial_t \omega + \pounds_u[\omega]$ is
+  $- \dot{x}_i \Gamma_i^\alpha + \Gamma_i^\alpha u^x(z_i)$.
+  If $\Gamma_i^\alpha \neq 0$ then $\dot{x}_i = u^x(z_i)$.
+  Similarly we would find $\dot{y}_i = u^y(z_i)$ by checking the coefficient of $\partial_{\alpha y} \delta_{z_i}$.
+\end{rmk}
+
+\subsection{The first order equations}
+Here we consider the ansatz $\omega = \Gamma_i \delta_{z_i} + \Gamma^{x}_i \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
+Then we find
+\begin{align*}
+  \psi = \Gamma_i K_{z_i} - \Gamma^x_i \partial_x K_{z_i} - \Gamma^y_i \partial_y K_{z_i}
+\end{align*}
+where $K_{z_i}(z) := K(z-z_i)$.
+To calculate the dynamics we find that
+\begin{align*}
+  \partial_t \omega = \dot{\Gamma}_i \delta_{z_i} -  \sum_{\alpha \in \{x,y\}} \Gamma_i^\alpha \dot{z}_i^{\alpha} \partial_\alpha \delta_{z_i} + \dot{\Gamma}^\alpha_i \partial_\alpha \delta_{z_i} -  \sum_{\beta \in \{x,y\}} \Gamma^\alpha_i \dot{z}_i^{\beta} \partial_{\alpha \beta} \delta_{z_i}
+\end{align*}
+and
+\begin{align*}
+  \pounds_u [\omega] = \Gamma_i \pounds_u[\delta_{z_i}] + \Gamma_i^\alpha \pounds_u[ \partial_\alpha \delta_{z_i}].
+\end{align*}
+To make this more explicit, we shoud figure out what distributions $\pounds_u[\delta_{z}]$ and $\pounds_u[\partial_\alpha \delta_{z}]$ are in terms of familar distributions.  If $f \in C^{\infty}(\R^2)$, we find
+\begin{align*}
+  \langle \pounds_u[\delta_{z}] \mid f \rangle := - \langle \delta_{z} \mid \pounds_u[f] \rangle = - \langle \delta_{z} \mid u^\alpha f_{,\alpha} \rangle = - u^\alpha(z) f_{,\alpha}(z).
+\end{align*}
+so $\pounds_u[\delta_{z}] = u^\alpha(z) \partial_\alpha \delta_{z}$.
+Similarly we find
+\begin{align*}
+  \langle \pounds_u [ \partial_\alpha \delta_{z}]  \mid f \rangle
+  &:= - \langle \partial_\alpha \delta_{z} \mid \pounds_u[f] \rangle
+  = - \langle \partial_\alpha \delta_{z} \mid u^\alpha  f_{,\alpha} \rangle 
+  = \partial_\alpha |_{z} ( u^\beta f_{,\beta})\\
+  &= u^\beta_{,\alpha}(z) f_{,\beta}(z) + u^\beta(z) f_{,\alpha\beta}(z).
+\end{align*}
+Thus $\pounds_u[\partial_\alpha \delta_{z}] = -  \partial_\alpha u^\beta(z_i) \partial_\beta \delta_{z_i} + u^\beta(z_i) \partial_{\alpha\beta} \delta_{z_i}$.
+Substituting these identities into \eqref{eq:eom} we find that
+\begin{align*}
+  \dot{z}_i &= u(z_i) \\
+  \dot{\Gamma}_i &= 0 \\
+  \dot{\Gamma}^\alpha_i &= \Gamma_i^\beta u^\alpha_{,\beta}(z_i)
+\end{align*}
+
+% \section{Second order}
+% Continuing the pattern let
+% \begin{align*}
+%   \omega = p_\alpha \delta_{q^\alpha} + d^i_\alpha \partial_i \delta_{q^\alpha} + Q^{ij}_\alpha \partial_{ij} \delta_{q^\alpha}
+% \end{align*}
+% so that the stream function must be
+% \begin{align*}
+%   \psi = p_\alpha K_{q^\alpha} - d^i_\alpha \partial_i K_{q^\alpha} + Q^{ij}_\alpha \partial_{ij} K_{q^\alpha}
+% \end{align*}
+%  and $u = \nabla^\perp \psi$.
+%  We compute
+% \begin{align*}
+%   \langle \pounds_u[ \partial_{ij} \delta_{q}] , f \rangle
+%   &= - \langle \partial_{ij} \delta_{q} , u^k \partial_k f \rangle 
+%   = - \partial_{ij} |_{x = q} ( u^k(x) \partial_k f(x) ) \\
+%   &= - ( u^k_{,ij} f_{,k} + u^k_{,j} f_{,ik} + u^k_{,i} f_{,jk} + u^k f_{,ijk} )(q) 
+% \end{align*}
+% Thus
+% \begin{align*}
+%   \pounds_{u} [ \partial_{ij} \delta_q] =  u^k_{,ij}(q) \partial_k \delta_q - u^k_{,j}(q) \partial_{ik} \delta_q - u^k_{,i}(q) \partial_{jk}\delta_q  + u^k(q) \partial_{ijk} \delta_q 
+% \end{align*}
+
+% \subsection{Finite order equation}
+
+\section{Coadjoint orbits and symplectic structures}
+\label{sec:orbits}
+
+In this section we compute the coadjoint orbit of a jet-vortex
+as well as the symplectic structure.
+
+Note that for a smooth vorticity $\omega \in \bigwedge^2(\R^2)$
+the coadjoint orbit is
+\begin{align*}
+  \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}.
+\end{align*}
+This may or may not be a manifold.
+If $\Orb(\omega)$ is a manifold, then a vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by $\pounds_u[\tilde\omega]$ for some (non-unique) $u \in \mathfrak{X}(\R^2)$. There is a symplectic structure on $\Orb(\omega)$
+given by
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int \omega( u(x), v(x) ) \mu.
+\end{align*}
+where $\mu$ is a volume form on $\R^2$.
+This formula is derived on page 313 of \cite{MarsdenWeinstein1983}
+but it is nothing more than a special case of the KKS theorem \cite[see the boxed formula on p.303]{FOM}.
+We would like to generalize it to the case of non-smooth vorticities such
+as point vorticies.  To do this, we can define the function $f_\omega = \frac{\omega}{\mu}$.  Then the symplectic form takes the form
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int f_{\omega}(x) \mu( u(x), v(x) ) \mu = \langle f_{\omega}, \mu(u,v) \rangle_{L^2(\mu)}.
+\end{align*}
+We can identify $\omega$ with the distribution $\langle f_\omega , \cdot \rangle_{L^2(\mu)}$.
+That is to say
+\begin{align*}
+  \langle \omega , \phi \rangle := \langle f_\omega , \phi \rangle_{L^2(\mu)}
+\end{align*}
+for all $\phi \in C^\infty(\R^2)$.
+This allows us to let $\omega$ be something like a Dirac-delta,
+or a distributional dirative of a Dirac-delta.
+Moreover, the symplectic form is written as
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , \mu(u,v) \rangle.
+\end{align*}
+In the case that $\mu = dx \wedge dy$ we can 
+identify $\mu(u,v)$ with the function $u^x v^y - u^y v^x = u \times v$ so that
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , u^x v^y - u^y v^x \rangle.
+\end{align*}
+
+
+\begin{thm}
+	Let $\omega_0 = \gamma_i^\alpha \partial_{\alpha} \delta_{Z_i}$ for $\gamma_i^\alpha \neq 0$ and let
+	$M^{(k)} = \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$.
+	Then $\Orb(\omega_0)$ is a sub-manifold of the $M^{(k)}$.
+\end{thm}
+\begin{proof}
+	Let $\varphi \in \SDiff(\R^2)$.  Then
+	\begin{align*}
+		\langle \varphi_* \omega_0 , f \rangle &= \langle \omega_0 , f \circ \varphi \rangle \\
+                &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z) \\
+                &= \gamma_i^\alpha \partial_{\beta}|_{\varphi(Z_i)} f \partial_\beta|_{Z_i} \varphi^\alpha.
+	\end{align*}
+        Where we have used the Faa di Bruno formula using the indexing convention in my own article \cite{Jacobs2014b}.
+        Thus $\varphi_* \omega_0 \in M^{(k)}$.
+\end{proof}
+
+If we would like a more geometric description of what $M^{(k)}$ is,
+we could identify $M^{(k)}$ as a dual vector-bundle
+\begin{align*}
+  M^{(k)} = \left(\Jet^{(k)}( \R^2 , \R)^n \right)^*
+\end{align*}
+where we view $\Jet^{(k)}( \R^2 , \R)$ as a vector-bundle over $\R^2$.
+This identification is tautological upon noting that for $\omega \in M^{(k)}$
+the quantity $ \langle \omega , f \rangle$
+is a linear function of the $k$th order Taylor-coefficients of $f \in C^\infty(\R^2)$
+about some points $z_1,\dots,z_n$.
+
+Finally, as a sanity check, we can also prove that the equations of motion derived previously are identical to
+the equations of motion obtained using this symplectic structure.
+
+\begin{thm}
+	Let $H(\omega) = \frac{1}{2} \langle \omega , K*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
+	are given by
+	\begin{align*}
+		\partial_t \omega + \pounds_u[\Omega] \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = K*\omega.
+	\end{align*}
+\end{thm}
+\begin{proof}
+  Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) = \pounds_u[\omega]$ for some (non-unique) $u \in \mathfrak{X}_{\rm div}(\R^2)$.
+  Out goal is to solve for $u$.
+  By the definition of $X_H$ we see that for any
+  $v \in \mathfrak{X}_{\rm div}(\R^2)$
+  \begin{align*}
+    \langle \omega , u^x v^y - u^y v^x \rangle &=
+    \Omega_{\omega}( \pounds_u[\omega] , \pounds_v[\omega] ) = \langle dH(\omega) , \pounds_v[\omega] \rangle \\
+    &= \langle K * \omega , \pounds_v[\omega] \rangle 
+  \end{align*}
+  If we let $\psi := K*\omega$ then
+  \begin{align*}
+    = - \langle \omega , \pounds_{v}[\psi] \rangle 
+    = \langle \omega , v^x \partial_x \psi + v^y \partial_y \psi \rangle
+  \end{align*}
+  We see that $u = (-\partial_y \psi,\partial_x \psi)$
+  would be a possible solution.
+  As $\Omega$ is non-degenerate, this is the unique solution.
+\end{proof}
+
+\subsection{The first order case}
+Let us deal with the first order case.
+\begin{thm}
+Let $Z_1,\dots,Z_n \in \R^2$ be distinct.
+The coadjoint orbit of
+\begin{align*}
+  \omega = \sum_{i=1}^N \gamma_i \delta_{Z_i} + \gamma_i^x \partial_x \delta_{Z_i} + \gamma_i^y \partial_{y} \delta_{z_i}
+\end{align*}
+is
+\begin{align*}
+  \Orb(\omega) &= \left\{ \sum_{i=1}^n \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{\tilde{z}_i} + \Gamma_i^y \partial_{y} \delta_{z_i}
+  \mid z_i \in \R^2, (\Gamma_i^x,\Gamma_i^y) \in \R^2 \backslash \{0\} \right\} \\
+  &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
+\end{align*}
+The symplectic structure is
+  \begin{align*}
+    \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
+    \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
+    &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
+    - \dot{\Gamma}_i^y \cdot \delta x_i
+    + \delta \Gamma_i^y \cdot \dot{x}_i 
+    - \delta \Gamma_i^x \cdot \dot{y}_i
+  \end{align*}
+\end{thm}
+\begin{proof}
+  Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
+  We find that for any function $f$
+  \begin{align*}
+    \langle \varphi_* \omega \mid f \rangle := \langle \omega , \varphi^* f\rangle
+    &= \gamma_i f(\varphi(Z_i)) \\
+    &\quad - \gamma_i^x \partial_x \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^x \partial_x \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)} \\
+    &\quad - \gamma_i^y \partial_y \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^y \partial_y \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)}
+  \end{align*}
+  Collecting like terms we find
+  \begin{align*}
+    \varphi_* \omega = \gamma_i \delta_{\varphi(Z_i)} + \Gamma_i^x \partial_x \delta_{\varphi(Z_i)} + \Gamma_i^y \partial_y \delta_{\varphi(Z_i)}
+  \end{align*}
+  where
+  \begin{align*}
+    \Gamma = 
+    \begin{bmatrix}
+      \Gamma_i^x \\ \Gamma_i^y 
+    \end{bmatrix}
+    =
+    D\varphi(Z_i) \cdot
+    \begin{bmatrix}
+      \gamma_i^x \\ \gamma_i^y
+    \end{bmatrix}
+  \end{align*}
+  By varying $\varphi$ we can obtain 
+  any collection of distinct points $z_1,\dots,z_n \in \R^2$
+  and any collection of non-zero vectors $\Gamma_1,\dots,\Gamma_n \in \R^2 \backslash \{0\}$.
+  This proves the first claim.
+
+  To derive the symplectic structure recall the symplectic structure for a general vorticity.
+  \begin{align}
+    \Omega( \pounds_u[\omega] , \pounds_v[\omega] )
+    = \langle \omega , u \wedge v \rangle \label{eq:vorticity_symplectic_form}
+  \end{align}
+  where we view $\omega$ as a distribution and $u \wedge v = u^x v^y - v^x u^y$
+  as a real-valued function.
+  Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
+  In this case the right hand side can be computed to be
+  \begin{align*}
+    \langle \omega , u \wedge v \rangle &= \gamma_i ( u^x(z_i)v^y(z_i) - v^x(z_i) u^y(z_i) ) \\
+    &\quad + \Gamma_i^x ( u^x_{,x} v^y + u^x v^y_{,x} - v^x_{,x}u^y - v^x u^y_{,x})|_{z = z_i} \\
+    &\quad + \Gamma_i^y ( u^x_{,y} v^y + u^x v^y_{,y} - v^x_{,y}u^y - v^x u^y_{,y})|_{z = z_i}
+  \end{align*}
+  Note that this is writen entirely in terms of the 1-jet of $u$ and $v$ evaluated 
+  at $z_i$.
+  Moreover, $\pounds_u[\omega] = \gamma_0 u^x(z_i) \partial_{z_i} + \dots$
+  also has the property that it is only dependent on
+  the one-jet of $u$ and $v$ at the poinst $z_1,\dots,z_n$.
+  Therefore both side of \eqref{eq:vorticity_symplectic_form}
+  can be written as a function of the finite collection of 
+  numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
+  The result then follows by noting
+  \begin{align*}
+    u(z_i) \mapsto u_{z_i}\\
+    u^x_{,x}(z_i) \Gamma^x_i + u^x_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^x \\
+    u^y_{,x}(z_i) \Gamma^x_i + u^y_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^y.
+    \end{align*}
+    under the tangent lift of the coordinate chart
+    \begin{align*}
+      \sum_i \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} \mapsto (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n)
+      \end{align*}
+\end{proof}
+
+\section{Approximation theory}
+\label{sec:approximation}
+In this section we will illustrate how using jet-vortices improves the accuracy of approximation of a vorticity field in a distributional sense
+with respect to an RKHS.  Let $H(\omega) = \frac{1}{2} \langle \omega , K*\omega\rangle_{L^2} =: \frac{1}{2} \langle \omega , \omega \rangle_K$, for a kernel $K:\R^2 \to \R$.
+Let $h > 0$ be small and define $h \mathbb{Z}^2 = \{ (ah,bh) \in \R^2 \mid (a,b) \in \mathbb{Z}^2 \}$.
+Given an $\omega \in \mathcal{D}'(\R^2)$, we can attempt to approximate $\omega$ via Dirac-deltas supported on $h \mathbb{Z}^2$.
+There is a natural way to do this with respect to the Hilbert-norm because we have a reproducing kernel.
+We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \gamma_i \delta_{z_i}$ by requiring $\omega_h^{(0)} - \omega$ be orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
+This means that $K*\omega(z) =  \sum_i \gamma_i K(z-z_i)$ for each $z \in h\mathbb{Z}^2$.
+Thus $\psi_h^{(0)} = \sum_i \gamma_i K(z-z_i)$ can be seen as a $0$th order approximation to $\psi = K*\omega$
+because $\psi_h^{(0)}(z) = \psi(z)$ on the grid.
+Assuming $\psi$ is continous, the error is $o(1)$ in $h$.
+Moreover, $\omega^{(0)}_h$ serves as a $o(1)$ approximation to $\omega$ in the distributional sense.
+Let $L$ be the psuedo-differential operator dual to $K*$.
+Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the hole expression is $o(1)$
+for any $f$ in the RKHS produced by $K$.
+ 
+The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,\alpha} \Gamma_i^\alpha \partial_\alpha \delta_{z_i}$.
+We define the scalars $\Gamma_i^\alpha$ via the equations
+\begin{align*}
+  \partial_\beta \psi (z_i) = \sum_j \Gamma_j^\alpha \partial_{\alpha\beta} K(z_i - z_j)
+\end{align*}
+for $\psi = K*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
+Then $\psi^{(k)}_h = \sum_{i,\alpha}\Gamma_k^\alpha \partial_\alpha K_{z_i}$
+serves as a $o(h^{k})$ approximation of $\psi$ when $\psi \in C^k$
+and $\omega^{(k)}_h$ serves as a $o(h^k)$ approximation of $\omega$ in
+a distributional sense.
+
+\section{Conservation laws}
+\label{sec:conservation}
+For any solution $\omega_t \in \mathcal{D}'(\R^2)$, of the EPDiff equation
+\begin{align*}
+  \partial_t \omega + \pounds_u [\omega] = 0 \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = K*\omega
+\end{align*}
+we know that $\omega_0 = \varphi_t^* \omega_t$ is constant
+when $\varphi_t$ is the flow of $u$.
+This conservation law then implies Kelvin's circulation theorem
+using the construction of \cite{HolmMarsdenRatiu1998}
+when $\omega_t$ is an exact two-form.
+In this case for each loop $\gamma$
+we can define the current, $\mathcal{K}(\gamma) \in  \left( d \Omega^1 (\R^2) \right)^*$
+\begin{align*}
+  \langle \mathcal{K}(\gamma) , \omega \rangle = \int_{\gamma} \alpha
+\end{align*}
+where $\omega = d\alpha$.
+Then $\mathcal{K}( \varphi (\gamma) ) = \mathcal{K}(\gamma) \circ \varphi^*$, and Kelvin's theorem follows.
+This construction should work just fine even if $\omega \in M^{(k)}$ (i.e. when it is distributional).
+
+Here is a guess.
+Let $L$ be the psuedo-differential operator on $C^\infty(\R^2,\R^2)$
+such that $\mathrm{curl} \circ L[ \nabla^\perp K_x] = \delta_x$.
+Then for $\omega \in \mathcal{D}'(\R^2)$ let $\alpha = L[\nabla^\perp (K*\omega)]$ so that $\omega = d\alpha$.  Then $\langle \mathcal{K}(\gamma) , \omega \rangle$ can be defined as before.
+
+
+% When $\omega_0 \in M^{(k)}$ this construction needs to be amended because $\omega_0$ is a distribution, and not an exact two-form.
+% However, something can be said imediately.
+% If we choose a loop $\gamma(s)$ and use Stokes theorem
+% by denoting the interior surface of $\gamma$ by $I_\gamma$
+% we could build the Kelvin quantity $\mathcal{K}(\gamma)$
+% in a way which mimics \cite{HolmMarsdenRatiu1998}.
+% In this case the conserve quantity is
+% \begin{align*}
+%   \langle \mathcal{K}(\gamma) , \Gamma_i^\alpha \partial_{\alpha}\delta_{z_i} \rangle = \langle \Gamma_i^\alpha \partial_\alpha \delta_{z_i} , 1_{I_{\gamma}} \rangle
+% \end{align*}
+% If $\gamma$ does not intersect any of the vortices, then only the $0$th order terms pop-out.
+% I'm not sure if the above construction is well defined if $\gamma$ intersects the vortices though.
+
+
+\subsection{Why are there no dual pairs?}
+\label{sec:dual_pairs}
+We one considers a dual pair, the conservation law associated
+to one of legs is only siginificant if the other leg is not injective.
+This is because the conservation law is determined by the the isotropy group
+of the other leg.  If this isotropy group is trivial, then there is no
+conservation law.
+
+In our case we have a momentum map of concern is the injection of $\Orb(\omega)$ into $\mathfrak{X}^*(\R^2) \equiv \mathcal{D}'(\R^2)$.
+It is an injective map, and therefore the isotropy group is trivial.
+
+
+% \section{Conjectures}
+% \label{sec:conjecture}
+% It would be nice to have a compact geometric interpretation for the quantities $\Gamma_i^\alpha$.  It seems that we can identify this collection of objects with the dual vector-bundle to $\Jet^{(k)}( S ; \R)$
+% viewed as a vector-bundle over $S$.
+% As a saninty check we know that $\Jet^{(0)}( S ; \R) = S \times \R$.
+% The dual vector space is $\S \times \R$, and is represented
+% as a standard point vortex $\gamma \delta_z$ at $z \in S$.
+% The space $\Jet^{(1)}( S ; \R) = T^*S \times \R$, so that the dual space is $TS \times \R$ and is represented as a point vortex of the form $\gamma \delta_z + \Gamma \partial_{\Gamma} \delta_z$ for $\Gamma \in T_z S$.
+
+% \subsection{Symplectic structures}
+% \label{sec:conjecture_symplectic}
+% In this section we attempt to link the symplectic structure of the previous
+% section with that studied in the geometric mechanics literature.
+% We will obtain a symplectic structure which we conjecture is equivelent to
+% the symplectic structure provided in the previous section.
+% This means of writing the symplectic structure
+% would be less tractable from the perspective of computation,
+% but more tractable from the perspective of symplectic geometry.
+% Let $(V,\nu)$ be a volume manifold and $(S,\omega)$ be symplectic.
+% Let $\Emb(V;S)$ denote the space of embeddings of $V$ into $S$.
+% An element $v_f \in T_f \Emb(V,S)$ is a map $v_f: V \to TS$
+% such that $\tau_{S} \circ v_f = f$.
+% We find that $\Emb(V;S)$ is equipped with the symplectic structure
+% \begin{align*}
+%   \Omega( v_f, w_f) = \int_V \omega(v_f,w_f)  \nu
+% \end{align*}
+% The group of symplectomorphisms of $S$ acts symplectically by left-action
+%  on $\Emb(V;S)$, while the group of volume-preserving diffeomorphisms
+% acts symplectically on the right.  The resulting momentum maps form a dual pair \cite{MarsdenWeinstein1983,GayBalmazVizman2012}.
+
+% In this section we seek to mimic this construction
+% by replacing $\Emb(V;S)$ with the space of jets of embeddings.
+% Let $\Lambda = \{ z_1 , \dots , z_n \} \subset V$
+% be a collection of points in $V$ and
+% consider the space $\Jet^{(k)}_\Lambda(V ; S)$ of jets of maps from
+% $V$ into $S$ sourced at $\Lambda$.  We will prove that this space
+% is a symplectic manifold upon choosing an element $\mu \in [ \Jet^{(k)}_\Lambda(V;\R) ]^*$.  This ``$\mu$'' produces a symplectic form on $\Jet_{\Lambda}^{(k)}$
+% in the same that``$\nu$'' did so in the case of $\Emb(V;S)$.
+% \begin{prop}
+%   Let $\mu$ be a non-degenerate element of $[\Jet^{(k)}_\Lambda( V;\R)]^*$.
+%   Then $\Jet_{\Lambda}^{(k)} ( V ; S)$ is a symplectic manifold
+%   with symplectic form
+%   \begin{align*}
+%     \Omega( v_j , w_j ) = \langle \mu  \mid  \Jet^{(k)}_\Lambda [ \omega( v_f , w_f ) ] \rangle.
+%   \end{align*}
+%   where $f \in \Emb(V;S)$ is an arbitrary representative
+%   such that $\Jet^{(k)}_\Lambda(f) = j$
+%   and $v_f,w_f \in T_f\Emb(V;S)$ are arbitrary up to the
+%   constraints $v_j = T\Jet_{\Lambda}^{(k)}( v_f)$
+%   and $w_j = T\Jet_{\Lambda}^{(k)}( w_f)$.
+% \end{prop}
+
+% \begin{proof}
+%   \begin{enumerate}
+%     \item Verify that the expression is well defined.
+%     \item Verify that it is anti-symmetric.
+%     \item Verify that it is non-degenerate.
+%     \item Verify that it is closed.
+%   \end{enumerate}
+%   \todo[inline]{I still need to do this}
+% \end{proof}
+
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2015}
+\end{document}
