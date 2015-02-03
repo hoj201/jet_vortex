@@ -46,39 +46,103 @@
 \section{Introduction}
 \label{sec:intro}
 
+
+\section{Notation}
+The symbol ``$z$'' will be used to denote
+an element of $\mathbb{R}^2$
+with coordinates $z = (x,y)$.
+The Dirac-delta distribution on $\mathbb{R}^2$
+will be denoted by $\delta(\cdot)$, and $\delta_z(\cdot) := \delta( \cdot - z)$.
+The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
+
 \section{Background}
 
 \subsection{Vortex methods}
 
 \subsection{Regularized fluid modelling and turbulence}
 
+\todo[inline]{In this section we should relate regularized Euler equations 
+to turbulence modelling, and introduce a TRI differential operator $L$
+which yields the regularized model $\partial_t m + \pounds_u [m] = 0, m = L[u]$.}
 
-\section{The vortex blob method}
+\section{Derivation of the vortex blob method}
 \label{sec:vortex_blob}
-In this section we introduce the standard vortex blob method \todo{cite stuff}.
-We begin by considering the Euler's equations in vorticity variables
+In this section we derive the equations of motion for the traditional
+vortex blob method \todo{cite stuff}.
+We can begin by considering the vorticity formulation of Euler's equations for an incompressible inviscid planar fluid
 \begin{align}
-  \partial_t \omega + u \cdot \nabla \omega = 0 \label{eq:eom1} \\
-  \omega = (L \Delta) \cdot \psi \label{eq:eom2} \\
-  u = \nabla^\perp \psi := (- \partial_y \psi, \partial_x \psi)
+  &\partial_t \omega + u^1 \partial_x \omega + u^2 \partial_x \omega = 0 \label{eq:eom1} \\
+  &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
+  &u = (u^1,u^2) = \nabla^\perp \psi :=  (- \partial_y \psi, \partial_x \psi)
 \end{align}
-The ``proper'' way to view the vorticity, $\omega$, is as a distribution,
-in which case we could consider the ansatz
-\begin{align*}
-  omega = \Gamma_1 \delta_{z_1} + \cdots + \Gamma_n \delta_{z_n}
-\end{align*} 
-where $\Gamma_1,\dots,\Gamma_n \in \mathbb{R}$
-and $z_1,\dots,z_n \in \mathbb{C} \cong \mathbb{R}^2$.
-Substition of this ansatz into \eqref{eq:eom2} imples
+By viewing the vorticity, $\omega$, is as a distribution,
+we may consider the ansatz
+\begin{align}
+  \omega(z) = \Gamma_i(t) \delta(z-z_i(t))
+  \label{eq:ansatz}
+\end{align} 
+where we have invoked the Einstein summation convention to sum over 
+the index $i=1,\dots,n$,
+with $\Gamma_i(t) \in \mathbb{R}$,
+and $z_i(t) \in \mathbb{R}^2$.
+Our desire is to obtain an ordinary differential equation for the $\Gamma_i$'s and the $z_i$'s,
+whose solutions make the $\omega$ of \eqref{eq:ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
+To declutter future formulas,
+we will suppress the time-dependence of $z_i$ and $\Gamma_i$
+from this point onwards.
 
+In order to find the desired ordinary differential equation for the $\Gamma_i$'s and $z_i$'s we will seek consistency constraints implied by the equations of motion \eqref{eq:eom1},\eqref{eq:eom2}.
+Substition of \eqref{eq:ansatz} into \eqref{eq:eom2} imples
+\begin{align*}
+  \psi = \Gamma_i G_{z_i}
+\end{align*}
+where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
+This implies, $u$, must be
+\begin{align*}
+  u(z) = \begin{pmatrix}
+   - \Gamma_i \partial_y G_{z_i} \\
+    \Gamma_i \partial_x G_{z_i}
+  \end{pmatrix}.
+\end{align*}
+Finally, substituion of the above velocity field
+and the ansatz \eqref{eq:ansatz} into \eqref{eq:eom1} yields
+\begin{align}
+  \partial_t ( \Gamma_i \delta_{z_i}) +  (- \Gamma_j \partial_yG_{z_j}) \cdot \partial_x ( \Gamma_i \delta_{z_i})  +
+  (\Gamma_j \partial_x G_{z_j} ) \cdot \partial_x ( \Gamma_i \delta_{z_i})= 0 \label{eq:eom3}
+\end{align}
+Upon writing \eqref{eq:eom3} in terms of distributional diratives we find
+\begin{align}
+  \begin{split}
+  &\dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
+  - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
+  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i}  +
+  \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
+  \end{split}
+  \label{eq:eom4}
+\end{align}
+Observe that the left hand side of \eqref{eq:eom4}
+is a linear combination of the distributions
+$\delta_{z_i}$, $\partial_x\delta_{z_i}$, and $\partial_y \delta_{z_i}$.
+In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
+This requirement yields the desired set of ordinary differential equations
+\begin{align*}
+  \dot{\Gamma}_i = 0 \quad,\quad
+  \dot{x}_i = - \Gamma_j \partial_y G(z_i - z_j) \quad,\quad
+  \dot{y}_i =  \Gamma_j \partial_x G(z_i - z_j).
+\end{align*}
+
+\todo[inline]{Write a few ending sentences.  Section should not end with an equation}
 
 \section{The jet-vortex blob method}
 \label{sec:jet_vortex_blob}
 
+\todo[inline]{This section should mimic the previous,
+almost word-for-word}
 
 \section{Conserved quantities}
 \label{sec:conserved_quantities}
 
+\todo[inline]{Linear momentum, angular momentum, and energy}
 
 \section{Conservation of circulation}
 \label{sec:circulation}
@@ -87,6 +151,7 @@ Substition of this ansatz into \eqref{eq:eom2} imples
 \section{Approximation theory}
 \label{sec:approximation_theory}
 
+We have order $o(h^k)$ approximation.
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
@@ -94,6 +159,9 @@ Substition of this ansatz into \eqref{eq:eom2} imples
 
 \section{Conclusion}
 
+\appendix
+\section{Multi-index conventions}
+\label{app:multi}
 
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
