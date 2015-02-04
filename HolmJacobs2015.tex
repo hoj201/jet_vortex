@@ -74,6 +74,7 @@ We can begin by considering the vorticity formulation of Euler's equations for a
   &\partial_t \omega + u^1 \partial_x \omega + u^2 \partial_x \omega = 0 \label{eq:eom1} \\
   &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
   &u = (u^1,u^2) = \nabla^\perp \psi :=  (- \partial_y \psi, \partial_x \psi)
+  \label{eq:u}
 \end{align}
 By viewing the vorticity, $\omega$, is as a distribution,
 we may consider the ansatz
@@ -139,6 +140,62 @@ This requirement yields the desired set of ordinary differential equations
 \todo[inline]{This section should mimic the previous,
 almost word-for-word}
 
+In this section we derive the equations of motion for the
+jet-vortex blob method.
+As before, we begin with the vorticity equation \eqref{eq:eom1}-\eqref{eq:u}and consider the ansatz
+\begin{align}
+  \omega(z) = \Gamma_i^\alpha(t) \partial_\alpha \delta(z-z_i(t))
+  \label{eq:jet_ansatz}
+\end{align} 
+where we have invoked the Einstein summation convention to sum over 
+the index $i=1,\dots,n$ and the multi-index $\alpha$ of rank $|\alpha| < m$,
+As before, our desire is to obtain an ordinary differential equation for the $\Gamma^\alpha_i$'s and the $z_i$'s,
+whose solutions make the $\omega$ of \eqref{eq:jet_ansatz} a solution of \eqref{eq:eom1}-\eqref{eq:u}.
+As before,
+we will suppress the time-dependence of $z_i$ and $\Gamma^\alpha_i$.
+
+Substition of \eqref{eq:jet_ansatz} into \eqref{eq:eom2} imples
+\begin{align*}
+  \psi = \Gamma^\alpha_i \partial_\alpha G_{z_i}
+\end{align*}
+where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
+This implies, $u$, must be
+\begin{align*}
+  u = \begin{pmatrix}
+   - \Gamma_i^\alpha \partial_{y \cup \alpha} G_{z_i} \\
+    \Gamma_i^\alpha \partial_{x \cup \alpha} G_{z_i}
+  \end{pmatrix}.
+\end{align*}
+Finally, substituion of the above velocity field
+and the ansatz \eqref{eq:jet_ansatz} into \eqref{eq:eom1} yields
+\begin{align}
+  \partial_t ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i}) +  (- \Gamma^\beta_j \partial_{y \beta} G_{z_j}) \cdot \partial_x ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i})  +
+  (\Gamma_j^\beta \partial_{x \beta} G_{z_j} ) \cdot \partial_x  ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i})= 0 \label{eq:eom3}
+\end{align}
+Upon writing \eqref{eq:eom3} in terms of distributional diratives we find
+\begin{align}
+  \begin{split}
+  &\dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
+  - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
+  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i}  +
+  \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
+  \end{split}
+  \label{eq:eom4}
+\end{align}
+Observe that the left hand side of \eqref{eq:eom4}
+is a linear combination of the distributions
+$\delta_{z_i}$, $\partial_x\delta_{z_i}$, and $\partial_y \delta_{z_i}$.
+In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
+This requirement yields the desired set of ordinary differential equations
+\begin{align*}
+  \dot{\Gamma}_i = 0 \quad,\quad
+  \dot{x}_i = - \Gamma_j \partial_y G(z_i - z_j) \quad,\quad
+  \dot{y}_i =  \Gamma_j \partial_x G(z_i - z_j).
+\end{align*}
+
+\todo[inline]{Write a few ending sentences.  Section should not end with an equation}
+
+
 \section{Conserved quantities}
 \label{sec:conserved_quantities}
 
@@ -146,6 +203,10 @@ almost word-for-word}
 
 \section{Conservation of circulation}
 \label{sec:circulation}
+
+
+\section{Moments}
+\label{sec:moments}
 
 
 \section{Approximation theory}
