@@ -65,13 +65,27 @@ The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
 to turbulence modelling, and introduce a TRI differential operator $L$
 which yields the regularized model $\partial_t m + \pounds_u [m] = 0, m = L[u]$.}
 
+\section{The vorticity equation}
+\label{sec:vorticity}
+Consider Euler's equaitons of motion for an incompressible fluid
+\todo[inline]{finish writing this}
+...
+\begin{align*}
+  \partial_t \omega + \pounds_u [\omega] = 0
+\end{align*}
+Where $\pounds_u[\omega]$ is the unique distribution defined by the property
+\begin{align*}
+  \langle \pounds_u[\omega] , f \rangle = - \langle \omega , u^i \partial_i f \rangle
+\end{align*}
+
+
 \section{Derivation of the vortex blob method}
 \label{sec:vortex_blob}
 In this section we derive the equations of motion for the traditional
 vortex blob method \todo{cite stuff}.
 We can begin by considering the vorticity formulation of Euler's equations for an incompressible inviscid planar fluid
 \begin{align}
-  &\partial_t \omega + u^1 \partial_x \omega + u^2 \partial_x \omega = 0 \label{eq:eom1} \\
+  &\partial_t \omega + \pounds_u[ \omega] = 0 \label{eq:eom1} \\
   &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
   &u = (u^1,u^2) = \nabla^\perp \psi :=  (- \partial_y \psi, \partial_x \psi)
   \label{eq:u}
