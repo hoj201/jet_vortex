@@ -13,6 +13,7 @@
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
 \newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
       #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
 
 %  NEW THEOREM ENVIRONMENTS
 \newtheorem{thm}{Theorem}[section]
@@ -23,11 +24,13 @@
 
 
 %  MATH OPERATORS
-\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\SDiff}{SDiff}
 \DeclareMathOperator{\GL}{GL}
 \DeclareMathOperator{\SO}{SO}
 \DeclareMathOperator{\ad}{ad}
 \DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Jet}{Jet}
+\DeclareMathOperator{\Orb}{Orb}
 
 %  TITLE, AUTHOR, DATE
 \title{Jet vortex methods}
@@ -47,7 +50,7 @@
 \label{sec:intro}
 
 
-\section{Notation}
+\subsection{Notation}
 The symbol ``$z$'' will be used to denote
 an element of $\mathbb{R}^2$
 with coordinates $z = (x,y)$.
@@ -60,16 +63,27 @@ The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
 \subsection{Vortex methods}
 
 \subsection{Regularized fluid modelling and turbulence}
+\label{sec:turbulence}
 
-\todo[inline]{In this section we should relate regularized Euler equations 
-to turbulence modelling, and introduce a TRI differential operator $L$
-which yields the regularized model $\partial_t m + \pounds_u [m] = 0, m = L[u]$.}
+In this section we should relate regularized Euler equations 
+to turbulence modelling, and introduce a translationally and rotationally invariant differential operator $L$.
 
 \section{The vorticity equation}
 \label{sec:vorticity}
-Consider Euler's equaitons of motion for an incompressible fluid
-\todo[inline]{finish writing this}
-...
+
+\todo[inline]{I have not found a way to avoid writing Lie-derivatives.
+  Originally, I wanted to write $u^i \partial_i \omega$ in place of $\pounds_{u}[\omega]$.
+  However, these are not equivalent when $\omega$ is a generic distribution.  Consider $\omega = \partial_x \delta_z$.  Then 
+  \begin{align*}
+    \langle \pounds_u [\omega] , f \rangle &= - \langle \omega , u^i \partial_i f \rangle \\
+    &= \partial_x |_{z} ( u^i \partial_i f) \\
+    &= \partial_x u^i(z) \partial_i f(z) + u^i(z) \partial_{xi} f(z) \\
+    &= \langle -\partial_x u^i(z) \partial_i \delta_z + u^i(z) \partial_{xi}\delta_z , f \rangle
+  \end{align*}
+  Thus $\pounds_u[\omega] = -\partial_x u^i(z) \partial_i \delta_z + u^i(z) \partial_{xi}\delta_z$.
+  This differs from $u^i \partial_{ix} \delta_z$.}
+
+... and the vorticity equation is
 \begin{align*}
   \partial_t \omega + \pounds_u [\omega] = 0
 \end{align*}
@@ -88,7 +102,7 @@ We can begin by considering the vorticity formulation of Euler's equations for a
   &\partial_t \omega + \pounds_u[ \omega] = 0 \label{eq:eom1} \\
   &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
   &u = (u^1,u^2) = \nabla^\perp \psi :=  (- \partial_y \psi, \partial_x \psi)
-  \label{eq:u}
+  \label{eq:eom3}
 \end{align}
 By viewing the vorticity, $\omega$, is as a distribution,
 we may consider the ansatz
@@ -106,31 +120,40 @@ To declutter future formulas,
 we will suppress the time-dependence of $z_i$ and $\Gamma_i$
 from this point onwards.
 
-In order to find the desired ordinary differential equation for the $\Gamma_i$'s and $z_i$'s we will seek consistency constraints implied by the equations of motion \eqref{eq:eom1},\eqref{eq:eom2}.
-Substition of \eqref{eq:ansatz} into \eqref{eq:eom2} imples
+In order to find the desired ordinary differential equation for the $\Gamma_i$'s and $z_i$'s
+we will seek consistency constraints implied by the equations of motion
+\eqref{eq:eom1},\eqref{eq:eom2}. Substition of \eqref{eq:ansatz} into \eqref{eq:eom2} imples
 \begin{align*}
   \psi = \Gamma_i G_{z_i}
 \end{align*}
 where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
-This implies, $u$, must be
-\begin{align*}
+By \eqref{eq:eom3} this implies, $u$, must be
+\begin{align}
   u(z) = \begin{pmatrix}
    - \Gamma_i \partial_y G_{z_i} \\
     \Gamma_i \partial_x G_{z_i}
-  \end{pmatrix}.
-\end{align*}
-Finally, substituion of the above velocity field
-and the ansatz \eqref{eq:ansatz} into \eqref{eq:eom1} yields
-\begin{align}
-  \partial_t ( \Gamma_i \delta_{z_i}) +  (- \Gamma_j \partial_yG_{z_j}) \cdot \partial_x ( \Gamma_i \delta_{z_i})  +
-  (\Gamma_j \partial_x G_{z_j} ) \cdot \partial_x ( \Gamma_i \delta_{z_i})= 0 \label{eq:eom3}
+  \end{pmatrix}. \label{eq:u}
 \end{align}
-Upon writing \eqref{eq:eom3} in terms of distributional diratives we find
+Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
+Given an arbitrary function $f \in C^\infty(\mathbb{R}^2)$ we may invoke the definition of $\pounds_u[\cdot]$ to find
+\begin{align*}
+  \langle \pounds_u[ \Gamma_i \delta_{z_i} ] , f \rangle &= - \Gamma_i u^x(z_i) \partial_x f(z_i) - \Gamma_i u^y(z_i) \partial_y f(z_i) \\
+ &= \langle \Gamma_i u^x(z_i) \partial_x \delta_{z_i} + \Gamma_i u^y(z_i) \partial_y \delta_{z_i} , f \rangle
+\end{align*}
+In other words
+\begin{align}
+  \pounds_u[\Gamma_i \delta_{z_i}] =  \Gamma_i u^x(z_i) \partial_x \delta_{z_i} + \Gamma_i u^y(z_i) \partial_y \delta_{z_i}. \label{eq:Lie}
+\end{align}
+More-over, our assumption regarding the ansatz implies
+\begin{align}
+  \partial_t \omega = \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}. \label{eq:time_derivative}
+\end{align}
+Finally, substituion of \eqref{eq:u},\eqref{eq:Lie}, and \eqref{eq:time_derivative} into \eqref{eq:eom1} yields
 \begin{align}
   \begin{split}
   &\dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
   - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
-  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i}  +
+  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i} +
   \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
   \end{split}
   \label{eq:eom4}
@@ -145,79 +168,244 @@ This requirement yields the desired set of ordinary differential equations
   \dot{x}_i = - \Gamma_j \partial_y G(z_i - z_j) \quad,\quad
   \dot{y}_i =  \Gamma_j \partial_x G(z_i - z_j).
 \end{align*}
+Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
+The resulting circulation \eqref{eq:ansatz} then satisfies \eqref{eq:eom1} by construction.
 
-\todo[inline]{Write a few ending sentences.  Section should not end with an equation}
+\section{Derivation of the 1st order jet vortex blob method}
+\label{sec:1-vortex_blob}
+In this section we derive the equations of motion for the
+first order vortex blob method.
+This time we consider the ansatz
+\begin{align}
+  \omega = \Gamma_i(t) \delta_{z_i(t)} + \Gamma_i^x \partial_x \delta_{z_i(t)}
+  + \Gamma_i^y \partial_y \delta_{z_i(t)}
+  \label{eq:1-ansatz}
+\end{align} 
+Our desire is to obtain an ordinary differential equation for the $\Gamma_i$'s$\Gamma_i^x$'s, $\Gamma_i^y$'s, and the $z_i$'s,
+whose solutions make the $\omega$ of \eqref{eq:ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
+As in the previous section
+we will suppress the time-dependence of $z_i$, $\Gamma_i$, $\Gamma^x_i$,
+and $\Gamma_i^y$.
+
+Substition of \eqref{eq:1-ansatz} into \eqref{eq:eom2} imples
+\begin{align*}
+  \psi = \Gamma_i G_{z_i} - \Gamma^x_i \partial_xG_{z_i}
+  - \Gamma^y_i \partial_yG_{z_i}
+\end{align*}
+where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
+By \eqref{eq:eom3} this implies, $u$, must be
+\begin{align}
+  u(z) = \begin{pmatrix}
+   - \Gamma_i \partial_y G_{z_i} + \Gamma^x_i \partial_{xy}G_{z_i}
+   + \Gamma^y_i \partial_{yy}G_{z_i} \\
+    \Gamma_i \partial_xG_{z_i} - \Gamma^x_i \partial_{xx}G_{z_i}
+  - \Gamma^y_i \partial_{xy}G_{z_i}
+  \end{pmatrix}. \label{eq:1-u}
+\end{align}
+Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
+Given an arbitrary function $f \in C^\infty(\mathbb{R}^2)$ we may invoke the definition of $\pounds_u[\cdot]$ to find
+\begin{align*}
+  \langle \pounds_u[ \Gamma^x_i \partial_x \delta_{z_i} ] , f \rangle &= \Gamma^x_i \partial_x|_{z_i} (u^x \partial_x f + u^y \partial_y f) \\
+ &= \Gamma_i^x ( \partial_x u^x(z_i) \partial_xf(z_i) + u^x(z_i) \partial_{xx}f(z_i) 
+ + \partial_x u^y(z_i) \partial_yf(z_i) + u^y(z_i) \partial_{xy} f(z_i) )\\
+\end{align*}
+In other words
+\begin{align}
+\begin{aligned}
+  \pounds_u[\Gamma_i^x \partial_x\delta_{z_i}] &=  \Gamma_i^x ( -\partial_xu^x(z_i) \partial_x \delta_{z_i} \\
+  &\quad+ u^x(z_i) \partial_{xx} \delta_{z_i}
+  - \partial_x u^y(z_i) \partial_y \delta_{z_i}
+  + u^y(z_i) \partial_{xy} \delta_{z_i}.
+  \end{aligned}\label{eq:1-Lie}
+\end{align}
+A similar computation can be done to compute $\pounds_u[\Gamma^y_i \partial_y \delta_{z_i}]$.
+More-over, our assumption regarding the ansatz implies
+\begin{align}
+\begin{aligned}
+\partial_t \omega &= \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}\\
+&\quad+\dot{\Gamma}_i^x \partial_x \delta_{z_i} - \Gamma_i^x \dot{x}_i \partial_{xx} \delta_{z_i} - \Gamma^x_i \dot{y}_i \partial_{xy} \delta_{z_i}\\
+&\quad+\dot{\Gamma}^y_i \delta_{z_i} - \Gamma_i^y \dot{x}_i \partial_{xy} \delta_{z_i} - \Gamma^y_i \dot{y}_i \partial_{yy} \delta_{z_i}.
+\end{aligned} \label{eq:1-time_derivative}
+\end{align}
+Finally, substituion of \eqref{eq:1-u},\eqref{eq:1-Lie}, and \eqref{eq:1-time_derivative} into \eqref{eq:eom1} yields
+a linear combination of the distributions
+$\delta_{z_i}$, $\partial_x\delta_{z_i}$,$\partial_y \delta_{z_i}$,$\partial_{xx} \delta_{z_i}$,$\partial_{xy} \delta_{z_i}$, and $\partial_{yy} \delta_{z_i}$.
+In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
+This requirement yields the desired set of ordinary differential equations
+\begin{align*}
+  \dot{z}_i &= u(z_i) \\
+  \dot{\Gamma}_i &= 0 \\
+  \dot{\Gamma}^x_i  &= \partial_x u^x(z_i) \Gamma^x_i + \partial_y u^x(z_i) \Gamma_i^y \\
+  \dot{\Gamma}^y_i  &= \partial_x u^y(z_i) \Gamma^x_i + \partial_y u^y(z_i) \Gamma_i^y 
+\end{align*}
+where $u$ is given by \eqref{eq:1-u}.
+Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
+Given a solution, the circulation \eqref{eq:1-ansatz} must neccesarily satisfy \eqref{eq:eom1}.
+
+  It appears that the tuple $(\Gamma_i^x,\Gamma_i^y)$ is advected by the flow as a vector.  This further motivates our indexing convention.
+
+
 
 \section{The jet-vortex blob method}
 \label{sec:jet_vortex_blob}
-
-\todo[inline]{This section should mimic the previous,
-almost word-for-word}
-
 In this section we derive the equations of motion for the
 jet-vortex blob method.
-As before, we begin with the vorticity equation \eqref{eq:eom1}-\eqref{eq:u}and consider the ansatz
+Again, we start with the vorticity formulation of Euler's equations 
+given in \eqref{eq:eom1}-\eqref{eq:eom3}.
+Similar to the previous section, we may consider an ansatz
 \begin{align}
-  \omega(z) = \Gamma_i^\alpha(t) \partial_\alpha \delta(z-z_i(t))
+  \omega(z) = \sum_{m+n \leq p} \sum_{i=1}^N \Gamma_i^{m,n}(t) \partial_{m,n} \delta(z-z_i(t))
   \label{eq:jet_ansatz}
-\end{align} 
-where we have invoked the Einstein summation convention to sum over 
-the index $i=1,\dots,n$ and the multi-index $\alpha$ of rank $|\alpha| < m$,
-As before, our desire is to obtain an ordinary differential equation for the $\Gamma^\alpha_i$'s and the $z_i$'s,
-whose solutions make the $\omega$ of \eqref{eq:jet_ansatz} a solution of \eqref{eq:eom1}-\eqref{eq:u}.
-As before,
-we will suppress the time-dependence of $z_i$ and $\Gamma^\alpha_i$.
-
-Substition of \eqref{eq:jet_ansatz} into \eqref{eq:eom2} imples
-\begin{align*}
-  \psi = \Gamma^\alpha_i \partial_\alpha G_{z_i}
-\end{align*}
-where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
-This implies, $u$, must be
-\begin{align*}
-  u = \begin{pmatrix}
-   - \Gamma_i^\alpha \partial_{y \cup \alpha} G_{z_i} \\
-    \Gamma_i^\alpha \partial_{x \cup \alpha} G_{z_i}
-  \end{pmatrix}.
-\end{align*}
-Finally, substituion of the above velocity field
-and the ansatz \eqref{eq:jet_ansatz} into \eqref{eq:eom1} yields
-\begin{align}
-  \partial_t ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i}) +  (- \Gamma^\beta_j \partial_{y \beta} G_{z_j}) \cdot \partial_x ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i})  +
-  (\Gamma_j^\beta \partial_{x \beta} G_{z_j} ) \cdot \partial_x  ( \Gamma^\alpha_i \partial_\alpha \delta_{z_i})= 0 \label{eq:eom3}
 \end{align}
-Upon writing \eqref{eq:eom3} in terms of distributional diratives we find
+where $\partial_{m,n} := \partial_x^m \circ \partial_y^n$,
+$\Gamma_i^{m,n}(t) \in \mathbb{R}$,
+and $z_i(t) \in \mathbb{R}^2$.
+Our desire is to obtain an ordinary differential equation for the $\Gamma^{m,n}_i$'s and the $z_i$'s,
+whose solutions make the $\omega$ of \eqref{eq:jet_ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
+To declutter future formulas,
+we will suppress the time-dependence of $z_i$ and $\Gamma^{m,n}_i$
+from this point onwards.
+
+We proceed as before. Substition of \eqref{eq:jet_ansatz} into \eqref{eq:eom2} imples
+\begin{align*}
+  \psi = \sum_{m+n \leq p} \sum_{i=1}^N (-1)^{m+n}\Gamma_i^{m,n} \partial_{m,n} G_{z_i}
+\end{align*}
+By \eqref{eq:eom3} this implies, $u$, must be
+\begin{align}
+  u(z) = \sum_{m+n \leq p} \sum_{i=1}^N (-1)^{m+n}
+  \begin{pmatrix}
+   - \Gamma_i^{m,n} \partial_{m,n+1} G_{z_i} \\
+    \Gamma_i^{m,n} \partial_{m+1,n} G_{z_i}
+  \end{pmatrix}. \label{eq:jet_u}
+\end{align}
+Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
+In appendix \ref{app:computation} we calculate
 \begin{align}
   \begin{split}
-  &\dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
-  - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
-  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i}  +
-  \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
+  &\pounds_u[\Gamma_i^{m,n} \partial_{m,n} \delta_{z_i}] =\\
+  &\quad (-1)^{m+n} \Gamma_i^{m,n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
+   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
+     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
+     \right)
+   .
+   \end{split}\label{eq:jet_Lie}
+\end{align}
+More-over, our assumption regarding the ansatz implies
+\begin{align}
+  \partial_t \omega = \sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i}. \label{eq:jet_time_derivative}
+\end{align}
+Finally, substituion of \eqref{eq:jet_u},\eqref{eq:jet_Lie}, and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
+\begin{align}
+  \begin{split}
+    &0=\sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i} \\
+   & +  (-1)^{m+n} \Gamma_i^{m,n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
+   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
+     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
+     \right)
   \end{split}
   \label{eq:eom4}
 \end{align}
 Observe that the left hand side of \eqref{eq:eom4}
 is a linear combination of the distributions
-$\delta_{z_i}$, $\partial_x\delta_{z_i}$, and $\partial_y \delta_{z_i}$.
-In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
-This requirement yields the desired set of ordinary differential equations
+$\partial_{m,n}\delta_{z_i}$ for $m+n \leq p+1$.
+In order for \eqref{eq:eom4} to hold, the coefficients of $\partial_{m,n} \delta_{z_i}$ must vanish.
+Imediately, we can observe that the coefficient of $\delta_{z_i}$ is $\dot{\Gamma}_i$.
+Thus $\dot{\Gamma}_i = 0$.
+Moreover, the coefficient of $\partial_{p+1,0} \delta_{z_i}$ is 
+$\Gamma_i^{p,0} \dot{x}_i + \Gamma_i^{p,0} u^x(z_i)$.
+Thus
 \begin{align*}
-  \dot{\Gamma}_i = 0 \quad,\quad
-  \dot{x}_i = - \Gamma_j \partial_y G(z_i - z_j) \quad,\quad
-  \dot{y}_i =  \Gamma_j \partial_x G(z_i - z_j).
+  \dot{x}_i = u^x(z_i)
+\end{align*}
+The analogous observation for the coefficient of $\partial_{0,p+1} \delta_{z_i}$ then reveals
+\begin{align*}
+  \dot{y}_i = u^y(z_i)
 \end{align*}
 
-\todo[inline]{Write a few ending sentences.  Section should not end with an equation}
-
+Finally, for $\ell,k < p$ the coefficient of $\partial_{\ell,k} \delta_{z_i}$ is
+\begin{align*}
+  \dot{\Gamma}_i^{\ell,k} + 
+  \sum_{
+    \substack{
+      m > \ell \\
+      n > k \\
+      n+m \leq p}
+    }(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
+  +(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i) 
+\end{align*}
+Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i^{m,n}$'s and $z_i$'s.
+The resulting circulation \eqref{eq:jet_ansatz} satisfies \eqref{eq:eom1} by construction.
 
 \section{Conserved quantities}
 \label{sec:conserved_quantities}
 
-\todo[inline]{Linear momentum, angular momentum, and energy}
+\subsection{Angular momentum}
+\label{sec:angular_momentum}
+Here are Darryl's calculations
+\begin{align*}
+  M &= \int \hat{z} \vec{x} \times u dx dy \\
+  &= \int \vec{x} \cdot \nabla \psi dx dy \\
+  &= -2 \int \psi dx dy 
+\end{align*}
+This is conserved because
+\begin{align*}
+  \frac{dM}{dt} &= \int \partial_t \psi dx dy\\
+  &= \int (L\Delta)^{-1} (\partial_t \omega) dx dy \\
+  &= \int (L \Delta)^{-1} ( u \cdot \nabla \omega) dx dy \\
+  &= \int (L \Delta)^{-1} ( {\rm div}( u \omega) - \omega {\rm div}(u) ) dxdy \\
+  &= \int {\rm div} \left( (L\Delta)^{-1}( u \omega) \right) dx dy \\
+   &= 0
+\end{align*}
+The last line follows by the divergence theorem.
+
+\subsection{Linear momentum}
+\label{sec:linear}
+The linear momentum is
+\begin{align*}
+  M^j = \int u^j dx dy
+\end{align*}
+and
+\begin{align*}
+  \frac{dM^j}{dt} &= \int \partial_t u^j dxdy \\
+  &= \int  \partial_t (-\partial_y \psi , \partial_x \psi) dxdy \\
+  &= \epsilon_{ij3} \int \partial_j( \partial_t \psi) dx dy \\
+\end{align*}
+Assuming $\partial_t \psi$ vanishes at $\infty$ the above integral integrates to $0$.
+
+\subsection{Energy}
+\label{sec:energy}
+We will later show how \eqref{eq:eom1}-\eqref{eq:eom3} form a Hamiltonian system with respect to the Hamiltonian
+\begin{align*}
+  H(\omega) = \frac{1}{2} \langle \omega , G* \omega\rangle
+\end{align*}
+and a symplectic form which will be described in section \ref{sec:symplectic}.
+Thus $H$ is conserved.
+One can verify the conservation of $H$ directly.  We observe
+\begin{align*}
+  \frac{dH}{dt} &= \langle \partial_t \omega, G^* \omega \rangle \\
+  &= \langle - \pounds_u [\omega] , G^* \omega \rangle \\
+  &= \langle \omega , \pounds_u [\psi] \rangle \\
+  &= \langle \omega , u^x \partial_x \psi + u^y \partial_y \psi \rangle
+\end{align*}
+where $\psi = G^*\omega$ and $u = \nabla^\perp \psi$.
+Substituion of these identities reveals
+\begin{align*}
+  &= \langle \omega , (-\partial_y \psi) \partial_x \psi + (\partial_x \psi)  \partial_y \psi \rangle = 0.
+\end{align*}
 
 \section{Conservation of circulation}
 \label{sec:circulation}
+Let $\omega(t) \in \mathcal{D}'(\R^2)$ and let $u$ be as in \eqref{eq:eom3}.
+We can consider the diffeomorphism $\varphi: \mathbb{R}^2 \to \mathbb{R}^2$
+obtained by integrating the vector field $u$.
+Then we can consider the pull-back $\varphi^*\omega \in \mathcal{D}'(\mathbb{R}^2)$ defined by
+\begin{align*}
+  \langle \varphi^* \omega , f \rangle := \langle \omega , f \circ \varphi \rangle
+\end{align*}
+Kelvin's circulation theorem is related to the fact that $\Omega =\varphi^* \omega$ is a constant of motion for the system.
+As the $\omega$'s produced by our ansatz \eqref{eq:jet_ansatz} yield solutions to \eqref{eq:eom1}, we should expect this conservation to be inherited by the evolution of the $\Gamma^{m,n}_i$'s somehow.  In the case of $p=0$, this manifests with $\Gamma_i$ being a constant of motion.
 
+\todo[inline]{There is still more the think about here.  We might have more conservation laws.}
 
 \section{Moments}
 \label{sec:moments}
@@ -225,18 +413,290 @@ This requirement yields the desired set of ordinary differential equations
 
 \section{Approximation theory}
 \label{sec:approximation_theory}
+In this section we will illustrate how using jet-vortices improves the accuracy of approximation of a vorticity field in a distributional sense
+with respect to a reproducing kernel Hilbert space (RKHS).  Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega\rangle_{L^2} =: \frac{1}{2} \langle \omega , \omega \rangle_G$, for a Green's kernel $G:\R^2 \to \R$.
+Let $h > 0$ be small and define $h \mathbb{Z}^2 = \{ (ah,bh) \in \R^2 \mid (a,b) \in \mathbb{Z}^2 \}$.
+Given an $\omega \in \mathcal{D}'(\R^2)$, we can attempt to approximate $\omega$ via Dirac-deltas supported on $h \mathbb{Z}^2$.
+There is a natural way to do this with respect to the Hilbert-norm because we have a reproducing kernel.
+We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \Gamma_i \delta_{z_i}$ by requiring the error, $\omega_h^{(0)} - \omega$, to be $\langle \cdot , \cdot \rangle_{G}$-orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
+This means that $G*\omega(z) =  \sum_i \Gamma_i G(z-z_i)$ for each $z \in h\mathbb{Z}^2$.
+Thus $\psi_h^{(0)} = \sum_i \Gamma_i G(z-z_i)$ can be seen as a $0$th order approximation to $\psi = G*\omega$
+because $\psi_h^{(0)}(z) = \psi(z)$ on the grid.
+Assuming $\psi$ is continous, the error is $o(1)$ in $h$.
+Moreover, $\omega^{(0)}_h$ serves as a $o(1)$ approximation to $\omega$ in the distributional sense.
+Let $L$ be the psuedo-differential operator dual to $G*$.
+Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+for any $f$ in the RKHS produced by $G$.
+ 
+The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,\alpha} \Gamma_i^\alpha \partial_\alpha \delta_{z_i}$.
+We define the scalars $\Gamma_i^\alpha$ via the equations
+\begin{align*}
+  \partial_\beta \psi (z_i) = \sum_j \Gamma_j^\alpha \partial_{\alpha\beta} G(z_i - z_j)
+\end{align*}
+for $\psi = G*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
+Then $\psi^{(k)}_h = \sum_{i,\alpha}\Gamma_k^\alpha \partial_\alpha G_{z_i}$
+serves as a $o(h^{k})$ approximation of $\psi$ when $\psi \in C^k$
+and $\omega^{(k)}_h$ serves as a $o(h^k)$ approximation of $\omega$ in
+a distributional sense.
 
-We have order $o(h^k)$ approximation.
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
+In this section we compute the coadjoint orbit of a jet-vortex
+as well as the symplectic structure.
+Of course, the Hamiltonian we use is given by
+the kinetic energy
+\begin{align*}
+  H(\omega) = \frac{1}{2} \langle \omega , G* \omega \rangle.
+\end{align*}
+Where $\omega$ may be of the form \eqref{eq:jet_ansatz}.
+
+Note that for a smooth vorticity $\omega \in \bigwedge^2(\R^2)$
+the coadjoint orbit is
+\begin{align*}
+  \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}.
+\end{align*}
+This may or may not be a manifold.
+If $\Orb(\omega)$ is a manifold, then a vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by $\pounds_u[\tilde\omega]$ for some (non-unique) $u \in \mathfrak{X}(\R^2)$. There is a symplectic structure on $\Orb(\omega)$
+given by
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int \omega( u(x), v(x) ) \mu.
+\end{align*}
+where $\mu$ is a volume form on $\R^2$.
+This formula is derived on page 313 of \cite{MarsdenWeinstein1983}
+but it is nothing more than a special case of the KKS theorem \cite[see the boxed formula on p.303]{FOM}.
+We would like to generalize it to the case of non-smooth vorticities such
+as point vorticies.  To do this, we can define the function $f_\omega = \frac{\omega}{\mu}$.  Then the symplectic form takes the form
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int f_{\omega}(x) \mu( u(x), v(x) ) \mu = \langle f_{\omega}, \mu(u,v) \rangle_{L^2(\mu)}.
+\end{align*}
+We can identify $\omega$ with the distribution $\langle f_\omega , \cdot \rangle_{L^2(\mu)}$.
+That is to say
+\begin{align*}
+  \langle \omega , \phi \rangle := \langle f_\omega , \phi \rangle_{L^2(\mu)}
+\end{align*}
+for all $\phi \in C^\infty(\R^2)$.
+This allows us to let $\omega$ be something like a Dirac-delta,
+or a distributional dirative of a Dirac-delta.
+Moreover, the symplectic form is written as
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , \mu(u,v) \rangle.
+\end{align*}
+In the case that $\mu = dx \wedge dy$ we can 
+identify $\mu(u,v)$ with the function $u^x v^y - u^y v^x = u \times v$ so that
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , u^x v^y - u^y v^x \rangle.
+\end{align*}
+
+
+\begin{thm}
+	Let $\omega_0 = \gamma_i^\alpha \partial_{\alpha} \delta_{Z_i}$ for $\gamma_i^\alpha \neq 0$ and let
+	$M^{(k)} = \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$.
+	Then $\Orb(\omega_0)$ is a sub-manifold of the $M^{(k)}$.
+\end{thm}
+\begin{proof}
+	Let $\varphi \in \SDiff(\R^2)$.  Then
+	\begin{align*}
+		\langle \varphi_* \omega_0 , f \rangle &= \langle \omega_0 , f \circ \varphi \rangle \\
+                &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z) \\
+                &= \gamma_i^\alpha \partial_{\beta}|_{\varphi(Z_i)} f \partial_\beta|_{Z_i} \varphi^\alpha.
+	\end{align*}
+        Where we have used the Faa di Bruno formula via the multi-indexing convention of \cite{Jacobs2014b}.
+        Thus $\varphi_* \omega_0 \in M^{(k)}$.
+\end{proof}
+
+If we would like a more geometric description of what $M^{(k)}$ is,
+we could identify $M^{(k)}$ as a dual vector-bundle
+\begin{align*}
+  M^{(k)} = \left(\Jet^{(k)}( \R^2 , \R)^n \right)^*
+\end{align*}
+where we view $\Jet^{(k)}( \R^2 , \R)$ as a vector-bundle over $\R^2$.
+This identification is tautological upon noting that for $\omega \in M^{(k)}$
+the quantity $ \langle \omega , f \rangle$
+is a linear function of the $k$th order Taylor-coefficients of $f \in C^\infty(\R^2)$
+about some points $z_1,\dots,z_n$.
+
+Finally, as a sanity check, we can also prove that the equations of motion derived previously are identical to
+the equations of motion obtained using this symplectic structure.
+
+\begin{thm}
+	Let $H(\omega) = \frac{1}{2} \langle \omega , K*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
+	are given by
+	\begin{align*}
+		\partial_t \omega + \pounds_u[\Omega] \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = K*\omega.
+	\end{align*}
+\end{thm}
+\begin{proof}
+  Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) = \pounds_u[\omega]$ for some (non-unique) $u \in \mathfrak{X}_{\rm div}(\R^2)$.
+  Out goal is to solve for $u$.
+  By the definition of $X_H$ we see that for any
+  $v \in \mathfrak{X}_{\rm div}(\R^2)$
+  \begin{align*}
+    \langle \omega , u^x v^y - u^y v^x \rangle &=
+    \Omega_{\omega}( \pounds_u[\omega] , \pounds_v[\omega] ) = \langle dH(\omega) , \pounds_v[\omega] \rangle \\
+    &= \langle K * \omega , \pounds_v[\omega] \rangle 
+  \end{align*}
+  If we let $\psi := K*\omega$ then
+  \begin{align*}
+    = - \langle \omega , \pounds_{v}[\psi] \rangle 
+    = \langle \omega , v^x \partial_x \psi + v^y \partial_y \psi \rangle
+  \end{align*}
+  We see that $u = (-\partial_y \psi,\partial_x \psi)$
+  would be a possible solution.
+  As $\Omega$ is non-degenerate, this is the unique solution.
+\end{proof}
+
+\subsection{The first order case}
+Let us deal with the first order case.
+\begin{thm}
+Let $Z_1,\dots,Z_n \in \R^2$ be distinct.
+The coadjoint orbit of
+\begin{align*}
+  \omega = \sum_{i=1}^N \gamma_i \delta_{Z_i} + \gamma_i^x \partial_x \delta_{Z_i} + \gamma_i^y \partial_{y} \delta_{z_i}
+\end{align*}
+is
+\begin{align*}
+  \Orb(\omega) &= \left\{ \sum_{i=1}^n \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{\tilde{z}_i} + \Gamma_i^y \partial_{y} \delta_{z_i}
+  \mid z_i \in \R^2, (\Gamma_i^x,\Gamma_i^y) \in \R^2 \backslash \{0\} \right\} \\
+  &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
+\end{align*}
+The symplectic structure is
+  \begin{align*}
+    \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
+    \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
+    &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
+    - \dot{\Gamma}_i^y \cdot \delta x_i
+    + \delta \Gamma_i^y \cdot \dot{x}_i 
+    - \delta \Gamma_i^x \cdot \dot{y}_i
+  \end{align*}
+\end{thm}
+\begin{proof}
+  Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
+  We find that for any function $f$
+  \begin{align*}
+    \langle \varphi_* \omega \mid f \rangle := \langle \omega , \varphi^* f\rangle
+    &= \gamma_i f(\varphi(Z_i)) \\
+    &\quad - \gamma_i^x \partial_x \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^x \partial_x \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)} \\
+    &\quad - \gamma_i^y \partial_y \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^y \partial_y \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)}
+  \end{align*}
+  Collecting like terms we find
+  \begin{align*}
+    \varphi_* \omega = \gamma_i \delta_{\varphi(Z_i)} + \Gamma_i^x \partial_x \delta_{\varphi(Z_i)} + \Gamma_i^y \partial_y \delta_{\varphi(Z_i)}
+  \end{align*}
+  where
+  \begin{align*}
+    \Gamma = 
+    \begin{bmatrix}
+      \Gamma_i^x \\ \Gamma_i^y 
+    \end{bmatrix}
+    =
+    D\varphi(Z_i) \cdot
+    \begin{bmatrix}
+      \gamma_i^x \\ \gamma_i^y
+    \end{bmatrix}
+  \end{align*}
+  By varying $\varphi$ we can obtain 
+  any collection of distinct points $z_1,\dots,z_n \in \R^2$
+  and any collection of non-zero vectors $\Gamma_1,\dots,\Gamma_n \in \R^2 \backslash \{0\}$.
+  This proves the first claim.
+
+  To derive the symplectic structure recall the symplectic structure for a general vorticity.
+  \begin{align}
+    \Omega( \pounds_u[\omega] , \pounds_v[\omega] )
+    = \langle \omega , u \wedge v \rangle \label{eq:vorticity_symplectic_form}
+  \end{align}
+  where we view $\omega$ as a distribution and $u \wedge v = u^x v^y - v^x u^y$
+  as a real-valued function.
+  Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
+  In this case the right hand side can be computed to be
+  \begin{align*}
+    \langle \omega , u \wedge v \rangle &= \gamma_i ( u^x(z_i)v^y(z_i) - v^x(z_i) u^y(z_i) ) \\
+    &\quad + \Gamma_i^x ( u^x_{,x} v^y + u^x v^y_{,x} - v^x_{,x}u^y - v^x u^y_{,x})|_{z = z_i} \\
+    &\quad + \Gamma_i^y ( u^x_{,y} v^y + u^x v^y_{,y} - v^x_{,y}u^y - v^x u^y_{,y})|_{z = z_i}
+  \end{align*}
+  Note that this is writen entirely in terms of the 1-jet of $u$ and $v$ evaluated 
+  at $z_i$.
+  Moreover, $\pounds_u[\omega] = \gamma_0 u^x(z_i) \partial_{z_i} + \dots$
+  also has the property that it is only dependent on
+  the one-jet of $u$ and $v$ at the poinst $z_1,\dots,z_n$.
+  Therefore both side of \eqref{eq:vorticity_symplectic_form}
+  can be written as a function of the finite collection of 
+  numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
+  The result then follows by noting
+  \begin{align*}
+    u(z_i) \mapsto u_{z_i}\\
+    u^x_{,x}(z_i) \Gamma^x_i + u^x_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^x \\
+    u^y_{,x}(z_i) \Gamma^x_i + u^y_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^y.
+    \end{align*}
+    under the tangent lift of the coordinate chart
+    \begin{align*}
+      \sum_i \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} \mapsto (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n)
+      \end{align*}
+\end{proof}
 
 
 \section{Conclusion}
 
 \appendix
-\section{Multi-index conventions}
-\label{app:multi}
+\section{Computations}
+\label{app:computation}
+
+Here we compute $\pounds_u [\partial_{m,n} \delta_z]$.
+We begin with a lemma
+\begin{lem}
+  Let $f,g \in \mathbb{C}^\infty(\R^2)$.  Then
+  \begin{align*}
+    \partial_x^m ( fg) = \sum_{\ell=0}^{m} \binom{m}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
+  \end{align*}
+\end{lem}
+\begin{proof}
+  For $m=1$ the formula is the standard product rule.
+  Assume the formula holds at order $m$.
+  Then we find
+  \begin{align*}
+    \partial_x^{m+1} (fg) &= \partial_x ( \partial_x^{m}(fg)) \\
+    &= \partial_x \left( \sum_{\ell=0}^{m} \binom{m}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g) \right) \\
+    &= \sum_{\ell=0}^{m} \binom{m}{\ell}\left(
+      ( \partial_x^{\ell + 1} f) (\partial_x^{m-\ell}g) 
+      + ( \partial_x^{\ell} f) (\partial_x^{m-\ell+1}g)
+      \right) \\
+     &= f (\partial_x^{m+1}g) +(\partial_x^{m+1}f) g + \sum_{\ell=1}^{m} \left( \binom{m}{\ell} + \binom{m}{\ell-1} \right) (\partial_x^\ell f)(\partial_x^{m-\ell}g) \\
+     &= \sum_{\ell=0}^{m} \binom{m+1}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
+  \end{align*}
+  The lemma follows by induction.
+\end{proof}
+
+We can now compute $\pounds_u[\partial_{m,n} \delta_z]$.
+Let $f \in C^\infty(\R^2)$.  We find
+\begin{align*}
+  \langle \pounds_u [\partial_{m,n} \delta_z] , f \rangle 
+  &= -\langle \partial_{m,n} \delta_z , u^x \partial_x f + u^y \partial_y f \rangle \\
+  &= -(-1)^{m+n} \partial_{m,n}|_{z} \left( u^x \partial_x f + u^y \partial_y f \right)
+\end{align*}
+By two applications of the lemma we find
+\begin{align*}
+  &= -(-1)^{m+n} \partial_x^m|_z \left( \sum_{k=0}^{n} \binom{n}{k}
+    \left(\partial_{0,k} u^x \cdot \partial_{1,n-k} f + \partial_{0,k} u^y \cdot \partial_{0,n-k+1} f \right)
+    \right) \\
+  &= -(-1)^{m+n} \sum_{\ell=0}^{m} \sum_{k=0}^{n} \binom{n}{k}\binom{m}{\ell}
+    \Big(\partial_{\ell,k} u^x(z) \partial_{m-\ell+1,n-k} f(z) \\
+     &\hskip 16em + \partial_{\ell,k} u^y(z) \partial_{m-\ell,n-k+1} f(z)
+    \Big)
+\end{align*}
+Therefore we find
+\begin{align}
+  \begin{split}
+  &\pounds_u[ \partial_{m,n} \delta_{z_i}] =\\
+  &\quad (-1)^{m+n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
+   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
+     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
+     \right)
+   .
+   \end{split}
+\end{align}
 
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
