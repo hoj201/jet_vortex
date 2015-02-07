@@ -71,17 +71,7 @@ to turbulence modelling, and introduce a translationally and rotationally invari
 \section{The vorticity equation}
 \label{sec:vorticity}
 
-\todo[inline]{I have not found a way to avoid writing Lie-derivatives.
-  Originally, I wanted to write $u^i \partial_i \omega$ in place of $\pounds_{u}[\omega]$.
-  However, these are not equivalent when $\omega$ is a generic distribution.  Consider $\omega = \partial_x \delta_z$.  Then 
-  \begin{align*}
-    \langle \pounds_u [\omega] , f \rangle &= - \langle \omega , u^i \partial_i f \rangle \\
-    &= \partial_x |_{z} ( u^i \partial_i f) \\
-    &= \partial_x u^i(z) \partial_i f(z) + u^i(z) \partial_{xi} f(z) \\
-    &= \langle -\partial_x u^i(z) \partial_i \delta_z + u^i(z) \partial_{xi}\delta_z , f \rangle
-  \end{align*}
-  Thus $\pounds_u[\omega] = -\partial_x u^i(z) \partial_i \delta_z + u^i(z) \partial_{xi}\delta_z$.
-  This differs from $u^i \partial_{ix} \delta_z$.}
+\todo[inline]{define Lie derivative using flows}
 
 ... and the vorticity equation is
 \begin{align*}
@@ -101,17 +91,15 @@ We can begin by considering the vorticity formulation of Euler's equations for a
 \begin{align}
   &\partial_t \omega + \pounds_u[ \omega] = 0 \label{eq:eom1} \\
   &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
-  &u = (u^1,u^2) = \nabla^\perp \psi :=  (- \partial_y \psi, \partial_x \psi)
+  &u = (u^1,u^2) = \nabla^\perp \psi :=  ( \partial_y \psi, - \partial_x \psi)
   \label{eq:eom3}
 \end{align}
 By viewing the vorticity, $\omega$, is as a distribution,
 we may consider the ansatz
 \begin{align}
-  \omega(z) = \Gamma_i(t) \delta(z-z_i(t))
+  \omega(z) = \sum_{i=1}^N \Gamma_i(t) \delta(z-z_i(t))
   \label{eq:ansatz}
 \end{align} 
-where we have invoked the Einstein summation convention to sum over 
-the index $i=1,\dots,n$,
 with $\Gamma_i(t) \in \mathbb{R}$,
 and $z_i(t) \in \mathbb{R}^2$.
 Our desire is to obtain an ordinary differential equation for the $\Gamma_i$'s and the $z_i$'s,
@@ -124,14 +112,14 @@ In order to find the desired ordinary differential equation for the $\Gamma_i$'s
 we will seek consistency constraints implied by the equations of motion
 \eqref{eq:eom1},\eqref{eq:eom2}. Substition of \eqref{eq:ansatz} into \eqref{eq:eom2} imples
 \begin{align*}
-  \psi = \Gamma_i G_{z_i}
+  \psi = \sum_{i=1}^N \Gamma_i G_{z_i}
 \end{align*}
 where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
 By \eqref{eq:eom3} this implies, $u$, must be
 \begin{align}
-  u(z) = \begin{pmatrix}
-   - \Gamma_i \partial_y G_{z_i} \\
-    \Gamma_i \partial_x G_{z_i}
+  u(z) =  \sum_{i=1}^N \begin{pmatrix}
+    \Gamma_i \partial_y G_{z_i} \\
+    -\Gamma_i \partial_x G_{z_i}
   \end{pmatrix}. \label{eq:u}
 \end{align}
 Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
@@ -146,12 +134,12 @@ In other words
 \end{align}
 More-over, our assumption regarding the ansatz implies
 \begin{align}
-  \partial_t \omega = \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}. \label{eq:time_derivative}
+  \partial_t \omega = \sum_{i=1}^N \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}. \label{eq:time_derivative}
 \end{align}
-Finally, substituion of \eqref{eq:u},\eqref{eq:Lie}, and \eqref{eq:time_derivative} into \eqref{eq:eom1} yields
+Finally, substitution of \eqref{eq:Lie} and \eqref{eq:time_derivative} into \eqref{eq:eom1} yields
 \begin{align}
   \begin{split}
-  &\dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
+  & \sum_{i=1}^N \dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
   - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
   &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i} +
   \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
@@ -165,9 +153,9 @@ In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\parti
 This requirement yields the desired set of ordinary differential equations
 \begin{align*}
   \dot{\Gamma}_i = 0 \quad,\quad
-  \dot{x}_i = - \Gamma_j \partial_y G(z_i - z_j) \quad,\quad
-  \dot{y}_i =  \Gamma_j \partial_x G(z_i - z_j).
+  \dot{z}_i = u(z_i)
 \end{align*}
+where the vector-field $u$ is given as a function of the $\Gamma_i$'s and $z_i$'s by \eqref{eq:u}.
 Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
 The resulting circulation \eqref{eq:ansatz} then satisfies \eqref{eq:eom1} by construction.
 
@@ -177,7 +165,7 @@ In this section we derive the equations of motion for the
 first order vortex blob method.
 This time we consider the ansatz
 \begin{align}
-  \omega = \Gamma_i(t) \delta_{z_i(t)} + \Gamma_i^x \partial_x \delta_{z_i(t)}
+  \omega = \sum_{i=1}^N \Gamma_i(t) \delta_{z_i(t)} + \Gamma_i^x \partial_x \delta_{z_i(t)}
   + \Gamma_i^y \partial_y \delta_{z_i(t)}
   \label{eq:1-ansatz}
 \end{align} 
@@ -189,24 +177,24 @@ and $\Gamma_i^y$.
 
 Substition of \eqref{eq:1-ansatz} into \eqref{eq:eom2} imples
 \begin{align*}
-  \psi = \Gamma_i G_{z_i} - \Gamma^x_i \partial_xG_{z_i}
+  \psi = \sum_{i=1}^N \Gamma_i G_{z_i} - \Gamma^x_i \partial_xG_{z_i}
   - \Gamma^y_i \partial_yG_{z_i}
 \end{align*}
 where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
 By \eqref{eq:eom3} this implies, $u$, must be
 \begin{align}
-  u(z) = \begin{pmatrix}
-   - \Gamma_i \partial_y G_{z_i} + \Gamma^x_i \partial_{xy}G_{z_i}
-   + \Gamma^y_i \partial_{yy}G_{z_i} \\
-    \Gamma_i \partial_xG_{z_i} - \Gamma^x_i \partial_{xx}G_{z_i}
-  - \Gamma^y_i \partial_{xy}G_{z_i}
+  u(z) = \sum_{i=1}^N \begin{pmatrix}
+    \Gamma_i \partial_y G_{z_i} - \Gamma^x_i \partial_{xy}G_{z_i}
+   - \Gamma^y_i \partial_{yy}G_{z_i} \\
+    -\Gamma_i \partial_xG_{z_i} + \Gamma^x_i \partial_{xx}G_{z_i}
+    +\Gamma^y_i \partial_{xy}G_{z_i}
   \end{pmatrix}. \label{eq:1-u}
 \end{align}
 Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
 Given an arbitrary function $f \in C^\infty(\mathbb{R}^2)$ we may invoke the definition of $\pounds_u[\cdot]$ to find
 \begin{align*}
-  \langle \pounds_u[ \Gamma^x_i \partial_x \delta_{z_i} ] , f \rangle &= \Gamma^x_i \partial_x|_{z_i} (u^x \partial_x f + u^y \partial_y f) \\
- &= \Gamma_i^x ( \partial_x u^x(z_i) \partial_xf(z_i) + u^x(z_i) \partial_{xx}f(z_i) 
+  &\langle \pounds_u[ \Gamma^x_i \partial_x \delta_{z_i} ] , f \rangle = \Gamma^x_i \partial_x|_{z_i} (u^x \partial_x f + u^y \partial_y f) \\
+ &\quad = \Gamma_i^x ( \partial_x u^x(z_i) \partial_xf(z_i) + u^x(z_i) \partial_{xx}f(z_i) 
  + \partial_x u^y(z_i) \partial_yf(z_i) + u^y(z_i) \partial_{xy} f(z_i) )\\
 \end{align*}
 In other words
@@ -227,7 +215,7 @@ More-over, our assumption regarding the ansatz implies
 &\quad+\dot{\Gamma}^y_i \delta_{z_i} - \Gamma_i^y \dot{x}_i \partial_{xy} \delta_{z_i} - \Gamma^y_i \dot{y}_i \partial_{yy} \delta_{z_i}.
 \end{aligned} \label{eq:1-time_derivative}
 \end{align}
-Finally, substituion of \eqref{eq:1-u},\eqref{eq:1-Lie}, and \eqref{eq:1-time_derivative} into \eqref{eq:eom1} yields
+Finally, substituion of \eqref{eq:1-Lie}, and \eqref{eq:1-time_derivative} into \eqref{eq:eom1} yields
 a linear combination of the distributions
 $\delta_{z_i}$, $\partial_x\delta_{z_i}$,$\partial_y \delta_{z_i}$,$\partial_{xx} \delta_{z_i}$,$\partial_{xy} \delta_{z_i}$, and $\partial_{yy} \delta_{z_i}$.
 In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
@@ -238,7 +226,7 @@ This requirement yields the desired set of ordinary differential equations
   \dot{\Gamma}^x_i  &= \partial_x u^x(z_i) \Gamma^x_i + \partial_y u^x(z_i) \Gamma_i^y \\
   \dot{\Gamma}^y_i  &= \partial_x u^y(z_i) \Gamma^x_i + \partial_y u^y(z_i) \Gamma_i^y 
 \end{align*}
-where $u$ is given by \eqref{eq:1-u}.
+where the vector field $u$ is given as a function of the $z_i$'s and $\Gamma$'s by \eqref{eq:1-u}.
 Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
 Given a solution, the circulation \eqref{eq:1-ansatz} must neccesarily satisfy \eqref{eq:eom1}.
 
@@ -274,8 +262,8 @@ By \eqref{eq:eom3} this implies, $u$, must be
 \begin{align}
   u(z) = \sum_{m+n \leq p} \sum_{i=1}^N (-1)^{m+n}
   \begin{pmatrix}
-   - \Gamma_i^{m,n} \partial_{m,n+1} G_{z_i} \\
-    \Gamma_i^{m,n} \partial_{m+1,n} G_{z_i}
+    \Gamma_i^{m,n} \partial_{m,n+1} G_{z_i} \\
+    -\Gamma_i^{m,n} \partial_{m+1,n} G_{z_i}
   \end{pmatrix}. \label{eq:jet_u}
 \end{align}
 Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
@@ -283,7 +271,9 @@ In appendix \ref{app:computation} we calculate
 \begin{align}
   \begin{split}
   &\pounds_u[\Gamma_i^{m,n} \partial_{m,n} \delta_{z_i}] =\\
-  &\quad (-1)^{m+n} \Gamma_i^{m,n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
+  &\Gamma_i^{m,n}
+  \sum_{\ell=0}^m \sum_{k=0}^n
+  (-1)^{\ell + k} \binom{n}{k} \binom{m}{\ell}
    \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
      +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
      \right)
@@ -294,7 +284,7 @@ More-over, our assumption regarding the ansatz implies
 \begin{align}
   \partial_t \omega = \sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i}. \label{eq:jet_time_derivative}
 \end{align}
-Finally, substituion of \eqref{eq:jet_u},\eqref{eq:jet_Lie}, and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
+Substitution of \eqref{eq:jet_u},\eqref{eq:jet_Lie}, and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
 \begin{align}
   \begin{split}
     &0=\sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i} \\
@@ -333,6 +323,7 @@ Finally, for $\ell,k < p$ the coefficient of $\partial_{\ell,k} \delta_{z_i}$ is
     }(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
   +(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i) 
 \end{align*}
+\todo[inline]{The above formula needs to be checked}
 Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i^{m,n}$'s and $z_i$'s.
 The resulting circulation \eqref{eq:jet_ansatz} satisfies \eqref{eq:eom1} by construction.
 
@@ -664,7 +655,7 @@ We begin with a lemma
       + ( \partial_x^{\ell} f) (\partial_x^{m-\ell+1}g)
       \right) \\
      &= f (\partial_x^{m+1}g) +(\partial_x^{m+1}f) g + \sum_{\ell=1}^{m} \left( \binom{m}{\ell} + \binom{m}{\ell-1} \right) (\partial_x^\ell f)(\partial_x^{m-\ell}g) \\
-     &= \sum_{\ell=0}^{m} \binom{m+1}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
+     &= \sum_{\ell=0}^{m+1} \binom{m+1}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
   \end{align*}
   The lemma follows by induction.
 \end{proof}
@@ -687,16 +678,17 @@ By two applications of the lemma we find
     \Big)
 \end{align*}
 Therefore we find
-\begin{align}
-  \begin{split}
+\begin{align*}
   &\pounds_u[ \partial_{m,n} \delta_{z_i}] =\\
-  &\quad (-1)^{m+n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
+  &=\quad (-1)^{m+n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell} (-1)^{m+n-\ell-k}\\
+  & \qquad \qquad \cdot \left(\partial_{\ell,k}u^x(z_i) \partial_{m-\ell+1,n-k} \delta_{z_i}
+     +\partial_{\ell,k}u^y(z_i) \partial_{m-\ell,n-k+1} \delta_{z_i}
+     \right) \\
+  &=\sum_{\ell=0}^m \sum_{k=0}^n (-1)^{\ell + k}\binom{n}{k} \binom{m}{\ell}
    \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
      +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
-     \right)
-   .
-   \end{split}
-\end{align}
+     \right) 
+\end{align*}
 
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
