@@ -284,10 +284,15 @@ More-over, our assumption regarding the ansatz implies
 \begin{align}
   \partial_t \omega = \sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i}. \label{eq:jet_time_derivative}
 \end{align}
-Substitution of \eqref{eq:jet_u},\eqref{eq:jet_Lie}, and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
+Substitution of \eqref{eq:jet_Lie} and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
 \begin{align}
   \begin{split}
-    &0=\sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i} \\
+    &0=\sum_{
+    	\substack{
+		i=1,\dots,N\\
+		m+n \leq p}
+		}
+		\dot{\Gamma}_i^{m,n} \partial_{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i} \\
    & +  (-1)^{m+n} \Gamma_i^{m,n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
    \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
      +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
@@ -312,19 +317,19 @@ The analogous observation for the coefficient of $\partial_{0,p+1} \delta_{z_i}$
   \dot{y}_i = u^y(z_i)
 \end{align*}
 
-Finally, for $\ell,k < p$ the coefficient of $\partial_{\ell,k} \delta_{z_i}$ is
+Finally, for $\ell,k < p$ the vanishing of the coefficient of $\partial_{\ell,k} \delta_{z_i}$ yields
 \begin{align*}
-  \dot{\Gamma}_i^{\ell,k} + 
+  \dot{\Gamma}_i^{\ell,k} = (-1)^{\ell + k}
   \sum_{
     \substack{
       m > \ell \\
       n > k \\
       n+m \leq p}
-    }(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
-  +(-1)^{m+n} \Gamma_i^{m,n} (-1)^{\ell -1 + k} \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i) 
+    }\Gamma_i^{m,n} \Big[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
+   \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i)  \Big]
 \end{align*}
-\todo[inline]{The above formula needs to be checked}
-Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i^{m,n}$'s and $z_i$'s.
+Upon noting that $u$ is a function of the $\Gamma$'s and $z$'s via \eqref{eq:jet_u},
+we see that we have obtained the desired set of ordinary differential equations for the $\Gamma$'s and $z$'s.
 The resulting circulation \eqref{eq:jet_ansatz} satisfies \eqref{eq:eom1} by construction.
 
 \section{Conserved quantities}
