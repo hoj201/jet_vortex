@@ -61,7 +61,7 @@ The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
 
 \section{Background}
 
-\todo[inline]{Darryl write this.  Should include vortex methods stuff, and regularized fluid modelling stuff.}
+\todo[inline]{Darryl write this.  Should include vortex method literature survey and regularized fluid modeling stuff.}
 
 \section{The vorticity equation for regularized fluids}
 \label{sec:vorticity}
@@ -76,7 +76,7 @@ More generally, we may consider a regularized model of ideal fluids given by
 \end{align*}
 where $L$ is a psuedo-differential operator (e.g. a Helmholtz operator)
 which is ``close to the identity'' in some reasonable sense.
-For example $L = (1-\alpha \Delta)$ yeilds the Euler-$\alpha$ model.
+For example $L = (1-\alpha \Delta)$ yeilds the Euler-$\alpha$ model.\todo{add citation}
 We define the vorticity $\omega = {\rm curl}(m) = \partial_x m^y - \partial_y m^x$.
 If we let $\varphi_t : \R^2 \to \R^2$ denote the flow of $u$ at time $t$
 and let $\omega_t$ denote the vorticity at time $t$, then
@@ -85,12 +85,12 @@ and let $\omega_t$ denote the vorticity at time $t$, then
 \end{align*}
 Individuals who have transformed a probability distribution should be well aquainted with the above
 equation.
-Geometrically, if we view $\omega$ as a distribution,
+If we view $\omega$ as a distribution,
 this equation tells us that $\omega$ is advected by the flow of $u$.
 It is geometrically insightful to define an operator $(\varphi_t)_*$
 associated to $\varphi_t$ and write $\omega_t = (\varphi_t)_* \omega_0$.
 This operator is called the \emph{push-forward}, and appears everywhere in differential geometry
-when objects (functions, tensors, distributions,etc.) are advected by a diffeomorphism.
+when objects (functions, tensors, distributions,etc.) are advected by a diffeomorphism.\todo{cite something}
 
 In any case, by taking a time-derivative of $\omega_t$ we obtain the advection equation for the vorticity
 \begin{align*}
@@ -400,7 +400,6 @@ One can verify the conservation of $H$ directly.  We observe
 \begin{align*}
   \frac{dH}{dt} &= \langle \partial_t \omega, G^* \omega \rangle \\
   &= \langle - \pounds_u [\omega] , G^* \omega \rangle \\
-  &= \langle \omega , \pounds_u [\psi] \rangle \\
   &= \langle \omega , u^x \partial_x \psi + u^y \partial_y \psi \rangle
 \end{align*}
 where $\psi = G^*\omega$ and $u = \nabla^\perp \psi$.
@@ -421,11 +420,45 @@ Then we can consider the pull-back $\varphi^*\omega \in \mathcal{D}'(\mathbb{R}^
 Kelvin's circulation theorem is related to the fact that $\Omega =\varphi^* \omega$ is a constant of motion for the system.
 As the $\omega$'s produced by our ansatz \eqref{eq:jet_ansatz} yield solutions to \eqref{eq:eom1}, we should expect this conservation to be inherited by the evolution of the $\Gamma^{m,n}_i$'s somehow.  In the case of $p=0$, this manifests with $\Gamma_i$ being a constant of motion.
 
-\todo[inline]{There is still more the think about here.  We might have more conservation laws.}
+\todo[inline]{There are more conservation laws.  This section needs to be revised, as per our Friday meeting.}
 
 \section{Moments}
 \label{sec:moments}
-
+In this section we state the equations of motion for the moments.
+The moments are given by the quantities
+\begin{align*}
+	M^{m,n} := \int x^m y^n  \omega .
+\end{align*}
+In the case where $\omega$ is of the form \eqref{eq:jet_ansatz} we observe
+\begin{align*}
+	M^{n,m} &=  \sum_{
+		\substack{
+			i=1,\dots,N\\
+			\ell \leq m,k \leq n}
+				}
+				(-1)^{\ell + k} \Gamma_i^{\ell,k} \partial_{\ell,k}|_{z_i}(x^m y^n) \\
+		&= \sum_{
+		\substack{
+			i=1,\dots,N\\
+			\ell \leq m,k \leq n}
+				}
+				\Gamma_i^{\ell,k}  \frac{m! n!}{\ell! k!} x_i^{m-\ell} y_i^{n-k} 
+\end{align*}
+Thus
+\begin{align*}
+	\dot{M}^{n,m} &=  \sum_{
+		\substack{
+			i=1,\dots,N\\
+			\ell \leq m,k \leq n}
+				}
+				\frac{m! n!}{\ell! k!} \Big( \dot{\Gamma}_i^{\ell,k}  x_i^{m-\ell} y_i^{n-k} 
+				+  \dot{x}_i (m-\ell) \Gamma_i^{\ell,k} x_i^{m-\ell-1} y_i^{n-k}  \\
+				&\hskip 20em +  \dot{y}_i (n-k) \Gamma_i^{\ell,k} x_i^{m-\ell} y_i^{n-k-1}  \Big).
+\end{align*}
+We observe that we have a closed system for deriving the equations of motion for the moments,
+in contrast to what is typically done in moment calculations (e.g. projections).
+\todo[inline]{Darryl, would you like to elaborate on this point?  You seem to think it is quite significant.
+But I never really grasped the significance in our conversations.}
 
 \section{Approximation theory}
 \label{sec:approximation_theory}
@@ -456,11 +489,29 @@ serves as a $o(h^{k})$ approximation of $\psi$ when $\psi \in C^k$
 and $\omega^{(k)}_h$ serves as a $o(h^k)$ approximation of $\omega$ in
 a distributional sense.
 
+\section{Numerical Results}
+\label{sec:numerics}
+In this section we
+\begin{enumerate}
+	\item Run 0,1,2 jet vortex simulations, with Gaussian kernels
+	\item Verify the $o(h^k)$ result with a log-log plot.
+	\item Flow past a cylinder if we are ambitious.
+\end{enumerate}
+
+\todo[inline]{I will code this after the SHAPE conference}
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
+
+As a warning to the reader, the following requires some use of differential geometry
+and references are provided when appropriate, as a sufficient introduction to the subject is impossible in a short space.
+
+In the modern conception of Hamiltonian mechanics, as described in \cite{FOM,Arnold2000},
+the Hamiltonian is a function on a symplectic manifold, which produces equations of motion.
+An important instance of a symplectic manifold is a coadjoint orbit.
 In this section we compute the coadjoint orbit of a jet-vortex
 as well as the symplectic structure.
+
 Of course, the Hamiltonian we use is given by
 the kinetic energy
 \begin{align*}
@@ -537,10 +588,10 @@ Finally, as a sanity check, we can also prove that the equations of motion deriv
 the equations of motion obtained using this symplectic structure.
 
 \begin{thm}
-	Let $H(\omega) = \frac{1}{2} \langle \omega , K*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
+	Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
 	are given by
 	\begin{align*}
-		\partial_t \omega + \pounds_u[\Omega] \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = K*\omega.
+		\partial_t \omega + \pounds_u[\Omega] \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = G*\omega.
 	\end{align*}
 \end{thm}
 \begin{proof}
@@ -551,9 +602,9 @@ the equations of motion obtained using this symplectic structure.
   \begin{align*}
     \langle \omega , u^x v^y - u^y v^x \rangle &=
     \Omega_{\omega}( \pounds_u[\omega] , \pounds_v[\omega] ) = \langle dH(\omega) , \pounds_v[\omega] \rangle \\
-    &= \langle K * \omega , \pounds_v[\omega] \rangle 
+    &= \langle G * \omega , \pounds_v[\omega] \rangle 
   \end{align*}
-  If we let $\psi := K*\omega$ then
+  If we let $\psi := G*\omega$ then
   \begin{align*}
     = - \langle \omega , \pounds_{v}[\psi] \rangle 
     = \langle \omega , v^x \partial_x \psi + v^y \partial_y \psi \rangle
@@ -655,6 +706,9 @@ The symplectic structure is
 
 
 \section{Conclusion}
+
+\todo[inline]{Darryl should take a stab at this first.}
+
 
 \appendix
 \section{Computations}
