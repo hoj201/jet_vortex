@@ -49,6 +49,7 @@
 \section{Introduction}
 \label{sec:intro}
 
+\todo[inline]{Darryl writes this}
 
 \subsection{Notation}
 The symbol ``$z$'' will be used to denote
@@ -60,20 +61,38 @@ The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
 
 \section{Background}
 
-\subsection{Vortex methods}
+\todo[inline]{Darryl write this.  Should include vortex methods stuff, and regularized fluid modelling stuff.}
 
-\subsection{Regularized fluid modelling and turbulence}
-\label{sec:turbulence}
-
-In this section we should relate regularized Euler equations 
-to turbulence modelling, and introduce a translationally and rotationally invariant differential operator $L$.
-
-\section{The vorticity equation}
+\section{The vorticity equation for regularized fluids}
 \label{sec:vorticity}
+The equation of motion we wish to study are the planar ideal fluid equations
+\begin{align*}
+  \partial_t u + u \cdot \nabla u = - \nabla p \quad, \quad \nabla \cdot u = 0,
+\end{align*}
+where $u:\R^2 \to \R^2$ is a vector field.
+More generally, we may consider a regularized model of ideal fluids given by
+\begin{align*}
+  \partial_t m + u \cdot \nabla m = - dp \quad,\quad \nabla \cdot u = 0, m = L[u]
+\end{align*}
+where $L$ is a psuedo-differential operator (e.g. a Helmholtz operator)
+which is ``close to the identity'' in some reasonable sense.
+For example $L = (1-\alpha \Delta)$ yeilds the Euler-$\alpha$ model.
+We define the vorticity $\omega = {\rm curl}(m) = \partial_x m^y - \partial_y m^x$.
+If we let $\varphi_t : \R^2 \to \R^2$ denote the flow of $u$ at time $t$
+and let $\omega_t$ denote the vorticity at time $t$, then
+\begin{align*}
+  \omega_t (x):= \det[ D\varphi_t^{-1}(x) ] \omega_0(\varphi_t^{-1}(x)).
+\end{align*}
+Individuals who have transformed a probability distribution should be well aquainted with the above
+equation.
+Geometrically, if we view $\omega$ as a distribution,
+this equation tells us that $\omega$ is advected by the flow of $u$.
+It is geometrically insightful to define an operator $(\varphi_t)_*$
+associated to $\varphi_t$ and write $\omega_t = (\varphi_t)_* \omega_0$.
+This operator is called the \emph{push-forward}, and appears everywhere in differential geometry
+when objects (functions, tensors, distributions,etc.) are advected by a diffeomorphism.
 
-\todo[inline]{define Lie derivative using flows}
-
-... and the vorticity equation is
+In any case, by taking a time-derivative of $\omega_t$ we obtain the advection equation for the vorticity
 \begin{align*}
   \partial_t \omega + \pounds_u [\omega] = 0
 \end{align*}
@@ -81,6 +100,7 @@ Where $\pounds_u[\omega]$ is the unique distribution defined by the property
 \begin{align*}
   \langle \pounds_u[\omega] , f \rangle = - \langle \omega , u^i \partial_i f \rangle
 \end{align*}
+This is the vorticity equation, expanded to the case of distributions.
 
 
 \section{Derivation of the vortex blob method}
