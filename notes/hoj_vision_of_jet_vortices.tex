@@ -1,0 +1,70 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{My vision of jet vortices}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+The vortex blob method is one of very few well established meshless methods in CFD.
+Moreover, the convergence of the vortex blob method is spectral, and the (thanks to the fast multipole method), the computational complexity 
+at each time-step is $O(n \log(n))$.
+However, there is room for improvement.
+When vortices collide or get close, the speed of the vorticies can become unreasonably large for numerical implementation.
+
+The jet-vortex algorithm yields the following benefits:
+\begin{itemize}
+  \item Faster convergence (observed numerically)
+  \item Resolves collisions (through vortex mergers)
+  \item Retains the benefits of the vortex method ($O(n \log(n))$ complexity, spectral convergence, meshless)
+\end{itemize}
+
+The foundations of the method are just as secure as that of the theory of vortex-blobs studied in \cite{MarsdenWeinstein1983,GayBalmazVizman2012}.  We are able to derive the space of jet-vortices as a (finite-dimensional) coadjoint orbit of $\mathfrak{X}(\mathbb{R}^2)^*$.
+Conserved quantities such as angular and linear momentum are still conserved,
+and the conservation of circulation is still present.\footnote{This is because the jet-vortex solutions solve the PDE
+\begin{align*}
+  \partial_t \omega + \pounds_{\nabla \perp \psi}[\omega]
+  \quad,\quad \psi = K^* \omega
+\end{align*}
+so that $\omega(t) = (\Phi_t)_*\omega(0)$ where $\Phi_t$ is the flow of the vector-field $u = \nable^\perp \psi$.
+Which means $(\Phi_t)^* \omega(t)$ is constant.
+}
+In summary, jet-vortex methods have all the benefits of vortex blob methods,
+and more.
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2015.bib}
+\end{document}

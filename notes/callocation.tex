@@ -1,0 +1,148 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{Notes on Callocation in the jet-vortex blob method}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+Let $\psi \in C^{\infty}(\mathbb{R}^2)$ vanish at infinity.
+In this section we will study the callocation method used to approximate $\psi$ in the jet-vortex blob method.
+In particular, we wish to approximate $\psi$ with a function of the form
+% \begin{align*}
+%   \tilde{\psi} = \sum_{i=1}^{n} \Gamma_i G_{z_i} - \Gamma_i^x \partial_x G_{z_i} - \Gamma_i^y \partial_y G_{z_i} + \Gamma_i^{xx} \partial_{xx} G_{z_i} + \Gamma_i^{xy} \partial_{xy} G_{z_i} + \Gamma_i^{yy} \partial_{yy} G_{z_i}
+% \end{align*}
+\begin{align*}
+  \tilde{\psi} = \sum_{i=1}^{n} \Gamma_i^\alpha \partial_\alpha G_{z_i}
+\end{align*}
+where the $z_i$'s are initialized on a regular grid and the $\Gamma$'s are to be determined.
+Naturally we'd like
+\begin{align}
+  \partial_{\alpha}\psi(z_i) &= \partial_{\alpha}\tilde{\psi}(z_i) \label{eq:desired}
+\end{align}
+for $i=1,\dots,n$ and all multi-indices $\alpha$ with $| \alpha | \leq d$
+for some fixed $d \in \mathbb{N}$.
+This would mean that $\tilde{\psi}$ approximates $\psi$ to $d^{\rm th}$ order around each of the points $\{ z_1,\dots,z_n\}$.
+Equivalently, this would mean that we minimize the RKHS error, $\| \psi - \tilde{\psi} \|_{G}$, since the solution is the orthogonal projection onto a finite dimensional subspace of the RKHS.
+
+For fixed $z_i$'s, \eqref{eq:desired} yields the linear system in the unknown coefficients $\Gamma_i^\alpha$, given by
+\begin{align*}
+  \partial_{\alpha} \psi(z_i) = \sum_{j=1}^{n} \Gamma_j^\beta \partial_{\beta \cup \alpha}G(z_i-z_j),
+\end{align*}
+% \begin{align*}
+%   \psi(z_i) &= \sum_{j} \Gamma_j G_{ij} - \Gamma_j^x G_{ij ; x} 
+%   - \Gamma_j^y G_{ij;y} + \Gamma_j^{xx} G_{ij;xx} + \Gamma_j^{xy} G_{ij;xy} 
+%   + \Gamma_j^{yy} G_{ij;yy}\\
+%   \partial_x\psi(z_i) &= \sum_{j} \Gamma_j G_{ij;x} - \Gamma_j^x G_{ij ; xx} 
+%   - \Gamma_j^y G_{ij;xy} + \Gamma_j^{xx} G_{ij;xxx} + \Gamma_j^{xy} G_{ij;xxy} 
+%   + \Gamma_j^{yy} G_{ij;xyy}\\
+%   \partial_y\psi(z_i) &= \sum_{j} \Gamma_j G_{ij;y} - \Gamma_j^x G_{ij ; xy} 
+%   - \Gamma_j^y G_{ij;yy} + \Gamma_j^{xx} G_{ij;xxy} + \Gamma_j^{xy} G_{ij;xyy} 
+%   + \Gamma_j^{yy} G_{ij;yyy}\\
+%   \partial_{xx}\psi(z_i) &= \sum_{j} \Gamma_j G_{ij;xx} - \Gamma_j^x G_{ij ; xxx} 
+%   - \Gamma_j^y G_{ij;xxy} + \Gamma_j^{xx} G_{ij;xxxx} + \Gamma_j^{xy} G_{ij;xxxy} 
+%   + \Gamma_j^{yy} G_{ij;xxyy}\\
+%   \partial_{xy}\psi(z_i) &= \sum_{j} \Gamma_j G_{ij;xy} - \Gamma_j^x G_{ij ; xxy} 
+%   - \Gamma_j^y G_{ij;xyy} + \Gamma_j^{xx} G_{ij;xxxy} + \Gamma_j^{xy} G_{ij;xxyy} 
+%   + \Gamma_j^{yy} G_{ij;xyyy} \\
+%   \partial_{yy}\psi(z_i) &= \sum_{j} \Gamma_j G_{ij;yy} - \Gamma_j^x G_{ij ; xyy} 
+%   - \Gamma_j^y G_{ij;yyy} + \Gamma_j^{xx} G_{ij;xxyy} + \Gamma_j^{xy} G_{ij;xyyy} 
+%   + \Gamma_j^{yy} G_{ij;yyyy}
+% \end{align*}
+%where $G_{ij ; \alpha} := \partial_{\alpha} G(z_i - z_j)$.
+where $\beta \cup \alpha$ denotes the multi-index union of $\alpha$ and $\beta$.
+Solving the above linear system yields a solution such that $|\psi(x) - \tilde{\psi}(x)| \sim \min_j \|x-x_j\|^{d+1}$, for $\psi \in C^{d+1}$ if we are capable of griding over the support of $\psi$.
+Despite this spatial error estimate, the convergence rate is spectral rather than algebraic for smooth functions for any $d$.
+
+\subsection{Numerical results}
+Here we attempt to approximate the stream function
+$\psi(x) = \sin(3x) e^{ -(x^2+y^2)/2}$
+for $d = 0,1,2$.
+By default, we set the variance of the Gaussian blobs $\sigma$ equal to 
+the grid spacing, $h$.
+Numerically we observe spectral convergencce as $h \to 0$.
+Even with $d=0$ callocation method converges at a rate faster that $h^{-11}$ 
+for $h < 0.5$.
+For $d=1,2$ the initial convergence rate is so high
+that machine-precision errors become the dominant contributor to error 
+at $h < 0.5$.
+(see Figure \ref{fig:convergence}).
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./images/sup_norm_error_convergence}
+  \caption{A convergence plot for the callocation method: blue ($d=0$),
+    green ($d=1$), red ($d=2$)}
+  \label{fig:convergence}
+\end{figure}
+
+
+At a low resolution (large $h$) the advantage of using a higher-order jet vortex is obvious under the eye-ball norm.
+With a resolution of $h = 0.93$ the function $\psi$ can not be resolved using standard vortex blobs, but it can be resolved with jet-vortices of order $d=1$ and $d=2$.
+At this large a resolution, the difference in the sup-norm error exhibits a 400-fold
+decrease when transitioning from $d=1$ to $d=2$.
+The results are depicted in Figure \ref{fig:eye-ball}.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./images/order_0_reconstruction}
+  \includegraphics[width=0.7\textwidth]{./images/order_1_reconstruction}
+  \includegraphics[width=0.7\textwidth]{./images/order_2_reconstruction}
+  \caption{Approximation of $\psi$ via jet-vortices.  first row ($d=0$),
+    second row ($d=1$), third row ($d=2$)}
+  \label{fig:eye-ball}
+\end{figure}
+
+There are two caveats regarding the use of a large $h$.  Firstly,
+if we set the scale of the Gaussian vortices to $\sigma = h$,
+then the resulting
+solution is less accurate as an approximation to the
+unregularized vorticity equation when $h$ is large.
+Secondly, numerically I have observed for large $h$, the magnitude
+of the $0$th order $\Gamma$'s is large, and can be
+unmanageable as $d$ increases.
+For example, with $h=0.93$, and $\psi(x,y) = \sin(3x) e^{-(x^2+y^2)/2}$,
+at $d=0$ the largest $\Gamma_i$ is of magnitude $10^{0}$.
+At $d=1$ the largest $\Gamma_i$ is of magnitude $10^2$.
+Finally, at $d=2$ the largest $\Gamma_i$ is of magnitude $10^5$.
+We simply can not integrate the equations of motion when $\Gamma$ is this
+large.
+However, at $h=0.7$, this effect is no longer present, and $\max_i|\Gamma_i| \sim 10^0$ at all orders $d=0,1,2$.
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}

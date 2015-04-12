@@ -1,0 +1,142 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ei}{Ei}
+
+%  TITLE, AUTHOR, DATE
+\title{Rescaling notes}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+In these notes we record the change of variables needed to compute
+the flow given an initial stream-function $\psi_0(x,y)$.
+Let us coordinatize space where $\delta \ll 1$ by $(x,y)$
+and the space where $\delta = 1$ by $(X,Y)$.
+We see that $X = \delta^{-1} x$ and $Y = \delta^{-1}y$.
+
+The Green's kernel is
+\begin{align*}
+  G_\delta(x,y) &= \frac{1}{4 \pi}( \Ei(-r^2 / \delta^2) - 2\log(r)) \\
+  &= \frac{1}{4\pi} ( \Ei(-R^2)-2\log(\delta R)) \\
+  &= \frac{1}{4\pi} ( \Ei(R^2) -2 \log(\delta) - 2 \log(R) ) \\
+  &= G_1(X,Y) - \frac{1}{2\pi} \log(\delta) \\
+\end{align*}
+This allows us to write $G_\delta$ and it's derivatives in terms
+of $G_1$ which is numerically more stable to calculate.
+We find that
+\begin{align*}
+  \partial_x G_\delta = \partial_x G_1 = \partial_X G_1 \cdot \frac{\partial X}{\partial x} = \delta^{-1} \partial_X G_1.
+\end{align*}
+More generally
+\begin{align*}
+  \partial_x^k G_\delta = \delta^{-k} \partial_X^k G_1
+\end{align*}
+
+
+\section{0th order}
+Given $\psi(x,y)$ we desire to solve the inverse problem
+\begin{align*}
+  \psi(z_i) = \sum_j \Gamma_j G_\delta( z_i - z_j).
+\end{align*}
+Conversion to $Z$ coordinates we find
+\begin{align*}
+  \psi(\delta Z_i) = \left(\sum_j \Gamma_j G_1( Z_i - Z_j) \right)- \frac{N}{2\pi} \log(\delta).
+\end{align*}
+Therefore, to obtain $\Gamma_j$ using just $G_1$
+it is sufficient to define the function $\Psi(Z) := \psi(\delta Z) + \frac{N}{2\pi} \log(\delta)$
+and solve the inverse problem
+\begin{align*}
+  \Psi(Z_i) = \sum_j \Gamma_j G_1(Z_i - Z_j).
+\end{align*}
+This produces the estimate of $\Psi$ given by
+\begin{align*}
+  \tilde{\Psi}(Z) = \sum_j \Gamma_j G_1(Z - Z_j).
+\end{align*}
+
+
+\section{1st order}
+In this case we wish to solve the inverse problem
+\begin{align*}
+  \psi(z_i) &= \sum_{j} \Gamma_j G_\delta(z_i - z_j)
+  + \Gamma_j^x \partial_x G_\delta(z_i - z_j)
+  + \Gamma_j^y \partial_y G_\delta(z_j - z_j) \\
+  \partial_x \psi(z_i) &=  \sum_j \Gamma_j \partial_x G_\delta(z_i - z_j)
+  + \Gamma_j^x \partial_x^2 G_\delta(z_i - z_j)
+  + \Gamma_j^y \partial_{xy} G_\delta(z_j - z_j) \\
+  \partial_y \psi(z_i) &=  \sum_j \Gamma_j \partial_y G_\delta(z_i - z_j)
+  + \Gamma_j^x \partial_{xy} G_\delta(z_i - z_j)
+  + \Gamma_j^y \partial_{y}^2 G_\delta(z_j - z_j)
+\end{align*}
+In $Z$ coordinates with $\Psi$ as before we find this is
+\begin{align*}
+  \Psi(Z_i) &= \sum_{j} \Gamma_j G_1(Z_i - Z_j)
+  + \Gamma_j^X \partial_X G_1(Z_i - Z_j)
+  + \Gamma_j^Y \partial_Y G_1(Z_j - Z_j) \\
+  \partial_X \Psi(Z_i) &=  \sum_j \Gamma_j \partial_X G_1(Z_i - Z_j)
+  + \Gamma_j^X \partial_{X}^2 G_1(Z_i - Z_j)
+  + \Gamma_j^Y \partial_{XY} G_1(Z_j - Z_j) \\
+  \partial_Y \Psi(Z_i) &=  \sum_j \Gamma_j \partial_Y G_1(Z_i - Z_j)
+  + \Gamma_j^X \partial_{XY} G_1(Z_i - Z_j)
+  + \Gamma_j^Y \partial_{Y}^2 G_1(Z_j - Z_j)
+\end{align*}
+Where $\Gamma_j^X = \delta^{-1} \Gamma_j^x$.
+
+This produces the estimate
+\begin{align*}
+  \tilde{\Psi}(Z) = \sum_j \Gamma_j G_1(Z-Z_j) + \Gamma_j^X \partial_X G_1(Z-Z_j).
+\end{align*}
+
+
+\subsection{Second order}
+Taking a wild guess, I'd imagine we still use $\Psi$ 
+and define $\Gamma_i^{XX} = \delta^{-2} \Gamma_{i}^{xx}$, etc.
+
+\section{The big picture}
+We desire to solve for $\tilde{\psi}(z)$
+using evaluations of $G_1$ rather than $G_\delta$.
+To do this solve for $\tilde{\Psi}(Z)$ first.
+\begin{align*}
+  \tilde{\Psi}(Z) = \sum_j \Gamma_j G_1(Z-Z_j) 
+  + \Gamma_j^X \partial_X G_1(Z-Z_j) + \dots
+\end{align*}
+Then
+\begin{align*}
+  \tilde{\psi}(z) = \tilde{\Psi}( \delta^{-1} Z)  - \frac{N \log(\delta)}{2\pi}.
+\end{align*}
+
+
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}

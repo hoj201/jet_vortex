@@ -1,0 +1,267 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{A derivation of the second order equations}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+We begin with the ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i}
+  + \Gamma_i^x \partial_x \delta_{z_i}
+  + \Gamma_i^y \partial_y \delta_{z_i}
+  + \Gamma_i^{xx} \partial_{xx} \delta_{z_i} +
+  \Gamma_i^{xy} \partial_{xy} \delta_{z_i} + \Gamma_i^{yy} \partial_{yy} \delta_{z_i}
+\end{align*}
+Taking a time-derivative we find
+\begin{align*}
+  \partial_t \omega &= \dot{\Gamma}_i \delta_{z_i} 
+  - \Gamma_i \dot{x}_i \partial_{x} \delta_{z_i}
+  - \Gamma_i \dot{y}_i \partial_{y} \delta_{z_i} \\
+  &+ \dot{\Gamma}_i^x \partial_{x} \delta_{z_i}
+  - \Gamma_i^x \dot{x}_i \partial_{xx} \delta_{z_i}
+  - \Gamma_i^x \dot{y}_i \partial_{xy} \delta_{z_i} \\
+  &+ \dot{\Gamma}_i^y \partial_{y} \delta_{z_i}
+  - \Gamma_i^y \dot{x}_i \partial_{xy} \delta_{z_i}
+  - \Gamma_i^y \dot{y}_i \partial_{yy} \delta_{z_i} \\
+  &+ \dot{\Gamma}_i^{xx} \partial_{xx} \delta_{z_i}
+  - \Gamma_i^{xx} \dot{x}_i \partial_{xxx} \delta_{z_i}
+  - \Gamma_i^{xx} \dot{y}_i \partial_{xxy} \delta_{z_i} \\
+  &+ \dot{\Gamma}_i^{xy} \partial_{xy} \delta_{z_i}
+  - \Gamma_i^{xy} \dot{x}_i \partial_{xxy} \delta_{z_i}
+  - \Gamma_i^{xy} \dot{y}_i \partial_{xyy} \delta_{z_i} \\
+  &+ \dot{\Gamma}_i^{yy} \partial_{yy} \delta_{z_i}
+  - \Gamma_i^{yy} \dot{x}_i \partial_{x yy} \delta_{z_i}
+  - \Gamma_i^{yy} \dot{y}_i \partial_{yyy} \delta_{z_i} 
+\end{align*}
+
+Now we must derive the Lie derivatives.  We find
+\begin{align*}
+  \langle \pounds_{\vec{u}}[\Gamma_i \delta_{z_i}] , f \rangle = - \Gamma_i \vec{u}(z_i) \cdot df(z_i)
+\end{align*}
+thus
+\begin{align*}
+  \pounds_{\vec{u}}[\Gamma_i \delta_{z_i}] = \Gamma_i u(z_i) \partial_x \delta_{z_i}
+  + \Gamma_i v(z_i) \partial_y \delta_{z_i}.
+\end{align*}
+Now we do this six more times.  Next we observe
+\begin{align*}
+  \langle \pounds_{\vec{u}}[\Gamma^x_i \partial_x\delta_{z_i}] , f \rangle &= 
+  - \langle \Gamma^x_i \partial_x \delta_{z_i} , \vec{u} \cdot df \rangle \\
+  &= \Gamma_i^x \partial_x|_{z_i}( \vec{u} \cdot df ) \\
+  &= \Gamma_i^x 
+  (\partial_x u(z_i) \partial_xf(z_i) +
+   u(z_i) \partial_{xx}f(z_i) +
+   \partial_x v(z_i) \partial_yf(z_i) +
+   v(z_i) \partial_{xy}f(z_i) )
+\end{align*}
+Thus
+\begin{align*}
+\pounds_{\vec{u}}[\Gamma_i^x \partial_x\delta_{z_i}] = \Gamma_i^x ( -\partial_xu(z_i) \partial_x\delta_{z_i} + u(z_i) \partial_{xx} \delta_{z_i} - \partial_x v(z_i) \partial_y \delta_{z_i} + v(z_i) \partial_{xy} \delta_{z_i} ).
+\end{align*} 
+Similarly,
+\begin{align*}
+\pounds_u[\Gamma_i^y \partial_y\delta_{z_i}] = \Gamma_i^y ( -\partial_yu(z_i) \partial_x\delta_{z_i} + u(z_i) \partial_{xy} \delta_{z_i} - \partial_y v(z_i) \partial_y \delta_{z_i} + v(z_i) \partial_{yy} \delta_{z_i} ).
+\end{align*}
+Next we find
+\begin{align*}
+	\langle \pounds_{\vec{u}}[ \Gamma_i^{xx} \partial_{xx}\delta_{z_i}] , f \rangle &=- \Gamma_i^{xx} \partial_{xx} |_{z_i}( u \partial_x f + v \partial_y f) \\
+		&= -\Gamma_i^{xx} \Big( \partial_{xx}u(z_i) \partial_x f(z_i) + 2 \partial_xu(z_i) \partial_{xx}f(z_i) + u(z_i) \partial_{xxx} f(z_i) \\
+		& \quad + \partial_{xx}v(z_i) \partial_y f(z_i) + 2 \partial_xv(z_i) \partial_{xy}f(z_i) + v(z_i) \partial_{xxy} f(z_i) \Big).
+\end{align*}
+Therefore
+\begin{align*}
+	\pounds_{\vec{u}}[ \Gamma_i^{xx} \partial_{xx}\delta_{z_i}] &=
+		\Gamma_i^{xx} \Big( \partial_{xx}u(z_i) \partial_x \delta_{z_i} - 2 \partial_xu(z_i) \partial_{xx} \delta_{z_i} + u(z_i) \partial_{xxx} \delta_{z_i} \\
+		& \quad + \partial_{xx}v(z_i) \partial_y \delta_{z_i} - 2 \partial_xv(z_i) \partial_{xy}\delta_{z_i} + v(z_i) \partial_{xxy} \delta_{z_i} \Big).
+\end{align*}
+Similarly
+\begin{align*}
+	\pounds_{\vec{u}}[ \Gamma_i^{yy} \partial_{yy}\delta_{z_i}] &=
+		\Gamma_i^{yy} \Big( \partial_{yy}u(z_i) \partial_x \delta_{z_i} - 2 \partial_yu(z_i) \partial_{xy} \delta_{z_i} + u(z_i) \partial_{xyy} \delta_{z_i} \\
+		& \quad + \partial_{yy}v(z_i) \partial_y \delta_{z_i} - 2 \partial_yv(z_i) \partial_{yy}\delta_{z_i} + v(z_i) \partial_{yyy} \delta_{z_i} \Big).
+\end{align*}
+Finally
+\begin{align*}
+	\langle \pounds_{\vec{u}}[ \Gamma_i^{xy} \partial_{xy} \delta_{z_i}] , f \rangle &= - \Gamma_i^{xy} \partial_{xy}|_{z_i}( u \partial_x f + v \partial_y f ) \\
+	&= -\Gamma_i^{xy} \partial_x|_{z_i} ( \partial_y u \cdot \partial_x f + u \cdot \partial_{xy}f + \partial_yv \cdot \partial_yf + v \partial_{yy}f) \\
+	&= - \Gamma_i^{xy} \Big( \partial_{xy}u(z_i) \partial_xf(z_i) + \partial_y u(z_i) \partial_{x^2}f(z_i) \\
+		&\quad + \partial_x u(z_i) \partial_{xy}f(z_i) + u(z_i) \partial_{xxy}f(z_i) \\
+		&\quad + \partial_{xy} v (z_i) \partial_y f(z_i) + \partial_yv(z_i) \partial_{xy}f(z_i) \\
+		&\quad + \partial_xv(z_i) \partial_{yy}f(z_i) + v(z_i) \partial_{xyy}f(z_i) \Big)
+\end{align*}
+so that
+\begin{align*}
+	\pounds_{\vec{u}}[ \Gamma_i^{xy} \partial_{xy} \delta_{z_i} ] &= \Gamma_i^{xy} \Big( \partial_{xy}u(z_i) \partial_x \delta_{z_i} - \partial_y u(z_i) \partial_{xx}\delta_{z_i} \\
+		&\quad - \partial_x u(z_i) \partial_{xy} \delta_{z_i} + u(z_i) \partial_{xxy}\delta_{z_i} \\
+		&\quad + \partial_{xy} v (z_i) \partial_y \delta_{z_i} - \partial_yv(z_i) \partial_{xy}\delta_{z_i} \\
+		&\quad - \partial_xv(z_i) \partial_{yy}\delta_{z_i} + v(z_i) \partial_{xyy}\delta_{z_i} \Big)
+\end{align*}
+Now we examine coefficients.
+The coefficients of $\delta_{z_i}$ is:
+\begin{align*}
+	\dot{\Gamma}_i.
+\end{align*}
+The coefficients of $\partial_{x}\delta_{z_i}$ is:
+\begin{align*}
+	\dot{\Gamma}_i^x +\Gamma_i u(z_i)-\Gamma_i \dot{x}_i - \Gamma_i^x \partial_xu(z_i) - \Gamma_i^y \partial_y u(z_i) + \Gamma_i^{xx} \partial_{xx} u(z_i) + \Gamma_i^{yy} \partial_{yy}u(z_i) + \Gamma_i^{xy} \partial_{xy} u(z_i).
+\end{align*}
+The coefficients of $\partial_{y}\delta_{z_i}$ is:
+\begin{align*}
+	\dot{\Gamma}_i^y +\Gamma_i v(z_i)-\Gamma_i \dot{y}_i - \Gamma_i^x \partial_xv(z_i) - \Gamma_i^y \partial_y v(z_i) + \Gamma_i^{xx} \partial_{xx} v(z_i) + \Gamma_i^{yy} \partial_{yy}v(z_i) + \Gamma_i^{xy} \partial_{xy} v(z_i).
+\end{align*}
+The coefficients of $\partial_{xx}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^x \dot{x}_i + \dot{\Gamma}_i^{xx} + \Gamma_i^x u(z_i) - 2 \Gamma_i^{xx} \partial_x u(z_i) - \Gamma_i^{xy} \partial_y u(z_i).
+\end{align*}
+The coefficients of $\partial_{yy}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^y \dot{y}_i + \dot{\Gamma}_i^{yy} + \Gamma_i^y v(z_i) - 2 \Gamma_i^{yy} \partial_y v(z_i) - \Gamma_i^{xy} \partial_x v(z_i).
+\end{align*}
+The coefficients of $\partial_{xy}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^y \dot{x}_i -\Gamma_i^x \dot{y}_i + \dot{\Gamma}_i^{xy} + \Gamma_i^x v(z_i) + \Gamma_i^y u(z_i) - 2 \Gamma_i^{xx} \partial_x v(z_i) - 2 \Gamma_i^{yy} \partial_y u(z_i) - \Gamma_i^{xy}( \partial_y v(z_i) + \partial_x u(z_i) ).
+\end{align*}
+The coefficients of $\partial_{xxx}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^{xx}\dot{x}_i + \Gamma_i^{xx} u(z_i)
+\end{align*}
+The coefficients of $\partial_{xxy}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^{xx}\dot{y}_i - \Gamma_i^{xy} \dot{x}_i + \Gamma_i^{xx} v(z_i) + \Gamma_i^{xy} u(z_i).
+\end{align*}
+The coefficients of $\partial_{xyy}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^{xy}\dot{y}_i - \Gamma_i^{yy} \dot{x}_i + \Gamma_i^{yy} u(z_i) + \Gamma_i^{xy} v(z_i).
+\end{align*}
+The coefficients of $\partial_{yyy}\delta_{z_i}$ is:
+\begin{align*}
+	-\Gamma_i^{yy}\dot{y}_i + \Gamma_i^{yy} v(z_i).
+\end{align*}
+
+Vanishing of the last three equations implies $\dot{x}_i = u(z_i)$ and $\dot{y}_i = v(z_i)$.  This identification, along with the divergence-free condition $\partial_x u(z) + \partial_yv(z) = 0$ yields the following equations of motion
+\begin{align*}
+	\dot{\Gamma}_i &= 0 \\
+	\dot{\Gamma}_i^x &= \Gamma_i^x \partial_xu(z_i) + \Gamma_i^y \partial_y u(z_i) - \Gamma_i^{xx} \partial_{xx} u(z_i) - \Gamma_i^{yy} \partial_{yy}u(z_i) - \Gamma_i^{xy} \partial_{xy} u(z_i) \\
+	\dot{\Gamma}_i^y &= \Gamma_i^x \partial_xv(z_i) + \Gamma_i^y \partial_y v(z_i) - \Gamma_i^{xx} \partial_{xx} v(z_i) - \Gamma_i^{yy} \partial_{yy}v(z_i) - \Gamma_i^{xy} \partial_{xy} v(z_i) \\
+	\dot{\Gamma}_i^{xx} &= 2 \Gamma_i^{xx} \partial_x u(z_i) + \Gamma_i^{xy} \partial_y u(z_i) \\
+	\dot{\Gamma}_i^{yy} &= 2 \Gamma_i^{yy} \partial_y v(z_i) + \Gamma_i^{xy} \partial_x v(z_i) \\
+	\dot{\Gamma}_i^{xy} &= 2 \Gamma_i^{xx} \partial_x v(z_i) + 2 \Gamma_i^{yy} \partial_y u(z_i)
+\end{align*}
+
+\subsection{The Jacobian of the vector-field}
+In order to implement many adaptive time-step algorithms, it is useful
+to know the Jacobian of the vector-field.
+We may view the Eulerian velocity field $(u,v)$ as function of the (finitely many) parameters $x_j,y_j,\gamma_j,\dots$ for $i=1,\dots,n$ via
+\begin{align*}
+  u(z) &= \Gamma_j \partial_y G(z-z_j) - \Gamma_j^x \partial_{xy}(z-z_j)
+  - \Gamma_j^y \partial_{yy}G(z-z_j) + \Gamma_j^{xx} \partial_{xxy}G(z-z_j) \\
+  &\quad+ \Gamma_j^{xy} \partial_{xyy}G(z-z_j) + \Gamma_j^{yy} \partial_{yyy} G(z-z_j) \\
+  v(z) &= -\Gamma_j \partial_x G(z-z_j) + \Gamma_j^x \partial_{xx}(z-z_j)
+  + \Gamma_j^y \partial_{xy}G(z-z_j) - \Gamma_j^{xx} \partial_{xxx}G(z-z_j) \\
+  &\quad - \Gamma_j^{xy} \partial_{xxy}G(z-z_j) - \Gamma_j^{yy} \partial_{xyy} G(z-z_j)
+\end{align*}
+
+We find
+\begin{align*}
+  \frac{\delta u}{\delta x_j} &= - \Gamma_j \partial_{xy} G(z-z_j) + \Gamma_j^x \partial_{xxy}(z-z_j)
+  + \Gamma_j^y \partial_{xyy}G(z-z_j) - \Gamma_j^{xx} \partial_{xxxy}G(z-z_j) \\
+  &\quad- \Gamma_j^{xy} \partial_{xxyy}G(z-z_j) - \Gamma_j^{yy} \partial_{xyyy} G(z-z_j) \\
+  \frac{\delta u}{\delta y_j} &= - \Gamma_j \partial_{yy} G(z-z_j) + \Gamma_j^x \partial_{xyy}(z-z_j)
+  + \Gamma_j^y \partial_{yyy}G(z-z_j) - \Gamma_j^{xx} \partial_{xxyy}G(z-z_j) \\
+  &\quad- \Gamma_j^{xy} \partial_{xyyy}G(z-z_j) - \Gamma_j^{yy} \partial_{yyyy} G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma_j} &= \partial_y G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma^x_j} &= -\partial_{xy} G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma^y_j} &= -\partial_{yy} G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma^{xx}_j} &= \partial_{xxy} G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma^{xy}_j} &= \partial_{xyy} G(z-z_j) \\
+  \frac{\delta u}{\delta \Gamma^{yy}_j} &= \partial_{yyy} G(z-z_j)
+\end{align*}
+
+Thus we find
+\begin{align*}
+  \frac{\delta \dot{\Gamma_i^x}}{\delta x_j} = \Gamma_i^x \partial_x u \dots
+\end{align*}
+
+
+GAH !!! THERE ARE TOO MANY TERMS TO COMPUTE!!!
+
+
+\section{Conserved quantities}
+The stream function is
+\begin{align*}
+  \psi = \Gamma_i G_{z_i}
+  - \Gamma_i^x \partial_x G_{z_i}
+  - \Gamma_i^y \partial_y G_{z_i}
+  + \Gamma_i^{xx} \partial_{xx} G_{z_i} +
+  \Gamma_i^{xy} \partial_{xy} G_{z_i} + \Gamma_i^{yy} \partial_{yy} G_{z_i}
+\end{align*}
+and the kinetic energy is
+\begin{align*}
+	H &= \frac{1}{2} \langle \omega, \psi \rangle \\
+		&= \frac{1}{2} \langle  \Gamma_i \delta_{z_i}
+  + \Gamma_i^x \partial_x \delta_{z_i}
+  + \Gamma_i^y \partial_y \delta_{z_i}
+  + \Gamma_i^{xx} \partial_{xx} \delta_{z_i} +
+  \Gamma_i^{xy} \partial_{xy} \delta_{z_i} + \Gamma_i^{yy} \partial_{yy} \delta_{z_i} , \\
+  &\qquad \Gamma_j G_{z_j}
+  - \Gamma_j^x \partial_x G_{z_j}
+  - \Gamma_j^y \partial_y G_{z_j}
+  + \Gamma_j^{xx} \partial_{x^2} G_{z_j} +
+  \Gamma_j^{xy} \partial_{xy} G_{z_j} + \Gamma_i^{yy} \partial_{y^2} G_{z_j} \rangle \\
+  &= \frac{1}{2} \Gamma_i \Gamma_j G_{ij} \\
+  &\quad +( \frac{1}{2} \Gamma_i^x \Gamma_j^x + \Gamma_i \Gamma_j^{xx} )\partial_{xx} G_{ij} + (\Gamma_i^x \Gamma_i^y + \Gamma_i \Gamma_j^{xy} ) \partial_{xy} G_{ij} \\
+  &\quad +(\frac{1}{2} \Gamma_i^y \Gamma_j^y + \Gamma_i \Gamma_j^{yy}) \partial_{yy}G_{ij} \\
+  &\quad + \frac{1}{2} \Gamma_i^{xx} \Gamma_j^{xx} \partial_{xxxx}G_{ij} \\
+  &\quad + \Gamma_i^{xx} \Gamma_j^{xy}  \partial_{xxxy}G_{ij} + (\frac{1}{2} \Gamma_i^{xy} \Gamma_j^{xy} + \Gamma_i^{xx} \Gamma_j^{yy})\partial_{xxyy}G_{ij} \\
+  &\quad + \Gamma_i^{xy} \Gamma_j^{yy} \partial_{xyyy}G_{ij} + \frac{1}{2} \Gamma_i^{yy} \Gamma_j^{yy} \partial_{yyyy}G_{ij}
+\end{align*}
+
+The angular momentum is
+\begin{align*}
+  J_{\rm ang} =\sum_{i} \frac{1}{2} \Gamma_i (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy}.
+\end{align*}
+The linear momentum is
+\begin{align*}
+  J_{\rm lin} =\sum_i ( \Gamma_i^y - \Gamma_i y_i , \Gamma_i x_i - \Gamma_i^x).
+\end{align*}
+
+
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}

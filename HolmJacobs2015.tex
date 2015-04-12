@@ -1,5 +1,5 @@
 \documentclass[12pt]{amsart}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,url}
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
 \geometry{a4paper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
@@ -8,6 +8,7 @@
 %\usepackage{graphicx}
 %\usepackage{tensor}
 \usepackage{todonotes}
+\usepackage{hyperref}
 
 %  NEW COMMANDS
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
@@ -22,6 +23,21 @@
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{defn}[thm]{Definition}
 
+%  NEW REMARKS
+\theoremstyle{remark}
+\newtheorem{rmk}[thm]{Remark}
+
+
+%%%%%%%%%%%%%%% Holm Macros
+\def\MM#1{\boldsymbol{#1}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}} 
+\newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
+\newcommand{\dd}[2]{\frac{\diff #1}{\diff #2}} 
+\newcommand{\sothree}{\mathfrak{so}(3)}
+% \contract is a differential geometry contraction sign _|
+\def\contract{\makebox[1.2em][c]{\mbox{\rule{.6em}
+{.01truein}\rule{.01truein}{.6em}}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %  MATH OPERATORS
 \DeclareMathOperator{\SDiff}{SDiff}
@@ -34,478 +50,639 @@
 
 %  TITLE, AUTHOR, DATE
 \title{Jet vortex methods}
-\author{Darryl D. Holm, Henry O. Jacobs}
+\author{Darryl D. Holm \& Henry O. Jacobs}
 \date{\today}
 
 
 \begin{document}
 
-\maketitle
-
 \begin{abstract}
-  blah blah blah.
+A new singular vortex theory is presented for regularised Euler fluid equations of ideal incompressible flow in the plane. We determine the conditions under which such regularised Euler fluid equations may admit vorticity singularities which are stronger than delta functions, e.g., derivatives of delta functions. We also characterise the Hamiltonian dynamics of the higher-order singular vortices. Applications to the design of numerical methods similar to vortex blob methods are also discussed. 
 \end{abstract}
+
+\maketitle
 
 \section{Introduction}
 \label{sec:intro}
 
-\todo[inline]{Darryl writes this}
+\subsection{Main contributions}
+Our main contributions are:
+\begin{enumerate}
+        \item We provide the equations of motion for jet vortices as exact solutions to a regularized fluid equation (\S \ref{sec:EOM}).
+        \item We show how the equations of motion for the moments form a closed system (remark \ref{rmk:moments}).
+        \item We perform numerical experiments with small numbers of jet vortices at orders $0$, $1$, and $2$.
+        \item We spectrally approximate an initial condition using jet-vortices and plot the convergence rate.
+        \item We illustrate the ability to ``group'' nearby jet vortices into a single jet-vortex of higher order (this can be used to reduce the number of pairwise interactions)
+        \item We provide the Hamiltonian structure of jet vortices.
+        \item We derive conserved quantities:  Energy, angular momentum, linear momentum, circulation.
+\end{enumerate}
 
-\subsection{Notation}
-The symbol ``$z$'' will be used to denote
-an element of $\mathbb{R}^2$
-with coordinates $z = (x,y)$.
-The Dirac-delta distribution on $\mathbb{R}^2$
-will be denoted by $\delta(\cdot)$, and $\delta_z(\cdot) := \delta( \cdot - z)$.
-The Laplace operator will be denoted by $\Delta := \partial_x^2 + \partial_y^2$.
+\subsection{The {vortex blob} method}
+The concept of regularising the singular vortex solutions of EulerÍs equations for the incompressible flow of an ideal fluid goes back to Rosenhead \cite{Ro1931} who refers to Kelvin.
+The introduction to Chorin's 1993 Les Houches lecture notes \cite{Ch1993} provides a quick synopsis of the development and application of vortex particle methods for incompressible flows since then.
+%
+\begin{quote}
+We shall restrict ourselves in these lectures to a special class of numerical vortex
+methods, those that are based on a Lagrangian transport of vorticity in hydrodynamics by
+smoothed particles (``blobs") and those whose analysis contributes to the understanding of
+blob methods. Blob methods started in the thirties as two-dimensional ``point" methods
+\cite{Ro1931}. By the fifties, it was discovered that ``point vortex" methods had drawbacks, and
+a misinterpretation of the Poincar\'e recurrence theorem led to the conclusion that the
+drawbacks could not be remedied (for an analysis, see \cite{Kr1986}). In the late sixties and
+early seventies, the virtues of smoothing were discovered \cite{Ch1972,Ch1973,ChBe1973,Ch1993} and viscosity and boundaries were added.
+The generalization to three dimensions followed soon \cite{Ch1980,Le1975,Le1985} and was found to
+be non-unique. Arrows, filaments, dipoles, magnets, all generalize two-dimensional blobs, \dots
+\end{quote}
+%
+For more details and subsequent developments, we refer to the vast literature on this subject, partially summarised with over 400 references in \cite{Stock2007}. \\
+
+Our motivation in the present paper is to use several recent developments in the geometric properties of  incompressible fluid mechanics \cite{CotterHolmJacobsMeier2014} to make the extension of vortex blob dynamics to include higher order derivatives in the singular representation of the vorticity. We aim to investigate the evolution of the shapes of those blobs and the dynamics of their mutual interactions. These higher order singular vortices will be called jet vortices, because they correspond to the jets (Taylor expansion coefficients) of the vortex blob Greens functions.
 
 \section{Background}
 
-\todo[inline]{Darryl write this.  Should include vortex method literature survey and regularized fluid modeling stuff.}
+We should mention these papers
+\begin{itemize}
+	\item \cite{UmWaBa2010} based on \cite{NagemSandriUminskyWayne2009}
+	\item \cite{BealeMajda1982}
+	\item \cite{HolmNitschePutkaradze2006}
+	\item \cite{MarsdenWeinstein1983}
+	\item \cite{OliverShkoller2001}
+	\item \cite{Chorin1973}
+	\item \cite{Hald1979}
+	\item \cite{GreengardRokhlin1987} (Fast Multipole Method)
+	\item \cite{DizesVerga2002}, mention mergers
+	\item \cite{Weiss1991,WeissMcWilliams1993}, OkuboWeis criterion, relation to turbulence, the second article mentions mergers.
+	\item \cite{Rossi1997,Rossi2005},the first is dedicted to merger algorithms, the second has higher order achieved by controlling eccentricity of gaussian vortices (the vorticity is treated as a scalar here).
+	\item \cite{GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}, singular solutions for Vlasov moment dynamics.
+\end{itemize}
 
-\section{The vorticity equation for regularized fluids}
-\label{sec:vorticity}
-The equation of motion we wish to study are the planar ideal fluid equations
+In this case the fluid velocity field is obtained from the 
+stream function via
 \begin{align*}
-  \partial_t u + u \cdot \nabla u = - \nabla p \quad, \quad \nabla \cdot u = 0,
+  (u,v) = ( \partial_y \psi , - \partial_x \psi)
 \end{align*}
-where $u:\R^2 \to \R^2$ is a vector field.
-More generally, we may consider a regularized model of ideal fluids given by
-\begin{align*}
-  \partial_t m + u \cdot \nabla m = - dp \quad,\quad \nabla \cdot u = 0, m = L[u]
-\end{align*}
-where $L$ is a psuedo-differential operator (e.g. a Helmholtz operator)
-which is ``close to the identity'' in some reasonable sense.
-For example $L = (1-\alpha \Delta)$ yeilds the Euler-$\alpha$ model.\todo{add citation}
-We define the vorticity $\omega = {\rm curl}(m) = \partial_x m^y - \partial_y m^x$.
-If we let $\varphi_t : \R^2 \to \R^2$ denote the flow of $u$ at time $t$
-and let $\omega_t$ denote the vorticity at time $t$, then
-\begin{align*}
-  \omega_t (x):= \det[ D\varphi_t^{-1}(x) ] \omega_0(\varphi_t^{-1}(x)).
-\end{align*}
-Individuals who have transformed a probability distribution should be well aquainted with the above
-equation.
-If we view $\omega$ as a distribution,
-this equation tells us that $\omega$ is advected by the flow of $u$.
-It is geometrically insightful to define an operator $(\varphi_t)_*$
-associated to $\varphi_t$ and write $\omega_t = (\varphi_t)_* \omega_0$.
-This operator is called the \emph{push-forward}, and appears everywhere in differential geometry
-when objects (functions, tensors, distributions,etc.) are advected by a diffeomorphism.\todo{cite something}
+where $\psi \in C^\infty(\R^2)$ is the stream function.
+The vorticity $\omega = \partial_x m^2 - \partial_y m^1$
+is related to $\psi$ via $\psi = G_\delta * \omega$.
+The planar vorticity equation is
+\begin{align}
+  \partial_t \omega + u \partial_x \omega
+  + v \partial_y \omega = 0. \label{eq:vorticity}
+\end{align}
 
-In any case, by taking a time-derivative of $\omega_t$ we obtain the advection equation for the vorticity
-\begin{align*}
-  \partial_t \omega + \pounds_u [\omega] = 0
-\end{align*}
-Where $\pounds_u[\omega]$ is the unique distribution defined by the property
-\begin{align*}
-  \langle \pounds_u[\omega] , f \rangle = - \langle \omega , u^i \partial_i f \rangle
-\end{align*}
-This is the vorticity equation, expanded to the case of distributions.
+\section{Equations of motion}
+\label{sec:EOM}
+In this section we derive the equations of motion for jet-vortices.
 
+\subsection{0th order}
+Consider the ansatz for the vorticity
+\begin{align}
+  \omega(t) = \sum_{i} \Gamma_i(t) \delta_{z_i(t)} \label{eq:ansatz 0}
+\end{align}
+for constants $\Gamma_i(t) \in \R$ for $i$ in some finite set $S$
+and where the points $z_i \in \R^2$ are distinct.
+The stream function is 
+\begin{align*}
+  \psi(x,y;t) = \sum_{i} \Gamma_i(t) G_\delta (x - x_i (t), y-y_i(t) )
+\end{align*}
+and so the corresponding velocity field is given by
+\begin{align}
+\begin{cases}
+  u(x,y;t) = \sum_{i} \Gamma_i(t) \partial_y G_\delta (x - x_i (t), y-y_i(t) ) \\
+  v(x,y;t) = - \sum_{i} \Gamma_i(t) \partial_x G_\delta (x - x_i (t), y-y_i(t) )
+\end{cases} \label{eq:u 0}
+\end{align}
 
-\section{Derivation of the vortex blob method}
-\label{sec:vortex_blob}
-In this section we derive the equations of motion for the traditional
-vortex blob method \todo{cite stuff}.
-We can begin by considering the vorticity formulation of Euler's equations for an incompressible inviscid planar fluid
-\begin{align}
-  &\partial_t \omega + \pounds_u[ \omega] = 0 \label{eq:eom1} \\
-  &\omega = (L \circ \Delta) \cdot \psi \label{eq:eom2} \\
-  &u = (u^1,u^2) = \nabla^\perp \psi :=  ( \partial_y \psi, - \partial_x \psi)
-  \label{eq:eom3}
-\end{align}
-By viewing the vorticity, $\omega$, is as a distribution,
-we may consider the ansatz
-\begin{align}
-  \omega(z) = \sum_{i=1}^N \Gamma_i(t) \delta(z-z_i(t))
-  \label{eq:ansatz}
-\end{align} 
-with $\Gamma_i(t) \in \mathbb{R}$,
-and $z_i(t) \in \mathbb{R}^2$.
-Our desire is to obtain an ordinary differential equation for the $\Gamma_i$'s and the $z_i$'s,
-whose solutions make the $\omega$ of \eqref{eq:ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
-To declutter future formulas,
-we will suppress the time-dependence of $z_i$ and $\Gamma_i$
-from this point onwards.
+An image of the stream function and the velocity field induced by a single vortex is depicted in figure \ref{fig:zero}
 
-In order to find the desired ordinary differential equation for the $\Gamma_i$'s and $z_i$'s
-we will seek consistency constraints implied by the equations of motion
-\eqref{eq:eom1},\eqref{eq:eom2}. Substition of \eqref{eq:ansatz} into \eqref{eq:eom2} imples
-\begin{align*}
-  \psi = \sum_{i=1}^N \Gamma_i G_{z_i}
-\end{align*}
-where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
-By \eqref{eq:eom3} this implies, $u$, must be
-\begin{align}
-  u(z) =  \sum_{i=1}^N \begin{pmatrix}
-    \Gamma_i \partial_y G_{z_i} \\
-    -\Gamma_i \partial_x G_{z_i}
-  \end{pmatrix}. \label{eq:u}
-\end{align}
-Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
-Given an arbitrary function $f \in C^\infty(\mathbb{R}^2)$ we may invoke the definition of $\pounds_u[\cdot]$ to find
-\begin{align*}
-  \langle \pounds_u[ \Gamma_i \delta_{z_i} ] , f \rangle &= - \Gamma_i u^x(z_i) \partial_x f(z_i) - \Gamma_i u^y(z_i) \partial_y f(z_i) \\
- &= \langle \Gamma_i u^x(z_i) \partial_x \delta_{z_i} + \Gamma_i u^y(z_i) \partial_y \delta_{z_i} , f \rangle
-\end{align*}
-In other words
-\begin{align}
-  \pounds_u[\Gamma_i \delta_{z_i}] =  \Gamma_i u^x(z_i) \partial_x \delta_{z_i} + \Gamma_i u^y(z_i) \partial_y \delta_{z_i}. \label{eq:Lie}
-\end{align}
-More-over, our assumption regarding the ansatz implies
-\begin{align}
-  \partial_t \omega = \sum_{i=1}^N \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}. \label{eq:time_derivative}
-\end{align}
-Finally, substitution of \eqref{eq:Lie} and \eqref{eq:time_derivative} into \eqref{eq:eom1} yields
-\begin{align}
-  \begin{split}
-  & \sum_{i=1}^N \dot{\Gamma_i} \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i}
-  - \Gamma_i \dot{y} \partial_y \delta_{z_i} \\
-  &- \Gamma_j \Gamma_i \partial_yG(z_i - z_j) \partial_x \delta_{z_i} +
-  \Gamma_j \Gamma_i \partial_x G(z_i-z_j) \partial_y \delta_{z_i}= 0 
-  \end{split}
-  \label{eq:eom4}
-\end{align}
-Observe that the left hand side of \eqref{eq:eom4}
-is a linear combination of the distributions
-$\delta_{z_i}$, $\partial_x\delta_{z_i}$, and $\partial_y \delta_{z_i}$.
-In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
-This requirement yields the desired set of ordinary differential equations
-\begin{align*}
-  \dot{\Gamma}_i = 0 \quad,\quad
-  \dot{z}_i = u(z_i)
-\end{align*}
-where the vector-field $u$ is given as a function of the $\Gamma_i$'s and $z_i$'s by \eqref{eq:u}.
-Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
-The resulting circulation \eqref{eq:ansatz} then satisfies \eqref{eq:eom1} by construction.
+\begin{figure}[h] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.6\textwidth]{./images/zero.pdf} 
+   \caption{A 0th order jet vortex with $z = 0$ and $\Gamma=1$.
+   This is equivalent to a standard vortex blob.}
+   \label{fig:zero}
+\end{figure}
 
-\section{Derivation of the 1st order jet vortex blob method}
-\label{sec:1-vortex_blob}
-In this section we derive the equations of motion for the
-first order vortex blob method.
-This time we consider the ansatz
-\begin{align}
-  \omega = \sum_{i=1}^N \Gamma_i(t) \delta_{z_i(t)} + \Gamma_i^x \partial_x \delta_{z_i(t)}
-  + \Gamma_i^y \partial_y \delta_{z_i(t)}
-  \label{eq:1-ansatz}
-\end{align} 
-Our desire is to obtain an ordinary differential equation for the $\Gamma_i$'s$\Gamma_i^x$'s, $\Gamma_i^y$'s, and the $z_i$'s,
-whose solutions make the $\omega$ of \eqref{eq:ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
-As in the previous section
-we will suppress the time-dependence of $z_i$, $\Gamma_i$, $\Gamma^x_i$,
-and $\Gamma_i^y$.
+We desire to find equations of motion for the $\Gamma_i(t)$'s and $z_i(t)$'s
+such that the velocity field \eqref{eq:u 0} satisfies the vorticity equation \eqref{eq:vorticity}.
+From this point on we will suppress the time dependence of all the quantities.
 
-Substition of \eqref{eq:1-ansatz} into \eqref{eq:eom2} imples
+We then find
+\begin{align}
+  \partial_t \omega = \sum_{i} \frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i}.
+  \label{eq:time derivative}
+\end{align}
+and
 \begin{align*}
-  \psi = \sum_{i=1}^N \Gamma_i G_{z_i} - \Gamma^x_i \partial_xG_{z_i}
-  - \Gamma^y_i \partial_yG_{z_i}
+  u \partial_x \omega = \sum_{i} u \Gamma_i \partial_x \delta_{z_i}.
 \end{align*}
-where $G_{z}(\cdot) := G( \cdot - z)$ and  $G(\cdot)$ is the Green's function of $L \circ \Delta$.
-By \eqref{eq:eom3} this implies, $u$, must be
+Here $u \partial_x \delta$ should be interpreted
+in terms of the basic theory of distrbutions.
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we find
 \begin{align}
-  u(z) = \sum_{i=1}^N \begin{pmatrix}
-    \Gamma_i \partial_y G_{z_i} - \Gamma^x_i \partial_{xy}G_{z_i}
-   - \Gamma^y_i \partial_{yy}G_{z_i} \\
-    -\Gamma_i \partial_xG_{z_i} + \Gamma^x_i \partial_{xx}G_{z_i}
-    +\Gamma^y_i \partial_{xy}G_{z_i}
-  \end{pmatrix}. \label{eq:1-u}
+  u \partial_x \omega = \sum_{i} \Gamma_i u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i}. \label{eq:u term}
 \end{align}
-Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
-Given an arbitrary function $f \in C^\infty(\mathbb{R}^2)$ we may invoke the definition of $\pounds_u[\cdot]$ to find
+Similarly
+\begin{align}
+    v \partial_y \omega = \sum_{i} \Gamma_i v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i}. \label{eq:v term}
+\end{align}
+Substituion of \eqref{eq:time derivative},\eqref{eq:u term},
+and \eqref{eq:v term} into \eqref{eq:vorticity} yields
 \begin{align*}
-  &\langle \pounds_u[ \Gamma^x_i \partial_x \delta_{z_i} ] , f \rangle = \Gamma^x_i \partial_x|_{z_i} (u^x \partial_x f + u^y \partial_y f) \\
- &\quad = \Gamma_i^x ( \partial_x u^x(z_i) \partial_xf(z_i) + u^x(z_i) \partial_{xx}f(z_i) 
- + \partial_x u^y(z_i) \partial_yf(z_i) + u^y(z_i) \partial_{xy} f(z_i) )\\
+\frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i}
+  + \Gamma_i u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i}\\
+  \quad + \Gamma_i v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} =  0.
 \end{align*}
-In other words
+We observe this is a linear combination of the distributions $\delta_{z_i},\partial_x\delta_{z_i}$ and $\partial_y \delta_{z_i}$.
+The coefficients of each must vanish independently.
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = \partial_x u(z_i) + \partial_y v(z_i).
+\end{align*}
+As the flow is divergence free we find
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = 0.
+\end{align*}
+The vanishing of the coefficients $\partial_x \delta_{z_i}$ and $\partial_y \delta_{z_i}$ yields
 \begin{align}
-\begin{aligned}
-  \pounds_u[\Gamma_i^x \partial_x\delta_{z_i}] &=  \Gamma_i^x ( -\partial_xu^x(z_i) \partial_x \delta_{z_i} \\
-  &\quad+ u^x(z_i) \partial_{xx} \delta_{z_i}
-  - \partial_x u^y(z_i) \partial_y \delta_{z_i}
-  + u^y(z_i) \partial_{xy} \delta_{z_i}.
-  \end{aligned}\label{eq:1-Lie}
+  \frac{dx_i}{dt} = u(z_i) \quad , \quad \frac{dy_i}{dt} = v(z_i).
+  \label{eq:point motion}
 \end{align}
-A similar computation can be done to compute $\pounds_u[\Gamma^y_i \partial_y \delta_{z_i}]$.
-More-over, our assumption regarding the ansatz implies
+Thus we have found equations of motion for $x_i(t),y_i(t)$ and $\Gamma_i(t)$
+whose solutions make \eqref{eq:ansatz 0} into a solution of \eqref{eq:vorticity}.
+
+\subsection{1st order}
+Consider the first order jet-vortex ansatz for the vorticity
 \begin{align}
-\begin{aligned}
-\partial_t \omega &= \dot{\Gamma}_i \delta_{z_i} - \Gamma_i \dot{x}_i \partial_x \delta_{z_i} - \Gamma_i \dot{y}_i \partial_y \delta_{z_i}\\
-&\quad+\dot{\Gamma}_i^x \partial_x \delta_{z_i} - \Gamma_i^x \dot{x}_i \partial_{xx} \delta_{z_i} - \Gamma^x_i \dot{y}_i \partial_{xy} \delta_{z_i}\\
-&\quad+\dot{\Gamma}^y_i \delta_{z_i} - \Gamma_i^y \dot{x}_i \partial_{xy} \delta_{z_i} - \Gamma^y_i \dot{y}_i \partial_{yy} \delta_{z_i}.
-\end{aligned} \label{eq:1-time_derivative}
+  \omega(t) = \sum_{i} \Gamma_i(t) \delta_{z_i} 
+  + \Gamma_i^x \partial_x \delta_{z_i}
+  + \Gamma_i^y \partial_y \delta_{z_i}\label{eq:ansatz 1}
 \end{align}
-Finally, substituion of \eqref{eq:1-Lie}, and \eqref{eq:1-time_derivative} into \eqref{eq:eom1} yields
+for constants $\Gamma_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i = 1,\dots,N$.
+The stream function is 
+\begin{align*}
+  \psi(x,y;t) &= \sum_{i} \Gamma_i(t) G_\delta (x - x_i (t), y-y_i(t) ) \\
+  	&\qquad - \Gamma_i^x(t) \partial_x G_\delta( x- x_i(t) , y- y_i(t)) \\
+	&\qquad - \Gamma_i^y(t) \partial_y G_\delta( x- x_i(t) , y- y_i(t))
+\end{align*}
+and so the corresponding velocity field is given by
+\begin{align}
+\begin{array}{ll}
+  u(x,y;t) &= \sum_{i} \Gamma_i(t) \partial_yG_\delta (x - x_i (t), y-y_i(t) ) \\
+  	&\qquad - \Gamma_i^x(t) \partial_{xy} G_\delta( x- x_i(t) , y- y_i(t)) \\
+	&\qquad - \Gamma_i^y(t) \partial_y^2 G_\delta( x- x_i(t) , y- y_i(t)) \\
+  v(x,y;t) &= \sum_{i} - \Gamma_i(t) \partial_x G_\delta (x - x_i (t), y-y_i(t) ) \\
+  	&\qquad + \Gamma_i^x(t) \partial_x^2 G_\delta( x- x_i(t) , y- y_i(t)) \\
+	&\qquad + \Gamma_i^y(t) \partial_{xy} G_\delta( x- x_i(t) , y- y_i(t))
+\end{array}
+\label{eq:u 1}
+\end{align}
+
+\begin{figure}[h] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.6\textwidth]{./images/one.pdf} 
+   \caption{A 1st order jet vortex with $\Gamma = 0,\Gamma^x = 1,\Gamma^y=1$.}
+   \label{fig:one}
+\end{figure}
+
+We desire to find equations of motion for the $\Gamma_i(t)$'s and $z_i(t)$'s
+such that the velocity field \eqref{eq:u 1} satisfies the vorticity equation \eqref{eq:vorticity}.
+From this point on we will suppress the time dependence of all the quantities.
+We then find
+\begin{align*}
+  \partial_t \omega = \sum_{i} & \frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i} \\
+  &\frac{d \Gamma_i^x}{dt} \partial_x\delta_{z_i} 
+  - \Gamma_i^x \frac{dx_i}{dt} \partial_x^2 \delta_{z_i}
+  - \Gamma_i^x \frac{dy_i}{dt} \partial_{xy} \delta_{z_i} \\
+  &\frac{d \Gamma_i^y}{dt} \delta_{z_i} 
+  - \Gamma_i^y \frac{dx_i}{dt} \partial_{xy} \delta_{z_i}
+  - \Gamma_i^y \frac{dy_i}{dt} \partial_y^2 \delta_{z_i}
+\end{align*}
+and
+\begin{align*}
+  u \partial_x \omega = \sum_{i} u \Gamma_i \partial_x \delta_{z_i}
+  + u \Gamma_i^x \partial_x^2 \delta_{z_i} 
+  + u \Gamma_i^y \partial_{xy} \delta_{z_i}.
+\end{align*}
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we can revise the previous equation to
+obtain
+\begin{align*}
+  u \partial_x \omega &= \sum_{i} \Gamma_i ( u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i} ) \\
+   &\Gamma_i^x (u(z_i) \partial_x^2 \delta_{z_i} 
+   - 2\partial_x u(z_i) \partial_x \delta_{z_i}
+   + \partial_x^2u(z_i) \delta_{z_i} ) \\
+   &\Gamma_i^y ( u(z_i) \partial_{xy} \delta_{z_i} 
+   - \partial_x u(z_i) \partial_y \delta_{z_i} 
+   - \partial_y u(z_i) \partial_x \delta_{z_i} 
+   + \partial_{xy}u(z_i) \delta_{z_i}
+\end{align*}
+Similarly
+\begin{align*}
+    v \partial_y \omega &= \sum_{i} \Gamma_i ( v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} ) \\
+   &\quad \Gamma_i^x (v(z_i) \partial_{xy} \delta_{z_i} 
+   - \partial_x v(z_i) \partial_x \delta_{z_i}
+   - \partial_y v(z_i) \partial_x \delta_{z_i}
+   + \partial_{xy} v(z_i) \delta_{z_i} ) \\
+   &\quad \Gamma_i^y ( v(z_i) \partial_{y}^2 \delta_{z_i} 
+   - 2\partial_y v(z_i) \partial_y \delta_{z_i} 
+   + \partial_{y}^2v(z_i) \delta_{z_i})
+\end{align*}
+Substituion of these expressions into \eqref{eq:vorticity} yields
+the vanishing of
 a linear combination of the distributions
-$\delta_{z_i}$, $\partial_x\delta_{z_i}$,$\partial_y \delta_{z_i}$,$\partial_{xx} \delta_{z_i}$,$\partial_{xy} \delta_{z_i}$, and $\partial_{yy} \delta_{z_i}$.
-In order for \eqref{eq:eom4} to hold, the coefficients of $\delta_{z_i}$,$\partial_x \delta_{z_i}$, and $\partial_y \delta_{z_i}$ must all vanish.
-This requirement yields the desired set of ordinary differential equations
+$\delta_{z_i},\partial_x\delta_{z_i},\partial_y \delta_{z_i}, \partial_x^2 \delta_{z_i},
+ \partial_{xy} \delta_{z_i}$, and $\partial_y^2 \delta_{z_i}$.
+As each of these distributions is linearly independent
+of the others (assuming the $z_i$'s are distinct)
+we find that the coefficients must vanish independently.
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+the equation
 \begin{align*}
-  \dot{z}_i &= u(z_i) \\
-  \dot{\Gamma}_i &= 0 \\
-  \dot{\Gamma}^x_i  &= \partial_x u^x(z_i) \Gamma^x_i + \partial_y u^x(z_i) \Gamma_i^y \\
-  \dot{\Gamma}^y_i  &= \partial_x u^y(z_i) \Gamma^x_i + \partial_y u^y(z_i) \Gamma_i^y 
+  \frac{d\Gamma_i}{dt} = \partial_x u(z_i) + \partial_y v(z_i)
+  + \partial_x^2 u(z_i) + \partial_{xy} v(z_i)
+  + \partial_{xy} u(z_i) + \partial_y^2 v(z_i)
 \end{align*}
-where the vector field $u$ is given as a function of the $z_i$'s and $\Gamma$'s by \eqref{eq:1-u}.
-Thus we have obtained the desired set of ordinary differential equations for the $\Gamma_i$'s and $z_i$'s.
-Given a solution, the circulation \eqref{eq:1-ansatz} must neccesarily satisfy \eqref{eq:eom1}.
-
-  It appears that the tuple $(\Gamma_i^x,\Gamma_i^y)$ is advected by the flow as a vector.  This further motivates our indexing convention.
-
-
-
-\section{The jet-vortex blob method}
-\label{sec:jet_vortex_blob}
-In this section we derive the equations of motion for the
-jet-vortex blob method.
-Again, we start with the vorticity formulation of Euler's equations 
-given in \eqref{eq:eom1}-\eqref{eq:eom3}.
-Similar to the previous section, we may consider an ansatz
-\begin{align}
-  \omega(z) = \sum_{m+n \leq p} \sum_{i=1}^N \Gamma_i^{m,n}(t) \partial_{m,n} \delta(z-z_i(t))
-  \label{eq:jet_ansatz}
-\end{align}
-where $\partial_{m,n} := \partial_x^m \circ \partial_y^n$,
-$\Gamma_i^{m,n}(t) \in \mathbb{R}$,
-and $z_i(t) \in \mathbb{R}^2$.
-Our desire is to obtain an ordinary differential equation for the $\Gamma^{m,n}_i$'s and the $z_i$'s,
-whose solutions make the $\omega$ of \eqref{eq:jet_ansatz} a solution of \eqref{eq:eom1} and \eqref{eq:eom2}.
-To declutter future formulas,
-we will suppress the time-dependence of $z_i$ and $\Gamma^{m,n}_i$
-from this point onwards.
-
-We proceed as before. Substition of \eqref{eq:jet_ansatz} into \eqref{eq:eom2} imples
+Again, as the flow is divergence free we find
 \begin{align*}
-  \psi = \sum_{m+n \leq p} \sum_{i=1}^N (-1)^{m+n}\Gamma_i^{m,n} \partial_{m,n} G_{z_i}
+  \frac{d\Gamma_i}{dt} = 0.
 \end{align*}
-By \eqref{eq:eom3} this implies, $u$, must be
-\begin{align}
-  u(z) = \sum_{m+n \leq p} \sum_{i=1}^N (-1)^{m+n}
-  \begin{pmatrix}
-    \Gamma_i^{m,n} \partial_{m,n+1} G_{z_i} \\
-    -\Gamma_i^{m,n} \partial_{m+1,n} G_{z_i}
-  \end{pmatrix}. \label{eq:jet_u}
-\end{align}
-Now we will compute the term ``$\pounds_u[\omega]$'' found in \eqref{eq:eom1}.
-In appendix \ref{app:computation} we calculate
-\begin{align}
-  \begin{split}
-  &\pounds_u[\Gamma_i^{m,n} \partial_{m,n} \delta_{z_i}] =\\
-  &\Gamma_i^{m,n}
-  \sum_{\ell=0}^m \sum_{k=0}^n
-  (-1)^{\ell + k} \binom{n}{k} \binom{m}{\ell}
-   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
-     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
-     \right)
-   .
-   \end{split}\label{eq:jet_Lie}
-\end{align}
-More-over, our assumption regarding the ansatz implies
-\begin{align}
-  \partial_t \omega = \sum_{m+n \leq p} \sum_{i=1}^N \dot{\Gamma}_i^{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i}. \label{eq:jet_time_derivative}
-\end{align}
-Substitution of \eqref{eq:jet_Lie} and \eqref{eq:jet_time_derivative} into \eqref{eq:eom1} yields
-\begin{align}
-  \begin{split}
-    &0=\sum_{
-    	\substack{
-		i=1,\dots,N\\
-		m+n \leq p}
-		}
-		\dot{\Gamma}_i^{m,n} \partial_{m,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{x}_i \partial_{m+1,n} \delta_{z_i} - \Gamma_i^{m,n} \dot{y}_i \partial_{m,n+1} \delta_{z_i} \\
-   & +  (-1)^{m+n} \Gamma_i^{m,n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell}
-   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
-     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
-     \right)
-  \end{split}
-  \label{eq:eom4}
-\end{align}
-Observe that the left hand side of \eqref{eq:eom4}
-is a linear combination of the distributions
-$\partial_{m,n}\delta_{z_i}$ for $m+n \leq p+1$.
-In order for \eqref{eq:eom4} to hold, the coefficients of $\partial_{m,n} \delta_{z_i}$ must vanish.
-Imediately, we can observe that the coefficient of $\delta_{z_i}$ is $\dot{\Gamma}_i$.
-Thus $\dot{\Gamma}_i = 0$.
-Moreover, the coefficient of $\partial_{p+1,0} \delta_{z_i}$ is 
-$\Gamma_i^{p,0} \dot{x}_i + \Gamma_i^{p,0} u^x(z_i)$.
-Thus
+The vanishing of the coefficients of $\partial_x^2 \delta_{z_i}$ yields
 \begin{align*}
-  \dot{x}_i = u^x(z_i)
+  \Gamma_i^x ( u(z_i) - \frac{dx_i}{dt} ) = 0.
 \end{align*}
-The analogous observation for the coefficient of $\partial_{0,p+1} \delta_{z_i}$ then reveals
+Similarly, by looking at the coefficient of $\partial_y^2 \delta_{z_i}$
+we find
 \begin{align*}
-  \dot{y}_i = u^y(z_i)
+  \Gamma_i^y ( v(z_i) - \frac{dy_i}{dt} ) = 0.
+\end{align*}
+Assuming $\Gamma_i^x$ and $\Gamma_i^y$ are non-zero we
+obtain \eqref{eq:point motion} again.\footnote{
+  After we obtain dynamics under this assumption
+  we may drop the assumption by continous extension.
+  The resulting extension yields the $0$th order
+  jet-vortex dynamics.
+}
+
+Finally, the vanishing of the coefficients $\partial_x \delta_{z_i}$ and $\partial_y \delta_{z_i}$ yields
+\begin{align*}
+  \frac{d\Gamma^x_i}{dt} = \Gamma_i^x \partial_x u(z_i) + \Gamma_i^y \partial_y u(z_i) \\
+  \frac{d\Gamma^y_i}{dt} = \Gamma_i^x \partial_x v(z_i) + \Gamma_i^y \partial_y v(z_i)
+\end{align*}
+Thus we have found equations of motion for $x_i(t),y_i(t)$ and the
+$\Gamma_i(t)$'s.
+The solutions of this finite-dimensional ODE
+will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
+into a solution of \eqref{eq:vorticity}.
+
+\subsection{$N$th order}
+Consider the $N$th order jet-vortex ansatz for the vorticity
+\begin{align}
+  \omega(t) = \sum_{i \in S} \sum_{m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n \delta_{z_i} \label{eq:ansatz N}
+\end{align}
+for constants $\Gamma^{mn}_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i \in S$.
+The stream function is 
+\begin{align*}
+  \psi(x,y;t) = \sum_{i, m+n \leq N} (-1)^{m+n} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n G_\delta (x - x_i (t), y-y_i(t) )
+\end{align*}
+and so the corresponding velocity field is given by
+\begin{align}
+\begin{cases}
+  u(x,y;t) = \sum_{i \in S,m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^{n+1} G_\delta (x - x_i (t), y-y_i(t) ) \\
+  v(x,y;t) = - \sum_{i \in S, m+n \leq N} \Gamma^{mn}_i(t) \partial_x^{m+1} \partial_y^n G_\delta (x - x_i (t), y-y_i(t) )
+\end{cases} \label{eq:u N}
+\end{align}
+
+\begin{figure}[h] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xx.pdf} 
+   \includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xy.pdf} 
+   \includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xx_yy.pdf} 
+   \caption{Various second order jet vortices with $\Gamma^{00} = \Gamma^{1,0} = \Gamma^{0,1} = 0$.}
+   \label{fig:second}
+\end{figure}
+
+We desire to find equations of motion for the $\Gamma^{mn}_i(t)$'s and $z_i(t)$'s
+such that the velocity field \eqref{eq:u N} satisfies the vorticity equation \eqref{eq:vorticity}.
+From this point on we will suppress the time dependence of all the quantities.
+
+
+We then find
+\begin{align*}
+  \partial_t \omega =	
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+  	\frac{d \Gamma_i^{mn}}{dt} \partial_x^m \partial_y^n \delta_{z_i} - \Gamma_i^{mn} \frac{dx_i}{dt} \partial_{x}^{m+1} \partial_y^{n} \delta_{z_i}
+	- \Gamma_i^{mn} \frac{dy_i}{dt} \partial_{x}^{m} \partial_y^{n+1} \delta_{z_i}.
+\end{align*}
+and
+\begin{align*}
+  u \partial_x \omega = 
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+   u \Gamma_i ^{mn}\partial_x^{m+1} \partial_y^n \delta_{z_i}.
+\end{align*}
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we can revise the previous equation to
+obtain
+\begin{align*}
+  u \partial_x \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+	\Gamma_i^{mn} (-1)^{m+n+1} \sum_{\ell,k} (-1)^{\ell + k} \binom{m+1}{\ell} \binom{n}{k} \partial_x^{\ell} \partial_y^k u(z_i) \partial_x^{m+1-\ell} \partial_y^{n-k} \delta_{z_i}.
+\end{align*}
+Similarly
+\begin{align*}
+  v \partial_y \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+	\Gamma_i^{mn} (-1)^{m+n+1} \sum_{\ell,k} (-1)^{\ell + k} \binom{m}{\ell} \binom{n+1}{k} \partial_x^{\ell} \partial_y^k v(z_i) \partial_x^{m-\ell} \partial_y^{n+1-k} \delta_{z_i}.
+\end{align*}
+Substitution of these expressions into \eqref{eq:vorticity} yields
+the vanishing of a linear combination of the distributions
+$\partial_x^m \partial_y^n \delta_{z_i}$
+for $m+n \leq N+1$.
+As each of these distributions is linearly independent
+of the others (assuming the $z_i$'s are distinct)
+we find that the coefficients must vanish independently.
+Assuming sufficiently many of the $\Gamma_i^{m,n}$'s are non-zero 
+for $m+n = N$ we recover \eqref{eq:point motion}.\footnote{
+  As before, after we obtain dynamics for the $\Gamma$'s under this assumption
+  we may drop the assumption by continuous extension.
+  The resulting extension yields the $0$th order
+  jet-vortex dynamics.
+}
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+\begin{align*}
+	\frac{d\Gamma^{0,0}_i}{dt} + \sum_{0 < m+n \leq N} \Gamma^{m,n} ( \partial_x^{m+1}\partial_y^n u(z_i) + \partial_x^{m}\partial_y^{n+1} v(z_i) ) = 0.
+\end{align*}
+As $u$ is divergence free this equation reduces to
+\begin{align*}
+	\frac{d \Gamma^{0,0} }{dt} = 0
 \end{align*}
 
-Finally, for $\ell,k < p$ the vanishing of the coefficient of $\partial_{\ell,k} \delta_{z_i}$ yields
+For $\ell+k \leq N$ the vanishing of the coefficient of $\partial_{\ell,k} \delta_{z_i}$ yields
 \begin{align*}
-  \dot{\Gamma}_i^{\ell,k} = (-1)^{\ell + k}
+  \dot{\Gamma}_i^{\ell k} = (-1)^{\ell + k}
   \sum_{
     \substack{
       m > \ell \\
       n > k \\
       n+m \leq p}
-    }\Gamma_i^{m,n} \Big[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
+    }\Gamma_i^{mn} \Big[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
    \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i)  \Big]
 \end{align*}
-Upon noting that $u$ is a function of the $\Gamma$'s and $z$'s via \eqref{eq:jet_u},
-we see that we have obtained the desired set of ordinary differential equations for the $\Gamma$'s and $z$'s.
-The resulting circulation \eqref{eq:jet_ansatz} satisfies \eqref{eq:eom1} by construction.
+Again, we have found equations of motion for $x_i(t),y_i(t)$ and the
+$\Gamma_i(t)$'s.
+The solutions of this finite-dimensional ODE
+will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
+into a solution of \eqref{eq:vorticity}.
 
-\section{Conserved quantities}
-\label{sec:conserved_quantities}
+\begin{rmk}
+  We will find that the following quantities are conserved:
+  
+  \begin{tabular}{|c|c|}
+  	\hline
+	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
+	  \hline
+	  Angular momentum & $J_{ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
+	  \hline
+	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
+	  \hline
+  \end{tabular}
 
-\subsection{Angular momentum}
-\label{sec:angular_momentum}
-Here are Darryl's calculations
-\begin{align*}
-  M &= \int \hat{z} \vec{x} \times u dx dy \\
-  &= \int \vec{x} \cdot \nabla \psi dx dy \\
-  &= -2 \int \psi dx dy 
-\end{align*}
-This is conserved because
-\begin{align*}
-  \frac{dM}{dt} &= \int \partial_t \psi dx dy\\
-  &= \int (L\Delta)^{-1} (\partial_t \omega) dx dy \\
-  &= \int (L \Delta)^{-1} ( u \cdot \nabla \omega) dx dy \\
-  &= \int (L \Delta)^{-1} ( {\rm div}( u \omega) - \omega {\rm div}(u) ) dxdy \\
-  &= \int {\rm div} \left( (L\Delta)^{-1}( u \omega) \right) dx dy \\
-   &= 0
-\end{align*}
-The last line follows by the divergence theorem.
+  The first two are momenta derived by observing the rotational and
+  translational symmetry of the fluid and applying Noether's theorem (see Appendix \ref{sec:symmetries} for derivation).
+  In section \ref{sec:symplectic} we will characterize fluids, and the jet-vortices as Hamiltonian systems
+  and the Linear and angular momentum serve as symplectic momentum maps.
+\end{rmk}
 
-\subsection{Linear momentum}
-\label{sec:linear}
-The linear momentum is
-\begin{align*}
-  M^j = \int u^j dx dy
-\end{align*}
-and
-\begin{align*}
-  \frac{dM^j}{dt} &= \int \partial_t u^j dxdy \\
-  &= \int  \partial_t (-\partial_y \psi , \partial_x \psi) dxdy \\
-  &= \epsilon_{ij3} \int \partial_j( \partial_t \psi) dx dy \\
-\end{align*}
-Assuming $\partial_t \psi$ vanishes at $\infty$ the above integral integrates to $0$.
+\begin{rmk}
+	Let $\vec{u}$ be a time-dependent vector field which satisfies \eqref{eq:u_EoM}.
+	The flow of $\vec{u}$ is the diffeomorphism, $\Phi_t: \mathbb{R}^2 \to \mathbb{R}^2$,
+	which sends particle labels at time $0$ to their positions at time $t$.
+	If $\omega_t$ is the vorticity at time $t$ then $\omega_t( \Phi_t(z) ) = \omega_0$ is constant in time.
+	This conservation law can be seen as a corollary of Kelvin's circulation theorem.
+	As a consequence,
+	\begin{align*}
+		J(t) := \int \omega_t( \Phi_t(z) ) f(z) dz
+	\end{align*}
+	is constant in time for any $f \in C^\infty(\R^2)$.
+	By applying the change of variables formula and invoking the
+	incompressibility condition, $\det(D\Phi) = 1$, we find
+	\begin{align*}
+		J(t) = \int \omega_t( z) f(\Phi_t^{-1}(z)) dz.
+	\end{align*}
+	This form of writing $J(t)$ makes sense when $\omega_t$ is a distribution.
+	As a result, we find that for a vorticity of the form \eqref{eq:ansatz N} the quantity
+	\begin{align}
+		J(t) = \sum_{
+			\substack{
+				i \in S \\
+				m+n \leq N
+			}
+		} \Gamma_i^{mn} (-1)^{m+n} \partial_x^m\partial_y^n( f \circ \Phi_t^{-1}) |_{z = z_i(t)} \label{eq:conserved_circulation}
+	\end{align}
+	is conserved for any $f \in C^\infty(\R^2)$.
+	While this conservation law holds for all functions, $f$, we do not obtain infinitely many conserved
+	quantities when $\omega_t$ satisfies the jet-vortex ansatz and $S$ is finite.
+	This is because the expression on the right hand side only depends on the $N$-jet of $f$ at $z_i(0) \equiv \Phi_t^{-1}(z_i(t) )$,
+	as is illustrated by the Fa\`a di Bruno formula.
+	We will not display the Fa\`a di Bruno formula here because it requires nearly a page of notational definitions before to writing it down
+	\cite{ConstantineSavits1996,Jacobs2014b}.
+	Nonetheless, by computing the cardinality of jet spaces, we would obtain ${\rm card}(S) \frac{ N(N+1)}{2}$ independent conserved quantities
+	as a result of \eqref{eq:conserved_circulation}.
+	These conserved quantities can be interpreted as a finite dimensional manifestation of the conservation of circulation.
+\end{rmk}
 
-\subsection{Energy}
-\label{sec:energy}
-We will later show how \eqref{eq:eom1}-\eqref{eq:eom3} form a Hamiltonian system with respect to the Hamiltonian
-\begin{align*}
-  H(\omega) = \frac{1}{2} \langle \omega , G* \omega\rangle
-\end{align*}
-and a symplectic form which will be described in section \ref{sec:symplectic}.
-Thus $H$ is conserved.
-One can verify the conservation of $H$ directly.  We observe
-\begin{align*}
-  \frac{dH}{dt} &= \langle \partial_t \omega, G^* \omega \rangle \\
-  &= \langle - \pounds_u [\omega] , G^* \omega \rangle \\
-  &= \langle \omega , u^x \partial_x \psi + u^y \partial_y \psi \rangle
-\end{align*}
-where $\psi = G^*\omega$ and $u = \nabla^\perp \psi$.
-Substituion of these identities reveals
-\begin{align*}
-  &= \langle \omega , (-\partial_y \psi) \partial_x \psi + (\partial_x \psi)  \partial_y \psi \rangle = 0.
-\end{align*}
+\begin{rmk}\label{rmk:moments}
+	The $(a,b)^{\rm th}$ moment of the vorticity centered around the vortex position $(x_i,y_i) \in \R^2$ is given by
+	\begin{align*}
+		\mu^{ab}_i := \int (x-x_i)^a (y-y_i)^b \omega dxdy
+	\end{align*}
+	If $\omega$ satisfies the jet-vortex ansatz \eqref{eq:ansatz N} then
+	\begin{align*}
+		\mu^{ab}_i = \sum_{
+			\substack{
+				j \in S \\
+				m \leq a ,
+				n \leq b
+			}
+		}
+		(-1)^{m+n} \frac{a! b!}{(a-m)!(b-n)!} \Gamma_j^{mn} (x_j - x_i)^{a-m} (y_j - y_i)^{b-n}
+	\end{align*}
+	for $a+b \leq N$ and $i \in S$.
+	We see that given the points $z_i \in S$ we can write the moments in terms of the circulation
+	strengths, the $\Gamma$'s.
+	For the moment $\mu_i^{ab}$ with $a+b \leq N$ with $a,b \in \mathbb{N}$
+	we may invert this relationship to write $\Gamma_i^{mn}$ as a function of these moments.
+	Invoking the equation of motion for the $\Gamma$'s and substituting the identity be tween the $\Gamma$'s
+	and the $\mu$'s
+	would yield a closed dynamical system for the $\mu$'s.
+	That the equations of motion for the moments forms a closed at order $N$
+	is in contrast to other methods for deriving dynamical systems for moments
+	\cite{UmWaBa2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
+	where a projection must be invoked in order to form a closed system.
+\end{rmk}
 
-\section{Conservation of circulation}
-\label{sec:circulation}
-Let $\omega(t) \in \mathcal{D}'(\R^2)$ and let $u$ be as in \eqref{eq:eom3}.
-We can consider the diffeomorphism $\varphi: \mathbb{R}^2 \to \mathbb{R}^2$
-obtained by integrating the vector field $u$.
-Then we can consider the pull-back $\varphi^*\omega \in \mathcal{D}'(\mathbb{R}^2)$ defined by
-\begin{align*}
-  \langle \varphi^* \omega , f \rangle := \langle \omega , f \circ \varphi \rangle
-\end{align*}
-Kelvin's circulation theorem is related to the fact that $\Omega =\varphi^* \omega$ is a constant of motion for the system.
-As the $\omega$'s produced by our ansatz \eqref{eq:jet_ansatz} yield solutions to \eqref{eq:eom1}, we should expect this conservation to be inherited by the evolution of the $\Gamma^{m,n}_i$'s somehow.  In the case of $p=0$, this manifests with $\Gamma_i$ being a constant of motion.
+\section{Numerical Aspects}
+\label{sec:numerics}
+\todo[inline]{Write intro to numerics section}
 
-\todo[inline]{There are more conservation laws.  This section needs to be revised, as per our Friday meeting.}
+\subsection{Convergence to Euler's}
+\todo[inline]{Write this section}
+This is basically proven already, as we can invoke the error bounds of BealeMajda.
 
-\section{Moments}
-\label{sec:moments}
-In this section we state the equations of motion for the moments.
-The moments are given by the quantities
-\begin{align*}
-	M^{m,n} := \int x^m y^n  \omega .
-\end{align*}
-In the case where $\omega$ is of the form \eqref{eq:jet_ansatz} we observe
-\begin{align*}
-	M^{n,m} &=  \sum_{
-		\substack{
-			i=1,\dots,N\\
-			\ell \leq m,k \leq n}
-				}
-				(-1)^{\ell + k} \Gamma_i^{\ell,k} \partial_{\ell,k}|_{z_i}(x^m y^n) \\
-		&= \sum_{
-		\substack{
-			i=1,\dots,N\\
-			\ell \leq m,k \leq n}
-				}
-				\Gamma_i^{\ell,k}  \frac{m! n!}{\ell! k!} x_i^{m-\ell} y_i^{n-k} 
-\end{align*}
-Thus
-\begin{align*}
-	\dot{M}^{n,m} &=  \sum_{
-		\substack{
-			i=1,\dots,N\\
-			\ell \leq m,k \leq n}
-				}
-				\frac{m! n!}{\ell! k!} \Big( \dot{\Gamma}_i^{\ell,k}  x_i^{m-\ell} y_i^{n-k} 
-				+  \dot{x}_i (m-\ell) \Gamma_i^{\ell,k} x_i^{m-\ell-1} y_i^{n-k}  \\
-				&\hskip 20em +  \dot{y}_i (n-k) \Gamma_i^{\ell,k} x_i^{m-\ell} y_i^{n-k-1}  \Big).
-\end{align*}
-We observe that we have a closed system for deriving the equations of motion for the moments,
-in contrast to what is typically done in moment calculations (e.g. projections).
-\todo[inline]{Darryl, would you like to elaborate on this point?  You seem to think it is quite significant.
-But I never really grasped the significance in our conversations.}
+\subsection{Grouping and reduction of pairwise computations}
+\label{sec:grouping}
 
-\section{Approximation theory}
-\label{sec:approximation_theory}
-In this section we will illustrate how using jet-vortices improves the accuracy of approximation of a vorticity field in a distributional sense
-with respect to a reproducing kernel Hilbert space (RKHS).  Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega\rangle_{L^2} =: \frac{1}{2} \langle \omega , \omega \rangle_G$, for a Green's kernel $G:\R^2 \to \R$.
+Let us consider the vorticity distribution
+\begin{align*}
+	\omega = \Gamma_1 \delta_{z_1} + \Gamma_2 \delta_{z_2}
+\end{align*}
+if $z_1$ and $z_2$ are close we can define the quantities $\bar{z} = (z_1+z_2)/2$ and $\delta z = z_1 - z_2 $ to obtain the approximation
+\begin{align*}
+	\int \omega(z) f(z)dz &= \Gamma_1 f(z_1) + \Gamma_2 f(z_2) \\
+		&= \Gamma_1 \left( f(\bar{z}) + \partial_x f(\bar(z)) \cdot \frac{\delta x}{2} + \partial_y f(\bar(z)) \cdot \frac{\delta y}{2}  \right)\\
+		&\quad + \Gamma_2 \left( f(\bar{z}) - \partial_x f(\bar(z)) \cdot \frac{\delta x}{2} - \partial_y f(\bar(z)) \cdot \frac{\delta y}{2}  \right) + o( h ) 
+\end{align*}
+where $h = \| \delta z \|$.
+Therefore the distribution
+\begin{align*}
+	\tilde{\omega} = \Gamma \delta_{\bar{z}} + \Gamma^x \partial_x \delta_{\bar{z}} + \Gamma^y \partial_y \delta_{\bar{z}}
+\end{align*}
+with 
+\begin{align*}
+	\Gamma = \Gamma_1 + \Gamma_2 \quad,\quad \Gamma^x = \frac{\delta x}{2} (\Gamma_1 -\Gamma_1) \quad,\quad \Gamma^y = \frac{\delta y}{2} (\Gamma_1 -\Gamma_1)
+\end{align*}
+serves as a $o(h)$ approximation of $\omega$ in the sense of distributions.
+Moreover, the stream function $\tilde{\psi} := G_\delta * \tilde{\omega}$ is an $o(h)$ approximation of $\psi := G_\delta * \omega$ in the traditional sense of analysis on functions.
+
+What has just been described is the first case of grouping two $N$th order jet vortices concentrated at $z_1$ and $z_2$ into a single $(N+1)$th order jet vortex concentrated at 
+the average position $\bar{z}$.
+More generally, we can consider the ansatz
+\begin{align*}
+	\omega = \sum_{m+n \leq N} \Gamma_1^{mn} \partial_x^m \partial_y^n \delta_{z_1} + \Gamma_2^{mn} \partial_x^m \partial_y^n \delta_{z_2}
+\end{align*}
+and observe
+\begin{align*}
+	&\int \omega(z) f(z)dz = \sum_{m+n \leq N} (-1)^{m+n} \left( \Gamma_1^{mn} \partial_x^m \partial_y^n f(z_1) + \Gamma_2^{mn}  \partial_x^m \partial_y^n f(z_2) \right)\\
+		&\quad= \Bigg\{ \sum_{m+n \leq N} (-1)^{m+n} \Gamma_1^{mn} \left( \partial_x^m \partial_y^n  f(\bar{z}) + \partial_x^{m+1} \partial_y^n  f(\bar(z)) \cdot \frac{\delta x}{2} + \partial_x^m \partial_y^{n+1} f(\bar(z)) \cdot \frac{\delta y}{2}  \right)\\
+		&\qquad +  (-1)^{m+n} \Gamma_2^{mn} \left( \partial_x^m \partial_y^n  f(\bar{z}) - \partial_x^{m+1} \partial_y^n  f(\bar(z)) \cdot \frac{\delta x}{2} - \partial_x^m \partial_y^{n+1} f(\bar(z)) \cdot \frac{\delta y}{2}  \right) \Bigg\} \\
+		&\qquad + o( h ) .
+\end{align*}
+The above computation implies that 
+\begin{align*}
+	&\tilde{\omega} :=\\
+	 &\sum_{m+n \leq N+1} \left( \Gamma_1^{mn} + \Gamma_2^{mn}
+	- \frac{\delta x}{2}( \Gamma_1^{ m-1,n} - \Gamma_2^{m-1,n} ) - \frac{\delta y}{2} ( \Gamma_1^{m,n-1} - \Gamma_2^{m,n-1}) \right) \partial_x^m \partial_y^n \delta_{\bar{z}}
+\end{align*}
+serves as an $o(h)$ approximation of $\omega$.
+Of course, this again implies that the corresponding stream functions are approximated to order $h$ as well.
+Note that $\tilde{\omega}$ is concentrated above a single point, $\bar{z}$, while $\omega$ is concentrated above two points.
+
+\begin{rmk}
+Such reductions are even more dramatic when considering higher order jets.
+In particular, $2^N$ zeroth order jet vortices can be approximated with a single $N$th order jet vortex by applying the above approximations iteratively.
+
+The computation of pairwise interactions in the vortex method was a primary bottleneck in implementing the standard vortex method for real-world applications.
+It was not until the inention of the fast multipole method, that it became tractable to compute millions of pairwise interactions by
+reducing the complexity from an $O(n^2)$ calculation to an $O(n \log (n))$ calculation, where $n$ is the number of vortices \cite{GreengardRokhlin1987}.
+However, the success of the fast multipole method brought forth a new challenge.
+In the case of fluids with boundaries, vorticity is shed from the boundaries.
+As a result, vortex methods wherein new point vortices would abruptly emerge on the boundary were invented \todo{cite stuff}.
+For these applications, $n$ will grow in time without bound, and some means of discarding vortices must be appealed to.
+It is here that the grouping of jet-vortices  could be useful.
+If one mergers two $k$-jet vortices to obtained a $(k+1)$-jet vortex, the amount of scalars and data typically increases.
+So one must still make a tough decision as to what data to discard (e.g. through some tolerance or simply truncating at level $k$).
+The analysis presented here could shed light on how best to implement this.
+\end{rmk}
+
+\begin{rmk}
+The merging of blobs of vorticity has been observed in numerical experiments
+as well as experimentally \cite{MelanderZabuskyMcWilliams1998}\todo{Describe this publication in more detail}.
+
+Grouping can also be useful for resolving collision events.
+In theory, there is no issue with collisions because we are considering regularized vortices where
+the induced velocity field from a single jet-vortex is always finite.
+However, as $\delta$ becomes smaller, the velocity near the vortex core becomes larger and larger.
+As a result, we observe numerical difficulties when the vortices are close.
+Typically such a near collision is dealt with by using a smaller time-step (as the ODE is quite stiff).
+Grouping suggests an alternative by avoiding this pair-wise interaction altogether.
+\end{rmk}
+
+\subsection{Approximation of initial conditions}
+\label{sec:approximation}
+In this section we will illustrate how using jet-vortices will increase the accuracy of approximation of a vorticity field in a distributional sense
+with respect to a reproducing kernel Hilbert space (RKHS).
+Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega\rangle_{L^2} =: \frac{1}{2} \langle \omega , \omega \rangle_G$, for a Green's kernel $G:\R^2 \to \R$.
 Let $h > 0$ be small and define $h \mathbb{Z}^2 = \{ (ah,bh) \in \R^2 \mid (a,b) \in \mathbb{Z}^2 \}$.
 Given an $\omega \in \mathcal{D}'(\R^2)$, we can attempt to approximate $\omega$ via Dirac-deltas supported on $h \mathbb{Z}^2$.
 There is a natural way to do this with respect to the Hilbert-norm because we have a reproducing kernel.
 We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \Gamma_i \delta_{z_i}$ by requiring the error, $\omega_h^{(0)} - \omega$, to be $\langle \cdot , \cdot \rangle_{G}$-orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
 This means that $G*\omega(z) =  \sum_i \Gamma_i G(z-z_i)$ for each $z \in h\mathbb{Z}^2$.
 Thus $\psi_h^{(0)} = \sum_i \Gamma_i G(z-z_i)$ can be seen as a $0$th order approximation to $\psi = G*\omega$
-because $\psi_h^{(0)}(z) = \psi(z)$ on the grid.
-Assuming $\psi$ is continous, the error is $o(1)$ in $h$.
-Moreover, $\omega^{(0)}_h$ serves as a $o(1)$ approximation to $\omega$ in the distributional sense.
-Let $L$ be the psuedo-differential operator dual to $G*$.
-Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
-and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
-for any $f$ in the RKHS produced by $G$.
+because $\psi_h^{(0)}(z) = \psi(z)$ for all $z \in h\mathbb{Z}$.
  
-The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,\alpha} \Gamma_i^\alpha \partial_\alpha \delta_{z_i}$.
-We define the scalars $\Gamma_i^\alpha$ via the equations
+The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,m+n \leq N} \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
+We define the scalars $\Gamma_i^{mn}$ via the equations
 \begin{align*}
-  \partial_\beta \psi (z_i) = \sum_j \Gamma_j^\alpha \partial_{\alpha\beta} G(z_i - z_j)
+  \partial_x^\ell \partial_y^k \psi (z_i) = \sum_j (-1)^{m+n} \Gamma_j^{mn} \partial_x^{m+\ell} \partial_y^{n+k} G(z_i - z_j)
 \end{align*}
 for $\psi = G*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
-Then $\psi^{(k)}_h = \sum_{i,\alpha}\Gamma_k^\alpha \partial_\alpha G_{z_i}$
-serves as a $o(h^{k})$ approximation of $\psi$ when $\psi \in C^k$
-and $\omega^{(k)}_h$ serves as a $o(h^k)$ approximation of $\omega$ in
-a distributional sense.
+Then $\psi^{(k)}_h = \sum_{i,\alpha} (-1)^{m+n} \Gamma_k^{mn} \partial_x^m \partial_y^n G_{z_i}$
+serves as an order $k$ approximation of $\psi$ when $\psi \in C^k$.
 
-\section{Numerical Results}
-\label{sec:numerics}
-In this section we
-\begin{enumerate}
-	\item Run 0,1,2 jet vortex simulations, with Gaussian kernels
-	\item Verify the $o(h^k)$ result with a log-log plot.
-	\item Flow past a cylinder if we are ambitious.
-\end{enumerate}
+This is not to say that the convergence rate is simple $O(h^k)$.
+The convergence of the initial condition, and in fact the full fluid system
+upon integrating the equations of motion, is a spectral convergence.
+Moreover, this spectral convergence rate of the full system relies heavily on the choice of kernel
+\cite{BealeMajda1982}.
 
-\todo[inline]{I will code this after the SHAPE conference}
+As an example we numerically compute the corresponding approximations of the stream function
+\begin{align}
+        \psi(x,y) = \exp( - r^2 ) - \exp( - r^2 / 2 )
+        \label{eq:psi_exact}
+\end{align}
+The results are depicted in figure \ref{fig:convergence}.
+As we are unable to grid all of $\mathbb{R}^2$, the error
+is only measured on a small subregion ($-3<x<3, -3<y<3$) within the region covered by our grid
+($-6<x<6, -6 < y < 6 $).
+We observe the predicted spectral convergence using jet-vortices at orders zero, one, and two.
+In each case, a grid spacing is reached where the convergence simply goes no further (possibly 
+due to machine precision).
+Nonetheless, higher order jet vortices appear to out perform lower order ones for smaller grid spacings.
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./images/convergence.pdf}
+        \caption{A convergence plot of the error in the sup-norm
+        of the reconstructed stream function approximated with zeroth (blue),
+        first (green), and second (red) order jet-vortices.
+        The method converges spectrally, so no specific convergence rate is observed.}
+        \label{fig:convergence}
+\end{figure}
+
+\subsection{Numerical experiments}
+\label{sec:numerical_expirements}
+\todo[inline]{Write numerical experiments section}
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
-
-As a warning to the reader, the following requires some use of differential geometry
-and references are provided when appropriate, as a sufficient introduction to the subject is impossible in a short space.
-
 In the modern conception of Hamiltonian mechanics, as described in \cite{FOM,Arnold2000},
 the Hamiltonian is a function on a symplectic manifold, which produces equations of motion.
 An important instance of a symplectic manifold is a coadjoint orbit.
@@ -517,15 +694,15 @@ the kinetic energy
 \begin{align*}
   H(\omega) = \frac{1}{2} \langle \omega , G* \omega \rangle.
 \end{align*}
-Where $\omega$ may be of the form \eqref{eq:jet_ansatz}.
+Where $\omega$ may be of the form \eqref{eq:ansatz N}.
 
 Note that for a smooth vorticity $\omega \in \bigwedge^2(\R^2)$
 the coadjoint orbit is
 \begin{align*}
   \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}.
 \end{align*}
-This may or may not be a manifold.
-If $\Orb(\omega)$ is a manifold, then a vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by $\pounds_u[\tilde\omega]$ for some (non-unique) $u \in \mathfrak{X}(\R^2)$. There is a symplectic structure on $\Orb(\omega)$
+A vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by $\pounds_u[\tilde\omega] := u^i \partial_i \tilde{\omega}$ for some (non-unique) divergence free vector field
+$u \in \mathfrak{X}_{\rm div}(\R^2)$. There is a symplectic structure on $\Orb(\omega)$
 given by
 \begin{align*}
   \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int \omega( u(x), v(x) ) \mu.
@@ -569,7 +746,7 @@ identify $\mu(u,v)$ with the function $u^x v^y - u^y v^x = u \times v$ so that
                 &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z) \\
                 &= \gamma_i^\alpha \partial_{\beta}|_{\varphi(Z_i)} f \partial_\beta|_{Z_i} \varphi^\alpha.
 	\end{align*}
-        Where we have used the Faa di Bruno formula via the multi-indexing convention of \cite{Jacobs2014b}.
+        Where we have used the Fa\`a di Bruno formula via the multi-indexing convention of \cite{Jacobs2014b}.
         Thus $\varphi_* \omega_0 \in M^{(k)}$.
 \end{proof}
 
@@ -584,8 +761,7 @@ the quantity $ \langle \omega , f \rangle$
 is a linear function of the $k$th order Taylor-coefficients of $f \in C^\infty(\R^2)$
 about some points $z_1,\dots,z_n$.
 
-Finally, as a sanity check, we can also prove that the equations of motion derived previously are identical to
-the equations of motion obtained using this symplectic structure.
+Finally, as a check, we can also prove that the equations of motion derived previously are identical to the equations of motion obtained using this symplectic structure.
 
 \begin{thm}
 	Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
@@ -617,10 +793,10 @@ the equations of motion obtained using this symplectic structure.
 \subsection{The first order case}
 Let us deal with the first order case.
 \begin{thm}
-Let $Z_1,\dots,Z_n \in \R^2$ be distinct.
+Let $z_1,\dots,z_n \in \R^2$ be distinct.
 The coadjoint orbit of
 \begin{align*}
-  \omega = \sum_{i=1}^N \gamma_i \delta_{Z_i} + \gamma_i^x \partial_x \delta_{Z_i} + \gamma_i^y \partial_{y} \delta_{z_i}
+  \omega = \sum_{i=1}^N \gamma_i \delta_{z_i} + \gamma_i^x \partial_x \delta_{z_i} + \gamma_i^y \partial_{y} \delta_{z_i}
 \end{align*}
 is
 \begin{align*}
@@ -638,6 +814,43 @@ The symplectic structure is
     - \delta \Gamma_i^x \cdot \dot{y}_i
   \end{align*}
 \end{thm}
+
+\begin{rmk}
+The corresponding Poisson bracket is given by\\
+
+\centerline{$
+\{(z,\Gamma),\,(z,\Gamma)\}
+=
+$
+%
+\begin{tabular}{| c | c |  }	\hline	
+$\{\,\cdot\,,\,\cdot\,\}$	& 	
+$
+\begin{array}{cc}
+\ z \quad &  \Gamma 
+\end{array}
+$
+\\ \hline
+$
+\begin{array}{c}
+z \\  \Gamma
+\end{array}
+$
+&	
+$
+\begin{array}{ccc}
+\gamma J   & J
+\\
+J &  0  
+\end{array}
+$\\
+\hline
+\end{tabular}
+}
+\todo[inline]{HOJ: Can you convert this table into $x,\Gamma,\Gamma^x,\Gamma^y$ coordinates?}
+\end{rmk}
+
+
 \begin{proof}
   Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
   We find that for any function $f$
@@ -688,7 +901,7 @@ The symplectic structure is
   at $z_i$.
   Moreover, $\pounds_u[\omega] = \gamma_0 u^x(z_i) \partial_{z_i} + \dots$
   also has the property that it is only dependent on
-  the one-jet of $u$ and $v$ at the poinst $z_1,\dots,z_n$.
+  the one-jet of $u$ and $v$ at the points $z_1,\dots,z_n$.
   Therefore both side of \eqref{eq:vorticity_symplectic_form}
   can be written as a function of the finite collection of 
   numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
@@ -704,71 +917,339 @@ The symplectic structure is
       \end{align*}
 \end{proof}
 
+\todo[inline]{Henry, Would we like to \emph{officially} state that the map $(z_i, \Gamma_i^{m,n})\in M^k\to \omega\in \mathfrak{X}(\mathbb{R}^2)$ is a symplectic momentum map? (It is, right?) After all, that is why the reduction $(z_i, \Gamma_i^{m,n})\to \omega$ works in the first place, correct?} 
+
+BTW  Would we also like to write the Poisson structure for the $k$-th order case explicitly as follows?\\
+
+\centerline{$
+\{(z,\Gamma),\,(z,\Gamma)\}
+=
+$
+%
+\begin{tabular}{| c | c |  }	\hline	
+$\{\,\cdot\,,\,\cdot\,\}$	& 	
+$
+\begin{array}{cc}
+\ z \quad &  \Gamma 
+\end{array}
+$
+\\ \hline
+$
+\begin{array}{c}
+z \\  \Gamma
+\end{array}
+$
+&	
+$
+\begin{array}{ccc}
+\gamma J   & J
+\\
+J &  0  
+\end{array}
+$\\
+\hline
+\end{tabular}
+}
+\bigskip
+
+\todo[inline]{Henry, that's the correct Poisson structure, right? What is it dual to, anyway? Do you know?}
 
 \section{Conclusion}
 
-\todo[inline]{Darryl should take a stab at this first.}
+\todo[inline]{Darryl should take a stab at this first.  We should at least float the idea of jet-vortex filaments.}\bigskip
+
+ 
+\todo[inline]{For higher-order vortex jet-filament methods, maybe we could work from my Regge-Rasetti paper!}
 
 
 \appendix
-\section{Computations}
-\label{app:computation}
 
-Here we compute $\pounds_u [\partial_{m,n} \delta_z]$.
-We begin with a lemma
-\begin{lem}
-  Let $f,g \in \mathbb{C}^\infty(\R^2)$.  Then
-  \begin{align*}
-    \partial_x^m ( fg) = \sum_{\ell=0}^{m} \binom{m}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
-  \end{align*}
-\end{lem}
-\begin{proof}
-  For $m=1$ the formula is the standard product rule.
-  Assume the formula holds at order $m$.
-  Then we find
-  \begin{align*}
-    \partial_x^{m+1} (fg) &= \partial_x ( \partial_x^{m}(fg)) \\
-    &= \partial_x \left( \sum_{\ell=0}^{m} \binom{m}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g) \right) \\
-    &= \sum_{\ell=0}^{m} \binom{m}{\ell}\left(
-      ( \partial_x^{\ell + 1} f) (\partial_x^{m-\ell}g) 
-      + ( \partial_x^{\ell} f) (\partial_x^{m-\ell+1}g)
-      \right) \\
-     &= f (\partial_x^{m+1}g) +(\partial_x^{m+1}f) g + \sum_{\ell=1}^{m} \left( \binom{m}{\ell} + \binom{m}{\ell-1} \right) (\partial_x^\ell f)(\partial_x^{m-\ell}g) \\
-     &= \sum_{\ell=0}^{m+1} \binom{m+1}{\ell} (\partial_x^\ell f)(\partial_x^{m-\ell}g).
-  \end{align*}
-  The lemma follows by induction.
-\end{proof}
+\section{Distributions}
+\label{sec:distributions}
+The vorticity, $\omega$, should be viewed as a distribution
+and the term ``$\partial_x \omega$'' should be viewed
+as a distributional derivative.
+When $\omega \in D(\R^2)$ is a smooth distribution there is little harm in naively interpreting $\omega$ as a smooth function on $\R^2$.
+However, when $\omega$ is not smooth (e.g. a Dirac delta distribution),
+then one really needs to invoke the mathematics of distributions
+as distinct from that of real valued functions.
+Therefore, we have included this appendix to remind the reader of the basic theory of distributions.
+The main reference for this section is \cite{Hormander2003}.\todo{We should refer to specific formulas from here.}
 
-We can now compute $\pounds_u[\partial_{m,n} \delta_z]$.
-Let $f \in C^\infty(\R^2)$.  We find
+The space of distributions $D(\R^2)$ is the dual-vector space to the space of smooth functions $C^\infty(\R^2)$.
+Therefore a distribution is defined by how it maps functions to real numbers.
+Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
+we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
+
+Given a distribution $\omega \in D(\R^2)$.
+We can define the distributional derivative of $\omega$ in the $i$th coordinate direction
+as the distribution $\partial_i \omega$ defined by
 \begin{align*}
-  \langle \pounds_u [\partial_{m,n} \delta_z] , f \rangle 
-  &= -\langle \partial_{m,n} \delta_z , u^x \partial_x f + u^y \partial_y f \rangle \\
-  &= -(-1)^{m+n} \partial_{m,n}|_{z} \left( u^x \partial_x f + u^y \partial_y f \right)
+	\langle \partial_i \omega , f \rangle = - \langle \omega , \partial_i f \rangle.
 \end{align*}
-By two applications of the lemma we find
+For example, the Dirac-delta distribution, $\delta_0$, is defined as the unique distribution such that
 \begin{align*}
-  &= -(-1)^{m+n} \partial_x^m|_z \left( \sum_{k=0}^{n} \binom{n}{k}
-    \left(\partial_{0,k} u^x \cdot \partial_{1,n-k} f + \partial_{0,k} u^y \cdot \partial_{0,n-k+1} f \right)
-    \right) \\
-  &= -(-1)^{m+n} \sum_{\ell=0}^{m} \sum_{k=0}^{n} \binom{n}{k}\binom{m}{\ell}
-    \Big(\partial_{\ell,k} u^x(z) \partial_{m-\ell+1,n-k} f(z) \\
-     &\hskip 16em + \partial_{\ell,k} u^y(z) \partial_{m-\ell,n-k+1} f(z)
-    \Big)
+	\langle \delta_0 , f \rangle = f(0) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
-Therefore we find
+The distributional derivative of $\partial_i \delta_0$ is given by
 \begin{align*}
-  &\pounds_u[ \partial_{m,n} \delta_{z_i}] =\\
-  &=\quad (-1)^{m+n} \sum_{\ell=0}^m \sum_{k=0}^n \binom{n}{k} \binom{m}{\ell} (-1)^{m+n-\ell-k}\\
-  & \qquad \qquad \cdot \left(\partial_{\ell,k}u^x(z_i) \partial_{m-\ell+1,n-k} \delta_{z_i}
-     +\partial_{\ell,k}u^y(z_i) \partial_{m-\ell,n-k+1} \delta_{z_i}
-     \right) \\
-  &=\sum_{\ell=0}^m \sum_{k=0}^n (-1)^{\ell + k}\binom{n}{k} \binom{m}{\ell}
-   \left(\partial_{m-\ell,n-k}u^x(z_i) \partial_{\ell+1,k} \delta_{z_i}
-     +\partial_{m-\ell,n-k}u^y(z_i) \partial_{\ell,k+1} \delta_{z_i}
-     \right) 
+	\langle \partial_i \delta_0 , f \rangle = -\partial_i f(0) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
+Given a distribution $\omega \in D(\R^2)$ and a function $g \in C^\infty(\R^2)$ we can define the
+distribution $g \omega$ given by
+\begin{align*}
+	\langle g \omega , f \rangle = \langle \omega , gf \rangle \quad , \quad \forall f \in C^\infty(\R^2).
+\end{align*}
+For example, we find that $g \delta _0 = g(0) \delta_0$.
+A slightly more involved example is given by the computation of $g \partial_i \delta_0$.
+We find
+\begin{align*}
+	\langle g \partial_i \delta_0 ,  f \rangle = \langle \partial_i \delta_0 , gf \rangle =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
+\end{align*}
+Therefore
+\begin{align*}
+	g \partial_i \delta_0 = g(0) \partial_i \delta_0 - \partial_i g(0) \delta_0.
+\end{align*}
+On the left hand side, note that $g(0)$ and $\partial_i g(0)$ are merely real numbers,
+which are multiplying the distributions $\partial_i \delta_0$ and $\delta_0$.
+More generally, we find
+\begin{align*}
+	\langle g \partial_x^m \partial_y^n \delta_0 , f \rangle &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
+		&= (-1)^{m+n} \sum_{\ell,k=0}^{m,n} \binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{\ell} \partial_y^k f(0) \right) 
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+\end{align*}
+which means
+\begin{align}
+	g \partial_x^m \partial_y^n \delta_0 =
+		(-1)^{m+n} \sum_{\ell,k=0}^{m,n} (-1)^{\ell + k}
+		\binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+		\partial_{x}^{\ell} \partial_y^k \delta_0.
+                \label{eq:func times partial delta}
+\end{align}
+
+Let $L$ be the pseudo-differential operator dual to $G*$.
+Let $L$ be the pseudo-differential operator dual to $G*$.
+Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+for any $f$ in the RKHS produced by $G$.
+Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+for any $f$ in the RKHS produced by $G$.
+\section{Symmetries and Conserved Momenta}
+\label{sec:symmetries}
+Let us recall the definition of a momentum map from Definition 4.2.1 of \cite{FOM}.
+Given a symplectic manifold $(S,\Omega)$ and a symplectic group
+action by a Lie group $G$, a momentum map associated to $G$ is a map $J:S \to \mathfrak{g}^*$ such that
+\begin{align*}
+  d \langle J , \xi \rangle = i_{\xi_S} \Omega
+\end{align*}
+for all $\xi \in \mathfrak{g}$, where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
+Equivalently we could express the previous condition as
+\begin{align}
+  d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x \rangle \label{eq:momap}
+\end{align}
+for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
+
+In our case $S = {\rm Orb}(\omega_0) = \{ \varphi_* \omega_0 \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$, and the sympectic form at a ``point'' $\omega \in S$ is given by Kostant's formula
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v [\omega] ) :=
+  \langle \omega , u \times v \rangle.
+\end{align*}
+where $u,v \in \mathfrak{X}(\mathbb{R}^2)$ and $u \times v \in C^{\infty}(\mathbb{R}^2)$.
+
+We now will translate \eqref{eq:momap} to this more specific scenario.
+Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
+In this context, a momentum map $J$ associated to a $G$-action is defined by the equation
+\begin{align}
+  \langle d \langle J , \xi \rangle (\omega) , \pounds_v[\omega] \rangle = \langle \omega , \xi_{\mathbb{R}^2} \times v \rangle \label{eq:momap2}
+\end{align}
+
+\subsection{Translational symmetry and $J_{tran}$}
+The group $\mathbb{R}^2$ acts upon $\mathbb{R}^2$ by translation.
+This action induces an action on $S$ in the obvious way.  For any $(a,b) \in \mathbb{R}^2$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $(a,b)^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $(a,b)^*\phi(x,y) := \phi(x +a,y+b)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distribution, denoted $(a,b)_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+\begin{align*}
+  \langle (a,b)_* \omega , \phi \rangle := \langle \omega , (a,b)^* \phi \rangle
+\end{align*}
+As translation of $\mathbb{R}^2$ by $(a,b)$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+\begin{align*}
+  \Omega_{(a,b)_* \omega}( (a,b)_*\pounds_{u}[ \omega] , (a,b)_*\pounds_v[\omega] ) &= \Omega_{(a,b)_* \omega} ( \pounds_{(a,b)_*u}[ (a,b)_*\omega] ,
+  \pounds_{(a,b)_*v}[(a,b)_*\omega] ) \\
+  &= \langle (a,b)_* \omega , (a,b)_*(u \times v) \rangle = \langle \omega, u \times v \rangle \\
+  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+\end{align*}
+
+Given this action is symplectic we can seek a momentum map, $J_{tran}:S \to (\mathbb{R}^2)^*$.  Consider an arbitrary element of the Lie-algebra $(\xi_1,\xi_2) \in \mathbb{R}^2$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \langle d \langle J_{tran} , (\xi_1,\xi_2) \rangle , \pounds_v[\omega] \rangle
+  = \langle \omega , \xi_1 v_2 - \xi_2 v_1 \rangle
+\end{align*}
+We can re-write the right hand side as
+\begin{align*}
+  = \langle \omega , \pounds_v[ \xi_1 y - \xi_2 x] \rangle 
+  = - \langle \pounds_v[\omega] , \xi_1 y - \xi_2 x \rangle
+\end{align*}
+Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+\begin{align*}
+  d \langle J_{tran} , (\xi_1,\xi_2) \rangle(\omega) = \xi_2 x - \xi_1 y
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+  \boxed{
+    J_{tran}(\omega) = ( -\langle \omega ,y \rangle , \langle \omega , x \rangle ) \in (\mathbb{R}^2)^* \equiv \mathbb{R}^2}
+\end{align*}
+If $\omega$ satisfies the jet-vortex ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  J_{tran}(\omega) = \sum_i ( \Gamma_i^{y} - \Gamma_i y_i , \Gamma_i x_i -\Gamma_i^{x} ).
+\end{align*}
+Apparently the terms of the jet-vortices beyond the first order do not influence $J_{tran}$.
+
+\subsection{Rotational symmetry and $J_{ang}$}
+The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin.
+This action induces an action on $S$ in the obvious way.  For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distribution, denoted $\theta_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+\begin{align*}
+  \langle \theta_* \omega , \phi \rangle := \langle \omega , \theta^* \phi \rangle
+\end{align*}
+As any rotation of $\mathbb{R}^2$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+\begin{align*}
+  \Omega_{\theta_* \omega}( \theta_*\pounds_{u}[ \omega] , \theta_*\pounds_v[\omega] ) &= \Omega_{\theta_* \omega} ( \pounds_{\theta_*u}[ \theta_*\omega] ,
+  \pounds_{\theta_*v}[\theta_*\omega] ) \\
+  &= \langle \theta_* \omega , \theta_*(u \times v) \rangle \stackrel{COV}{=} \langle \omega, u \times v \rangle \\
+  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+\end{align*}
+
+Given this action is symplectic we can seek a momentum map, $J_{ang}:S \to \mathfrak{so}(2)^* \equiv \mathbb{R}$.  Consider an arbitrary element of the Lie-algebra $\xi \in \mathfrak{so}(2) \equiv \mathbb{R}$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \langle d \langle J_{ang} , \xi \rangle , \pounds_v[\omega] \rangle
+  = \langle \omega , -y\xi v_2 - x\xi v_1 \rangle
+\end{align*}
+We can re-write the right hand side as
+\begin{align*}
+  = \langle \omega , - \xi \pounds_v[\frac{1}{2} (x^2 + y^2)] \rangle 
+  = \xi \langle \pounds_v[\omega] , \frac{1}{2}(x^2 + y^2) \rangle
+\end{align*}
+Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+\begin{align*}
+  d \langle J_{ang} , \xi \rangle(\omega) = \frac{\xi}{2}(x^2+y^2)
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+  \boxed{
+    J_{ang}(\omega) = \frac{1}{2}\langle \omega, x^2 + y^2\rangle \in \mathbb{R} \equiv \mathfrak{so}(2)^*
+    }
+\end{align*}
+If $\omega$ satisfies the jet-vortex ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \Gamma_i^{xx} \partial_{xx} \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  J_{ang}(\omega) = \frac{\Gamma_i}{2} (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy} .
+\end{align*}
+Apparently the terms of the jet-vortices beyond the second order do not influence $J_{ang}$.
+
+\begin{thebibliography}{}
+
+\bibitem{Chen-etal1999} Chen-etal1999
+
+\bibitem{Ch1972} A. J. Chorin, Vortex methods for rapid flow, Proc. 2d Int. Cong. Num. Meth. Fluid
+Mech., Springer, 1972.
+
+\bibitem{Ch1973}  A. J. Chorin, Numerical study of slightly viscous flow, J. Fluid Mech., 57, 785-796 (1973)
+
+\bibitem{Ch1980} A. J. Chorin, Vortex models and boundary layer instability, SIAM J. Sc. Stat.
+Comp., 1, 1-21 (1980).
+
+\bibitem{Ch1993} 
+A. J. Chorin [1993] Vortex Methods,
+Presented at Les Houches Summer School of Theoretical Physics
+Les Houches, France, June 28-July 30, 1993. DoE Report LBL-34124 Rev.
+
+\bibitem{Ch1993} A. J. Chorin, \textit{Vorticity and Turbulence}, Springer, 1993.
+
+\bibitem{ChBe1973} A. J. Chorin and P. Bernard, discretization of a vortex sheet with an example of roll-up, J. Comp. Phys., 13, 423-429 (1973).
+
+\bibitem{CoKo2000}
+G.-H. Cottet and P. Koumoutsakos [2000] \textit{Vortex Methods: Theory and Practice}, Cambridge Univ. Press, Cambridge, UK.
+
+\bibitem{EbMa1970} Ebin and Marsden 1970
+
+\bibitem{FoHoTi2001} FoHoTi2001 Physica D
+
+\bibitem{FoHoTi2002} FoHoTi2002 Dyn Sys 
+
+\bibitem{Geurts-etal200X} Geurts-etal200X
+
+\bibitem{GjajaHolm1996} GjajaHolm1996
+
+\bibitem{Hecht-etal200Z} Hecht-etal200Z
+
+\bibitem{Ho2001} Ho2001 Physica D paper
+
+\bibitem{Ho2002} Ho2002 Chaos paper
+
+\bibitem{HoMaRa1998} HoMaRa 1998 AIM Paper
+
+\bibitem{HoRaTrYo2005}
+Darryl D. Holm, J. Tilak Ratnanather, Alain Trouv\'e, Laurent Younes [2004]
+Soliton dynamics in computational anatomy,
+NeuroImage, 23 (S1): S170--S178.
+
+\bibitem{Kr1986} R. Krasny, A study of singularity formation in a vortex sheet by the point vortex
+approximation, J. Fluid Mech., 167, 65-93 (1986)
+
+\bibitem{LANSalphaRefs} LANS-alpha Refs, 
+\begin{description}
+\item Gjaja and Holm
+\item Holm \textit{Chaos} and \textit{Physica D}
+\item Chen et al.
+\item Marsden and Shkoller
+\item FoHoTi2001 Physica D and FoHoTi2002 Dyn Syst
+\item Geurts et al.
+\item Fried et al.
+\item Rebholtz
+\item Pouquet et al.
+\item Hecht et al. 
+\end{description}
+
+
+\bibitem{Le1975} A. Leonard, Numerical simulation of interacting three-dimensional vortex filaments, Proc. 4th Int. Conf. Num. Meth. Fluids, Springer, 1975
+
+%\bibitem{Le1980}
+%A. Leonard [1980] Vortex methods for flow simulation, J. Comput. Phys. 37 (3): 289.
+
+\bibitem{Le1985} A. Leonard, Computing three dimensional vortex flows with vortex filaments, Ann. Rev. Fluid Mech., 17: 523-559 (1985)
+
+\bibitem{MaSh2002} Marsden and Shkoller, Phil Trans Roy Soc ??
+
+\bibitem{MiMu2014} Michor Mumford JGM 2014
+
+\bibitem{Newton} Paul Newton's book, \textit{The $N$-Vortex Problem}
+
+\bibitem{Pouquet-etal200Y} Pouquet-etal 200Y
+
+\bibitem{Ro1931} L. Rosenhead, The formation of vortices from a surface of discontinuity, Proc. Roy. Soc. London, A 134: 170-192 (1931)
+
+\bibitem{Saffman} Phil Saffman's book, \textit{Vorticity}
+
+\bibitem{Sa1989}
+T. Sarpkaya [1989] Computational methods with vorticesÑThe 1988 Freeman Scholar Lecture, J. Fluids Eng. 111: 5.
+
+\bibitem{Stock2007} M. J. Stock, Summary of Vortex Methods Literature
+(A living document rife with opinion), Online at \url{http://markjstock.org/research/vortex_methods_literature.pdf}
+
+\bibitem{TrVi2012} A. Trouv\'e, F. X. Vialard [2012] Shape splines and stochastic shape evolutions: a second order point of view, Quart. Appl. Math 70: 219Ð251.
+
+\end{thebibliography}
 
 \bibliographystyle{amsalpha}
-\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\bibliography{hoj_2015}
+
 \end{document}

@@ -1,0 +1,261 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\SDiff}{SDiff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{Derivations of momentum maps on coadjoint orbits of vorticity distributions}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  In this set of notes we derive momentum maps associated to
+  linear momenta, angular momenta, and circulation.
+\end{abstract}
+
+\section{Momentum maps}
+Let us recall the definition of a momentum map from Definition 4.2.1 of \cite{FOM}.
+Given a symplectic manifold $(S,\Omega)$ and a symplectic group
+action by a Lie group $G$, a momentum map associated to $G$ is a map $J:S \to \mathfrak{g}^*$ such that
+\begin{align*}
+  d \langle J , \xi \rangle = i_{\xi_S} \Omega
+\end{align*}
+for all $\xi \in \mathfrak{g}$, where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
+Equivalently we could express the previous condition as
+\begin{align}
+  d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x \rangle \label{eq:momap}
+\end{align}
+for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
+
+In our case $S = {\rm Orb}(\omega_0) = \{ \varphi_* \omega_0 \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$, and the sympectic form at a ``point'' $\omega \in S$ is given by Kostant's formula
+\begin{align*}
+  \Omega_\omega( \pounds_u[\omega] , \pounds_v [\omega] ) :=
+  \langle \omega , u \times v \rangle.
+\end{align*}
+where $u,v \in \mathfrak{X}(\mathbb{R}^2)$ and $u \times v \in C^{\infty}(\mathbb{R}^2)$.
+
+We now will translate \eqref{eq:momap} to this more specific scenario.
+Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
+In this context, a momentum map $J$ associated to a $G$-action is defined by the equation
+\begin{align}
+  \langle d \langle J , \xi \rangle (\omega) , \pounds_v[\omega] \rangle = \langle \omega , \xi_{\mathbb{R}^2} \times v \rangle \label{eq:momap2}
+\end{align}
+
+\section{Translational symmetry and $J_{tran}$}
+The group $\mathbb{R}^2$ acts upon $\mathbb{R}^2$ by translation.
+This action induces an action on $S$ in the obvious way.  For any $(a,b) \in \mathbb{R}^2$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $(a,b)^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $(a,b)^*\phi(x,y) := \phi(x +a,y+b)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distribution, denoted $(a,b)_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+\begin{align*}
+  \langle (a,b)_* \omega , \phi \rangle := \langle \omega , (a,b)^* \phi \rangle
+\end{align*}
+As translation of $\mathbb{R}^2$ by $(a,b)$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+\begin{align*}
+  \Omega_{(a,b)_* \omega}( (a,b)_*\pounds_{u}[ \omega] , (a,b)_*\pounds_v[\omega] ) &= \Omega_{(a,b)_* \omega} ( \pounds_{(a,b)_*u}[ (a,b)_*\omega] ,
+  \pounds_{(a,b)_*v}[(a,b)_*\omega] ) \\
+  &= \langle (a,b)_* \omega , (a,b)_*(u \times v) \rangle = \langle \omega, u \times v \rangle \\
+  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+\end{align*}
+
+Given this action is symplectic we can seek a momentum map, $J_{tran}:S \to (\mathbb{R}^2)^*$.  Consider an arbitrary element of the Lie-algebra $(\xi_1,\xi_2) \in \mathbb{R}^2$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \langle d \langle J_{tran} , (\xi_1,\xi_2) \rangle , \pounds_v[\omega] \rangle
+  = \langle \omega , \xi_1 v_2 - \xi_2 v_1 \rangle
+\end{align*}
+We can re-write the right hand side as
+\begin{align*}
+  = \langle \omega , \pounds_v[ \xi_1 y - \xi_2 x] \rangle 
+  = - \langle \pounds_v[\omega] , \xi_1 y - \xi_2 x \rangle
+\end{align*}
+Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+\begin{align*}
+  d \langle J_{tran} , (\xi_1,\xi_2) \rangle(\omega) = \xi_2 x - \xi_1 y
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+  \boxed{
+    J_{tran}(\omega) = ( -\langle \omega ,y \rangle , \langle \omega , x \rangle ) \in (\mathbb{R}^2)^* \equiv \mathbb{R}^2}
+\end{align*}
+If $\omega$ satisfies the jet-vortex ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  J_{tran}(\omega) = \sum_i ( \Gamma_i^{y} - \Gamma_i y_i , \Gamma_i x_i -\Gamma_i^{x} ).
+\end{align*}
+Apparently the terms of the jet-vortices beyond the first order do not influence $J_{tran}$.
+
+\section{Rotational symmetry and $J_{ang}$}
+The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin.
+This action induces an action on $S$ in the obvious way.  For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distribution, denoted $\theta_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+\begin{align*}
+  \langle \theta_* \omega , \phi \rangle := \langle \omega , \theta^* \phi \rangle
+\end{align*}
+As any rotation of $\mathbb{R}^2$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+\begin{align*}
+  \Omega_{\theta_* \omega}( \theta_*\pounds_{u}[ \omega] , \theta_*\pounds_v[\omega] ) &= \Omega_{\theta_* \omega} ( \pounds_{\theta_*u}[ \theta_*\omega] ,
+  \pounds_{\theta_*v}[\theta_*\omega] ) \\
+  &= \langle \theta_* \omega , \theta_*(u \times v) \rangle \stackrel{COV}{=} \langle \omega, u \times v \rangle \\
+  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+\end{align*}
+
+Given this action is symplectic we can seek a momentum map, $J_{ang}:S \to \mathfrak{so}(2)^* \equiv \mathbb{R}$.  Consider an arbitrary element of the Lie-algebra $\xi \in \mathfrak{so}(2) \equiv \mathbb{R}$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \langle d \langle J_{ang} , \xi \rangle , \pounds_v[\omega] \rangle
+  = \langle \omega , -y\xi v_2 - x\xi v_1 \rangle
+\end{align*}
+We can re-write the right hand side as
+\begin{align*}
+  = \langle \omega , - \xi \pounds_v[\frac{1}{2} (x^2 + y^2)] \rangle 
+  = \xi \langle \pounds_v[\omega] , \frac{1}{2}(x^2 + y^2) \rangle
+\end{align*}
+Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+\begin{align*}
+  d \langle J_{ang} , \xi \rangle(\omega) = \frac{\xi}{2}(x^2+y^2)
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+  \boxed{
+    J_{ang}(\omega) = \frac{1}{2}\langle \omega, x^2 + y^2\rangle \in \mathbb{R} \equiv \mathfrak{so}(2)^*
+    }
+\end{align*}
+If $\omega$ satisfies the jet-vortex ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \Gamma_i^{xx} \partial_{xx} \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  J_{ang}(\omega) = \frac{\Gamma_i}{2} (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy} .
+\end{align*}
+Apparently the terms of the jet-vortices beyond the second order do not influence $J_{ang}$.
+
+
+\section{Particle relabling symmetry and $J_{circ}$}
+Kelvin's theorem as a conservation law does not live as a conservation law on $S$ like angular and linear momentum.
+This is because, Kelvin's theorem is the conservation law associated to $\SDiff(\mathbb{R}^2)$ symmetry, and this symmetry reduction has already occured if we are using $S$ as our phase space.
+The circulation momentum map really lives on $T^* \SDiff(\mathbb{R}^2)$,
+and is a standard cotangent-lift momentum map.
+In particular an element of $T^*\SDiff( \mathbb{R}^2)$ consists of a pair $(\varphi , \omega)$ where $\varphi \in \SDiff(\mathbb{R}^2)$ and $\omega$ is a distribution.  This identification comes from identifying $T\SDiff(\mathbb{R}^2) \equiv \SDiff(\mathbb{R}^2) \times C^{\infty}(\mathbb{R}^2)$
+where we store $(\varphi, \psi)$ and $\psi$ is the stream function of the velocity field.\footnote{Strictly speaking $\psi$ is only determined up to a constant.}.  The circulation momentum map is simply
+\begin{align*}
+  J_{circ}( \varphi, \omega) = \varphi^* \omega.
+\end{align*}
+To derive this use the definition of a cotangent lift momentum map.
+Note that the right action of $\mathfrak{X}_{\rm div}(\mathbb{R}^2) \equiv C^{\infty}(\mathbb{R}^2)$ on $\SDiff(M)$ sends $\varphi$ to $(\varphi , \varphi_* \psi)$.  Using this fact we find, via the definition of a cotangent lift momentum map, that
+\begin{align*}
+  \langle J_{circ}(\varphi,\omega) , \psi \rangle
+  = \langle (\varphi,\omega) , (\varphi,\varphi_*\psi) \rangle 
+  = \langle \omega , \varphi_*\psi \rangle = \langle \varphi^* \omega, \psi \rangle.
+\end{align*}
+
+Euler's equations on $T^*\SDiff(\mathbb{R}^2)$ are written as
+\begin{align*}
+  \partial_t \omega + \pounds_u [\omega] = 0 \quad,\quad \partial_t \varphi = u \circ \varphi\quad,\quad \omega = {\rm curl}(u).
+\end{align*}
+Combining the first two equations we find that $\omega = (\varphi_t)_*\omega_0$ where $\omega_0$ is the initial circulation.  Thus $\omega_0 = \varphi^*\omega$ is constant along solutions of Euler's equations.
+
+
+In the case of jet-vortices we compute
+\begin{align*}
+  \langle \Gamma_i^\alpha \partial_\alpha \delta_{z_i} , f \circ \varphi^{-1} \rangle &= \Gamma_i^\alpha \partial_{\alpha} ( f \circ \varphi^{-1}) \\
+  &= \Gamma_i^\alpha \sum_{n=1}^{|\alpha|} \sum_{
+    \substack{
+      \beta \in {\rm bag}^n(2) \\
+      [\alpha_1,\dots,\alpha_n] \in \Pi(\alpha,n)
+      }
+     }
+     \partial_{\beta}f|_{\varphi^{-1}(z_i)}
+     \partial_{[\alpha_1,\dots,\alpha_n]} (\varphi^{-1})^{\beta}(z_i)
+\end{align*}
+where
+\begin{align*}
+  \partial_{[\alpha_1,\dots,\alpha_n]} g^\beta := 
+  \sum_{[b_1,\dots,b_n]}\prod_{k=1}^n \partial_{\alpha_k} g^{b_k}.
+\end{align*}
+
+Therefore the distribution
+\begin{align*}
+ \sum_{i,\alpha} \Gamma_i^\alpha \sum_{n=1}^{|\alpha|} \sum_{
+    \substack{
+      \beta \in {\rm bag}^n(2) \\
+      [\alpha_1,\dots,\alpha_n] \in \Pi(\alpha,n)
+      }
+     }
+     (-1)^{|\beta|} \partial_{[\alpha_1,\dots,\alpha_n]} (\varphi^{-1})^\beta(z_i)
+     \partial_{\beta} \delta_{z_i}
+\end{align*}
+is conserved.
+This yields new conserved quantities for each $i$ and $\alpha$
+given by the coefficient of $\delta_\beta \delta_{z_i}$.  I have yet to derive this.
+
+
+
+% The group $\SDiff(\mathbb{R}^2)$ acts upon $\mathbb{R}^2$ by its very definition.
+% This action induces an action on $S$ in the obvious way.  For any $\Psi \in \SDiff(\mathbb{R}^2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\Psi^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $\Psi^*\phi(x,y) := \phi(\Psi(x,y))$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+%  In particular, the left-action on distribution, denoted $\Psi_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+% \begin{align*}
+%   \langle \Psi_* \omega , \phi \rangle := \langle \omega , \Psi^* \phi \rangle
+% \end{align*}
+% The symplecic manifold $S$ is an $\SDiff(\mathbb{R}^2)$ orbit, and is therefore invariant under the action of $\SDiff(\mathbb{R}^2)$ by construction.  Moreover, we observe the action on $S$ is symplectic because
+% \begin{align*}
+%   \Omega_{\Psi_* \omega}( \Psi_*\pounds_{u}[ \omega] , \Psi_*\pounds_v[\omega] ) &= \Omega_{\Psi_* \omega} ( \pounds_{\Psi_*u}[ \Psi_*\omega] ,
+%   \pounds_{\Psi_*v}[\Psi_*\omega] ) \\
+%   &= \langle \Psi_* \omega , \Psi_*(u \times v) \rangle \stackrel{COV}{=} \langle \omega, u \times v \rangle \\
+%   &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+% \end{align*}
+
+% Given this action is symplectic we can seek a momentum map, $J_{circ}:S \to \mathfrak{X}_{\rm div}(\mathbb{R}^2)^* \equiv \mathcal{D}(\mathbb{R}^2)$.  Consider an arbitrary element of the Lie-algebra $\phi \in \mathfrak{X}_{\rm div}(\mathbb{R}^2) \equiv C^{\infty}(\mathbb{R}^2)$ and use \eqref{eq:momap2} to obtain
+% \begin{align*}
+%   \langle d \langle J_{circ} , \phi \rangle(\omega) , \pounds_v[\omega] \rangle
+%   = \langle \omega , -\partial_y \phi v_2 - \partial_x\phi v_1 \rangle
+% \end{align*}
+% We can re-write the right hand side as
+% \begin{align*}
+%   = \langle \omega , - \pounds_v[\phi] \rangle 
+%   = \langle \pounds_v[\omega] , \phi \rangle
+% \end{align*}
+% Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+% \begin{align*}
+%   d \langle J_{circ} , \phi \rangle(\omega) = \phi
+% \end{align*}
+% Integrating by $\omega$ we find
+% \begin{align*}
+%   J_{ang}(\omega) = \omega
+% \end{align*}
+
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}

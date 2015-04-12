@@ -475,6 +475,18 @@ Let $L$ be the psuedo-differential operator on $C^\infty(\R^2,\R^2)$
 such that $\mathrm{curl} \circ L[ \nabla^\perp K_x] = \delta_x$.
 Then for $\omega \in \mathcal{D}'(\R^2)$ let $\alpha = L[\nabla^\perp (K*\omega)]$ so that $\omega = d\alpha$.  Then $\langle \mathcal{K}(\gamma) , \omega \rangle$ can be defined as before.
 
+\subsection{Energy}
+The energy $H =  \frac{1}{2} \langle \omega , \psi \rangle$ should be conserved.  We find that using the jet-ansatz
+\begin{align*}
+  H(x,y,\Gamma) &= \frac{1}{2} \langle \Gamma_i^{m,n} \partial_{m,n} \delta_{z_i} ,
+  (-1)^{k+\ell} \Gamma_j^{k,\ell} \partial_{k,\ell} G_{z_j} \rangle \\
+  &= \frac{1}{2} (-1)^{k+\ell+m+n} \Gamma_i^{m,n}\Gamma_j^{k,\ell} \partial_{m+k,n+\ell}G(z_i - z_j)
+\end{align*}
+in terms of the stream function
+\begin{align*}
+  H(x,y,\Gamma) &= \frac{1}{2} (-1)^{m+n}\Gamma_i^{m,n} \partial_{m,n} \psi
+\end{align*}
+
 
 % When $\omega_0 \in M^{(k)}$ this construction needs to be amended because $\omega_0$ is a distribution, and not an exact two-form.
 % However, something can be said imediately.

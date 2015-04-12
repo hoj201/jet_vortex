@@ -1,0 +1,392 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb,url}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+\usepackage{todonotes}
+\usepackage{hyperref}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+%  NEW REMARKS
+\theoremstyle{remark}
+\newtheorem{rmk}[thm]{Remark}
+
+
+%%%%%%%%%%%%%%% Holm Macros
+\def\MM#1{\boldsymbol{#1}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}} 
+\newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
+\newcommand{\dd}[2]{\frac{\diff #1}{\diff #2}} 
+\newcommand{\sothree}{\mathfrak{so}(3)}
+% \contract is a differential geometry contraction sign _|
+\def\contract{\makebox[1.2em][c]{\mbox{\rule{.6em}
+{.01truein}\rule{.01truein}{.6em}}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%  MATH OPERATORS
+\DeclareMathOperator{\SDiff}{SDiff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Jet}{Jet}
+\DeclareMathOperator{\Orb}{Orb}
+
+%  TITLE, AUTHOR, DATE
+\title{Equations of motion for Jet vortex methods}
+\author{Darryl D. Holm \& Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+We derive the equations of motion for jet-vortices.
+
+\subsection{0th order}
+Consider the ansatz for the vorticity
+\begin{align}
+  \omega(t) = \sum_{i} \Gamma_i(t) \delta_{z_i} \label{eq:ansatz 0}
+\end{align}
+for constants $\Gamma_i(t) \in \R$ for $i$ in some finite set $S$
+and where the points $z_i \in \R^2$ are distinct.
+We then find
+\begin{align}
+  \partial_t \omega = \sum_{i} \frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i}.
+  \label{eq:time derivative}
+\end{align}
+and
+\begin{align*}
+  u \partial_x \omega = \sum_{i} u \Gamma_i \partial_x \delta_{z_i}.
+\end{align*}
+Here $u \partial_x \delta$ should be interpreted
+in terms of the basic theory of distrbutions.
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we find
+\begin{align}
+  u \partial_x \omega = \sum_{i} \Gamma_i u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i}. \label{eq:u term}
+\end{align}
+Similarly
+\begin{align}
+    v \partial_y \omega = \sum_{i} \Gamma_i v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i}. \label{eq:v term}
+\end{align}
+Substituion of \eqref{eq:time derivative},\eqref{eq:u term},
+and \eqref{eq:v term} into \eqref{eq:vorticity} yields
+\begin{align*}
+\frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i}
+  + \Gamma_i u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i}\\
+  \quad + \Gamma_i v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} =  0.
+\end{align*}
+We observe this is a linear combination of the distributions $\delta_{z_i},\partial_x\delta_{z_i}$ and $\partial_y \delta_{z_i}$.
+The coefficients of each must vanish independently.
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = \partial_x u(z_i) + \partial_y v(z_i).
+\end{align*}
+As the flow is divergence free we find
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = 0.
+\end{align*}
+The vanishing of the coefficients $\partial_x \delta_{z_i}$ and $\partial_y \delta_{z_i}$ yields
+\begin{align}
+  \frac{dx_i}{dt} = u(z_i) \quad , \quad \frac{dy_i}{dt} = v(z_i).
+  \label{eq:point motion}
+\end{align}
+Thus we have found equations of motion for $x_i(t),y_i(t)$ and $\Gamma_i(t)$
+whose solutions make \eqref{eq:ansatz 0} into a solution of \eqref{eq:vorticity}.
+
+\subsection{1st order}
+Consider the first order jet-vortex ansatz for the vorticity
+\begin{align}
+  \omega(t) = \sum_{i} \Gamma_i(t) \delta_{z_i} 
+  + \Gamma_i^x \partial_x \delta_{z_i}
+  + \Gamma_i^y \partial_y \delta_{z_i}\label{eq:ansatz 1}
+\end{align}
+for constants $\Gamma_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i = 1,\dots,N$.
+We then find
+\begin{align*}
+  \partial_t \omega = \sum_{i} & \frac{d \Gamma_i}{dt} \delta_{z_i} 
+  - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
+  - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i} \\
+  &\frac{d \Gamma_i^x}{dt} \partial_x\delta_{z_i} 
+  - \Gamma_i^x \frac{dx_i}{dt} \partial_x^2 \delta_{z_i}
+  - \Gamma_i^x \frac{dy_i}{dt} \partial_{xy} \delta_{z_i} \\
+  &\frac{d \Gamma_i^y}{dt} \delta_{z_i} 
+  - \Gamma_i^y \frac{dx_i}{dt} \partial_{xy} \delta_{z_i}
+  - \Gamma_i^y \frac{dy_i}{dt} \partial_y^2 \delta_{z_i}
+\end{align*}
+and
+\begin{align*}
+  u \partial_x \omega = \sum_{i} u \Gamma_i \partial_x \delta_{z_i}
+  + u \Gamma_i^x \partial_x^2 \delta_{z_i} 
+  + u \Gamma_i^y \partial_{xy} \delta_{z_i}.
+\end{align*}
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we can revise the previous equation to
+obtain
+\begin{align*}
+  u \partial_x \omega &= \sum_{i} \Gamma_i ( u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i} ) \\
+   &\Gamma_i^x (u(z_i) \partial_x^2 \delta_{z_i} 
+   - 2\partial_x u(z_i) \partial_x \delta_{z_i}
+   + \partial_x^2u(z_i) \delta_{z_i} ) \\
+   &\Gamma_i^y ( u(z_i) \partial_{xy} \delta_{z_i} 
+   - \partial_x u(z_i) \partial_y \delta_{z_i} 
+   - \partial_y u(z_i) \partial_x \delta_{z_i} 
+   + \partial_{xy}u(z_i) \delta_{z_i}
+\end{align*}
+Similarly
+\begin{align*}
+    v \partial_y \omega &= \sum_{i} \Gamma_i ( v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} ) \\
+   &\quad \Gamma_i^x (v(z_i) \partial_{xy} \delta_{z_i} 
+   - \partial_x v(z_i) \partial_x \delta_{z_i}
+   - \partial_y v(z_i) \partial_x \delta_{z_i}
+   + \partial_{xy} v(z_i) \delta_{z_i} ) \\
+   &\quad \Gamma_i^y ( v(z_i) \partial_{y}^2 \delta_{z_i} 
+   - 2\partial_y v(z_i) \partial_y \delta_{z_i} 
+   + \partial_{y}^2v(z_i) \delta_{z_i})
+\end{align*}
+Substituion of these expressions into \eqref{eq:vorticity} yields
+the vanishing of
+a linear combination of the distributions
+$\delta_{z_i},\partial_x\delta_{z_i},\partial_y \delta_{z_i}, \partial_x^2 \delta_{z_i},
+ \partial_{xy} \delta_{z_i}$, and $\partial_y^2 \delta_{z_i}$.
+As each of these distributions is linearly independent
+of the others (assuming the $z_i$'s are distinct)
+we find that the coefficients must vanish independently.
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+the equation
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = \partial_x u(z_i) + \partial_y v(z_i)
+  + \partial_x^2 u(z_i) + \partial_{xy} v(z_i)
+  + \partial_{xy} u(z_i) + \partial_y^2 v(z_i)
+\end{align*}
+Again, as the flow is divergence free we find
+\begin{align*}
+  \frac{d\Gamma_i}{dt} = 0.
+\end{align*}
+The vanishing of the coefficients of $\partial_x^2 \delta_{z_i}$ yields
+\begin{align*}
+  \Gamma_i^x ( u(z_i) - \frac{dx_i}{dt} ) = 0.
+\end{align*}
+Similarly, by looking at the coefficient of $\partial_y^2 \delta_{z_i}$
+we find
+\begin{align*}
+  \Gamma_i^y ( v(z_i) - \frac{dy_i}{dt} ) = 0.
+\end{align*}
+Assuming $\Gamma_i^x$ and $\Gamma_i^y$ are non-zero we
+obtain \eqref{eq:point motion} again.\footnote{
+  After we obtain dynamics under this assumption
+  we may drop the assumption by continous extension.
+  The resulting extension yields the $0$th order
+  jet-vortex dynamics.
+}
+
+Finally, the vanishing of the coefficients $\partial_x \delta_{z_i}$ and $\partial_y \delta_{z_i}$ yields
+\begin{align*}
+  \frac{d\Gamma^x_i}{dt} = \Gamma_i^x \partial_x u(z_i) + \Gamma_i^y \partial_y u(z_i) \\
+  \frac{d\Gamma^y_i}{dt} = \Gamma_i^x \partial_x v(z_i) + \Gamma_i^y \partial_y v(z_i)
+\end{align*}
+Thus we have found equations of motion for $x_i(t),y_i(t)$ and the
+$\Gamma_i(t)$'s.
+The solutions of this finite-dimensional ODE
+will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
+into a solution of \eqref{eq:vorticity}.
+
+\subsection{$N$th order}
+Consider the $N$th order jet-vortex ansatz for the vorticity
+\begin{align}
+  \omega(t) = \sum_{i \in S} \sum_{m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n \delta_{z_i} \label{eq:ansatz N}
+\end{align}
+for constants $\Gamma^{mn}_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i \in S$.
+We then find
+\begin{align*}
+  \partial_t \omega =	
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+  	\frac{d \Gamma_i^{mn}}{dt} \partial_x^m \partial_y^n \delta_{z_i} - \Gamma_i^{mn} \frac{dx_i}{dt} \partial_{x}^{m+1} \partial_y^{n} \delta_{z_i}
+	- \Gamma_i^{mn} \frac{dy_i}{dt} \partial_{x}^{m} \partial_y^{n+1} \delta_{z_i}.
+\end{align*}
+and
+\begin{align*}
+  u \partial_x \omega = 
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+   u \Gamma_i ^{mn}\partial_x^{m+1} \partial_y^n \delta_{z_i}.
+\end{align*}
+Invoking \eqref{eq:func times partial delta} (see Appendix
+\ref{sec:distributions}) we can revise the previous equation to
+obtain
+\begin{align*}
+  u \partial_x \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+	\Gamma_i^{mn} (-1)^{m+n+1} \sum_{\ell,k} (-1)^{\ell + k} \binom{m+1}{\ell} \binom{n}{k} \partial_x^{\ell} \partial_y^k u(z_i) \partial_x^{m+1-\ell} \partial_y^{n-k} \delta_{z_i}.
+\end{align*}
+Similarly
+\begin{align*}
+  v \partial_y \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+	\Gamma_i^{mn} (-1)^{m+n+1} \sum_{\ell,k} (-1)^{\ell + k} \binom{m}{\ell} \binom{n+1}{k} \partial_x^{\ell} \partial_y^k v(z_i) \partial_x^{m-\ell} \partial_y^{n+1-k} \delta_{z_i}.
+\end{align*}
+Substitution of these expressions into \eqref{eq:vorticity} yields
+the vanishing of a linear combination of the distributions
+$\partial_x^m \partial_y^n \delta_{z_i}$
+for $m+n \leq N+1$.
+As each of these distributions is linearly independent
+of the others (assuming the $z_i$'s are distinct)
+we find that the coefficients must vanish independently.
+Assuming sufficiently many of the $\Gamma_i^{m,n}$'s are non-zero 
+for $m+n = N$ we recover \eqref{eq:point motion}.\footnote{
+  As before, after we obtain dynamics for the $\Gamma$'s under this assumption
+  we may drop the assumption by continuous extension.
+  The resulting extension yields the $0$th order
+  jet-vortex dynamics.
+}
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+\begin{align*}
+	\frac{d\Gamma^{0,0}_i}{dt} + \sum_{0 < m+n \leq N} \Gamma^{m,n} ( \partial_x^{m+1}\partial_y^n u(z_i) + \partial_x^{m}\partial_y^{n+1} v(z_i) ) = 0.
+\end{align*}
+As $u$ is divergence free this equation reduces to
+\begin{align*}
+	\frac{d \Gamma^{0,0} }{dt} = 0
+\end{align*}
+
+For $\ell+k \leq N$ the vanishing of the coefficient of $\partial_{\ell,k} \delta_{z_i}$ yields
+\begin{align*}
+  \dot{\Gamma}_i^{\ell k} = (-1)^{\ell + k}
+  \sum_{
+    \substack{
+      m > \ell \\
+      n > k \\
+      n+m \leq p}
+    }\Gamma_i^{mn} \Big[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
+   \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i)  \Big]
+\end{align*}
+Again, we have found equations of motion for $x_i(t),y_i(t)$ and the
+$\Gamma_i(t)$'s.
+The solutions of this finite-dimensional ODE
+will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
+into a solution of \eqref{eq:vorticity}.
+
+\begin{rmk}
+  We will find that the following quantities are conserved:
+  
+  \begin{tabular}{|c|c|}
+  	\hline
+	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
+	  \hline
+	  Angular momentum & $J_{ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
+	  \hline
+	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
+	  \hline
+  \end{tabular}
+
+  The first two are momenta derived by observing the rotational and
+  translational symmetry of the fluid and applying Noether's theorem (see Appendix \ref{sec:symmetries} for derivation).
+\end{rmk}
+
+\begin{rmk}
+  Moments ... \todo[inline]{Still need to write the moments section.}
+\end{rmk}
+
+
+\appendix
+
+\section{Distributions}
+\label{sec:distributions}
+The vorticity, $\omega$, should be viewed as a distribution
+and the term ``$\partial_x \omega$'' should be viewed
+as a distributional derivative.
+When $\omega \in D(\R^2)$ is a smooth distribution there is little harm in naively interpreting $\omega$ as a smooth function on $\R^2$.
+However, when $\omega$ is not smooth (e.g. a Dirac delta distribution),
+then one really needs to invoke the mathematics of distributions
+as distinct from that of real valued functions.
+Therefore, we have included this appendix to remind the reader of the basic theory of distributions.
+The main reference for this section is \cite{Hormander2003}.\todo{We should refer to specific formulas from here.}
+
+The space of distributions $D(\R^2)$ is the dual-vector space to the space of smooth functions $C^\infty(\R^2)$.
+Therefore a distribution is defined by how it maps functions to real numbers.
+Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
+we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
+
+Given a distribution $\omega \in D(\R^2)$.
+We can define the distributional derivative of $\omega$ in the $i$th coordinate direction
+as the distribution $\partial_i \omega$ defined by
+\begin{align*}
+	\langle \partial_i \omega , f \rangle = - \langle \omega , \partial_i f \rangle.
+\end{align*}
+For example, the Dirac-delta distribution, $\delta_0$, is defined as the unique distribution such that
+\begin{align*}
+	\langle \delta_0 , f \rangle = f(0) \quad , \quad \forall f \in C^\infty(\R^2).
+\end{align*}
+The distributional derivative of $\partial_i \delta_0$ is given by
+\begin{align*}
+	\langle \partial_i \delta_0 , f \rangle = -\partial_i f(0) \quad , \quad \forall f \in C^\infty(\R^2).
+\end{align*}
+Given a distribution $\omega \in D(\R^2)$ and a function $g \in C^\infty(\R^2)$ we can define the
+distribution $g \omega$ given by
+\begin{align*}
+	\langle g \omega , f \rangle = \langle \omega , gf \rangle \quad , \quad \forall f \in C^\infty(\R^2).
+\end{align*}
+For example, we find that $g \delta _0 = g(0) \delta_0$.
+A slightly more involved example is given by the computation of $g \partial_i \delta_0$.
+We find
+\begin{align*}
+	\langle g \partial_i \delta_0 ,  f \rangle = \langle \partial_i \delta_0 , gf \rangle =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
+\end{align*}
+Therefore
+\begin{align*}
+	g \partial_i \delta_0 = g(0) \partial_i \delta_0 - \partial_i g(0) \delta_0.
+\end{align*}
+On the left hand side, note that $g(0)$ and $\partial_i g(0)$ are merely real numbers,
+which are multiplying the distributions $\partial_i \delta_0$ and $\delta_0$.
+More generally, we find
+\begin{align*}
+	\langle g \partial_x^m \partial_y^n \delta_0 , f \rangle &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
+		&= (-1)^{m+n} \sum_{\ell,k=0}^{m,n} \binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{\ell} \partial_y^k f(0) \right) 
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+\end{align*}
+which means
+\begin{align}
+	g \partial_x^m \partial_y^n \delta_0 =
+		(-1)^{m+n} \sum_{\ell,k=0}^{m,n} (-1)^{\ell + k}
+		\binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+		\partial_{x}^{\ell} \partial_y^k \delta_0.
+                \label{eq:func times partial delta}
+\end{align}
+\end{thebibliography}
+
+\bibliographystyle{amsalpha}
+\bibliography{hoj_2015}
+\end{document}

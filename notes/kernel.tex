@@ -1,0 +1,405 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Ei}{Ei}
+
+%  TITLE, AUTHOR, DATE
+\title{Notes on vortex blob kernels}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section{The point vortex method kernels}
+The original vortex method uses the Green's function of
+$-\Delta$
+\begin{align*}
+  G(z) = \frac{-1}{2\pi} \log(r).
+\end{align*}
+The velocity field is then related to the vorticity by
+\begin{align*}
+  u = K * \omega = \int K(z-z') \omega(z') dz'
+\end{align*}
+where $K := \nabla^\perp G$ is
+\begin{align*}
+  K(z) = \frac{(-y,x)}{2\pi r^2} = \frac{i}{2\pi \bar{z}}.
+\end{align*}
+
+\section{The vortex-blob method}
+We can smooth everything via the smoothing kernel $\psi_\delta(z) = \frac{1}{\delta^2 \pi}e^{ -r^2 / \delta^2}$
+If we define $G_\delta = G * \psi_\delta$, then we find
+\begin{align*}
+  \Delta G_\delta = \frac{1}{r} \partial_r ( r \partial_r G_\delta) = -\psi_\delta
+\end{align*}
+One integration with respect to $r$ yields
+\begin{align*}
+  \partial_r G_\delta(z) = \frac{1}{2\pi r} ( e^{-r^2/\delta^2} - 1)
+\end{align*}
+A second integration yields
+\begin{align*}
+  G_\delta(z) = \frac{1}{4\pi} \left( {\rm Ei}( -r^2 / \delta^2) - 2 \log(r) \right).
+\end{align*}
+Where ${\rm Ei}( \cdot )$ denotes the \emph{exponential $i$ function}
+\begin{align*}
+  \Ei(x) = - \int_{-x}^{\infty} \frac{e^{-x}}{x} dx.
+\end{align*}
+We define $K_\delta := K * \psi_\delta$, which can be written explicitly as
+\begin{align*}
+  K_\delta(z) = \frac{(-y,x)}{2\pi r^2} (1-e^{-r^2/\delta^2})
+\end{align*}
+
+\section{Computations of Derivatives of $G_\delta(z)$ for $|z| > \delta$}
+For our algorithm, we need to determine the 
+derivatives of $G_\delta$ up to order 5,
+and we will need a means of computing these near 
+the removable singularity at $r=0$.
+For $r > \delta$ we can use the exiplicit computations. 
+The first order derivatives are:
+\begin{align*}
+  \partial_x G_\delta(z) = \frac{-x}{r^2}(e^{-r^2/\delta^2} - 1) \\
+  \partial_y G_\delta(z) = \frac{-y}{r^2}(e^{-r^2/\delta^2} - 1).
+\end{align*}
+According to \emph{Sage} the second-order derivatives are
+\begin{align*}
+  \partial_{xx}G_\delta(z) &= \frac{2 \, x^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{r^{4}} 
+  -\frac{e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1}{r^{2}}
+  + \frac{2 \, x^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{r^{2} \delta^{2}} \\
+  \partial_{xy}G_\delta(z) &= \frac{2 \, x y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{r^4} 
+  + \frac{2 \, x y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{r^{2}} \delta^{2}} \\
+  \partial_{yy}G_\delta(z) &= \frac{2 \, y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{r^{4}} 
+  - \frac{e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1}{r^{2}}
+  + \frac{2 \, y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+\end{align*}
+The third order derivatives are
+\begin{align*}
+  \partial_{xxx}G_\delta(z) &= - \frac{8 \, x^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{6 \, x {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{8 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{6 \, x e^{\left(-\frac{ry^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{4 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{r^2 \delta^4}
+\end{align*}
+and
+\begin{align*}
+  \partial_{xxy} G_\delta(z) &= 
+  -\frac{8 \, x^{2} y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{2 \, y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{8 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{r^{4} \delta^{2}} \\
+  &\quad + \frac{2 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{4 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} d^{4}}
+\end{align*}
+and
+\begin{align*}
+  \partial_{xyy}G_\delta (z) &= 
+  - \frac{8 \, x y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}- 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{2 \, x {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}}
+  - \frac{8 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{2 \, x e^{\left(-\frac{x^{2} + y^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}}
+  - \frac{4 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} d^{4}}
+\end{align*}
+and
+\begin{align*}
+  \partial_{yyy}G_\delta (z) &= 
+  - \frac{8 \, y^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{6 \, y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{8 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}}\\
+  &\quad + \frac{6 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{4 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}}
+\end{align*}
+The fourth order derivatives are as follows.
+we find $\partial_{x}^4G_\delta$ is
+\begin{align*}
+  \partial_x^4 G_\delta(z) &= \frac{48 \, x^{4} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}- 1\right)}}{{\left(r^{2}\right)}^{4}}
+  - \frac{48 \, x^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}}
+  + \frac{48 \, x^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+  &\quad + \frac{6 \, {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{48 \, x^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+  + \frac{24 \, x^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} \\
+  &\quad + \frac{6 \, e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{24 \, x^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{8 \,x^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^6}.
+\end{align*}
+we find $\partial_{xxxy}G_\delta$ is
+\begin{align*}
+  \partial_{xxxy}G_\delta(z) &= \frac{48 \, x^{3} y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}}
+   - \frac{24 \, x y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{{\left(r^{2}\right)}^{3}} 
+   + \frac{48 \, x^{3} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+   &\quad - \frac{24 \, x y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+   +\frac{24 \, x^{3} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+   -\frac{12 \, x y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+   + \frac{8 \,x^{3} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}}.
+\end{align*}
+We find $\partial_{xxyy}G_\delta$ is
+\begin{align*}
+  \partial_{xxyy}G_\delta(z) &= \frac{48 \, x^{2} y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{8 \, x^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  - \frac{8 \, y^{2}{\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{{\left(r^{2}\right)}^{3}} \\
+  &\quad + \frac{48 \, x^{2} y^{2}e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  + \frac{2 \, {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{8 \, x^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+  - \frac{8\, y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{24 \, x^{2} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  + \frac{2 \, e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{4 \, x^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  - \frac{4 \,y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{8 \, x^{2} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}}.
+\end{align*}
+We find $\partial_{xyyy}G_\delta$ is
+\begin{align*}
+  \partial_{xyyy}G_\delta(z) &= \frac{48 \, x y^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  -\frac{24 \, x y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{48 \, x y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+  &\quad - \frac{24 \, x y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+  +\frac{24 \, x y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  -\frac{12 \, x y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{8 \,x y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}}
+\end{align*}
+We find $\partial_{yyyy}G_\delta$ is
+\begin{align*}
+  \partial_{yyyy}G_\delta(z) &= \frac{48 \, y^{4} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{48 \, y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{48 \, y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+  &\quad + \frac{6 \, {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{2}} 
+  - \frac{48 \, y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+  + \frac{24 \, y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} \\
+  &\quad + \frac{6 \, e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{2}} 
+  - \frac{24 \, y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{8 \, y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}}.
+\end{align*}
+We find $\partial_{xxxxx}G_\delta$ is
+\begin{align*}
+  \partial_{xxxxx}G_\delta(z) &= 
+  - \frac{384 \, x^{5} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}} 
+  + \frac{480 \, x^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{384 \, x^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{4} \delta^{2}} \\
+  &\quad - \frac{120 \, x {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{480 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  - \frac{192 \, x^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+  - \frac{120 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{240 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  - \frac{64 \, x^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} 
+  - \frac{60 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{80 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+  - \frac{16 \, x^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}.
+\end{align*}
+We find $ \partial_{xxxxy}G_\delta$ is
+\begin{align*}
+  \partial_{xxxxy}G_\delta(z) &= 
+  -\frac{384 \, x^{4} y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}} 
+  + \frac{288 \, x^{2} y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{384 \, x^{4} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{4} \delta^{2}} \\
+  &\quad - \frac{24 \, y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} -1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{288 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  - \frac{192 \, x^{4} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+  - \frac{24 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{144 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  - \frac{64 \, x^{4} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} 
+  - \frac{12 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} \\
+  &\quad + \frac{48 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+  - \frac{16 \, x^{4} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}.
+\end{align*}
+We find $\partial_{xxxyy}G_\delta$ is
+\begin{align*}
+  \partial_{xxxyy}G_\delta(z) &=
+   -\frac{384 \, x^{3} y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}}
+   + \frac{48 \, x^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+   + \frac{144 \, x y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} \\
+   &\quad - \frac{384 \, x^{3} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{4} \delta^{2}} 
+   - \frac{24 \, x {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+   + \frac{48 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+   + \frac{144 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+   &\quad - \frac{192 \, x^{3} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+   - \frac{24 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+   + \frac{24 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+   + \frac{72 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+   - \frac{64 \, x^{3} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} \\
+   &\quad - \frac{12 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+   + \frac{8 \, x^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+   + \frac{24 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+   - \frac{16 \, x^{3} y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}.
+\end{align*}
+We find $\partial_{xxyyy}G_\delta$ is
+\begin{align*}
+  \partial_{xxyyy}G_\delta(z) &= 
+  - \frac{384 \, x^{2} y^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}} 
+  + \frac{144 \, x^{2} y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  + \frac{48 \, y^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} \\
+  &\quad - \frac{384 \, x^{2} y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(x^{2} + y^{2}\right)}^{4} \delta^{2}} 
+  - \frac{24 \, y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{144 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  + \frac{48 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} \\
+  &\quad - \frac{192 \, x^{2} y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+  - \frac{24 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} 
+  + \frac{72 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  + \frac{24 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} \\
+  &\quad - \frac{64 \, x^{2} y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} 
+  - \frac{12 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{24 \, x^{2} y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} \\
+  &\quad + \frac{8 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+  - \frac{16 \, x^{2} y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}.
+\end{align*}
+We find $\partial_{xyyyy}G_\delta$ is
+\begin{align*}
+  \partial_{xyyyy}G_\delta(z) &= 
+  - \frac{384 \, x y^{4} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}} 
+  + \frac{288 \, x y^{2} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{384 \, x y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{4} \delta^{2}} \\
+  &\quad - \frac{24 \, x {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{288 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  - \frac{192 \, x y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+  - \frac{24 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{144 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  - \frac{64 \, x y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} 
+  - \frac{12 \, x e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} \\
+  &\quad + \frac{48 \, x y^{2} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+  - \frac{16 \, x y^{4} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}.
+\end{align*}
+Finally, $\partial_y^5 G_\delta$ is
+\begin{align*}
+  \partial_y^5 G_\delta(z) &= 
+  -\frac{384 \, y^{5} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{5}} 
+  + \frac{480 \, y^{3} {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{4}} 
+  - \frac{384 \, y^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{4} \delta^{2}} \\
+  &\quad - \frac{120 \, y {\left(e^{\left(-\frac{r^{2}}{\delta^{2}}\right)} - 1\right)}}{{\left(r^{2}\right)}^{3}} 
+  + \frac{480 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{2}} 
+  - \frac{192 \, y^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{3} \delta^{4}} 
+  - \frac{120 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{2}} \\
+  &\quad + \frac{240 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{4}} 
+  - \frac{64 \, y^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)}^{2} \delta^{6}} 
+  - \frac{60 \, y e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{4}} 
+  + \frac{80 \, y^{3} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{6}} 
+  - \frac{16 \, y^{5} e^{\left(-\frac{r^{2}}{\delta^{2}}\right)}}{{\left(r^{2}\right)} \delta^{8}}
+\end{align*}
+
+\section{Calculation for small $z$}
+For $|z| < \delta$ we will use a Taylor series approximation to numerically compute $G_\delta$.
+By extracting the logarithmic singularity, we find that $\Ei(\cdot)$ has the Taylor series
+\begin{align*}
+	\Ei(x) = \gamma + \log |x| + \sum_{k=1}^\infty \frac{x^k}{k k!}
+\end{align*}
+for $x \neq 0$.
+Here $\gamma = 0.577 \cdots $ is the \emph{Euler-Mascheroni constant}.
+Therefore $G_\delta$ has the Taylor series
+\begin{align*}
+	G_\delta(z) &= \frac{1}{4\pi} ( \Ei( -r^2/\delta^2) - 2 \log(r) ) \\
+		&= \frac{1}{4\pi} \left( \gamma - 2 \log (\delta) + \sum_{k=1}^\infty \frac{ (-1)^k(r/\delta)^{2k}}{k k!} \right)
+\end{align*}
+In terms of $\rho = r^2/\delta^2$ this is
+\begin{align*}
+	G_\delta (z) &= \frac{1}{4\pi} \left( \gamma - 2 \log (\delta) + \sum_{k=1}^\infty \frac{ (-1)^k \rho^k }{k k!} \right)
+\end{align*}
+We find the first derivatives to be
+\begin{align*}
+	\partial_x G_\delta(z) &= \frac{1}{2\pi \delta^2} \left( \sum_{k=0}^\infty \frac{  x (-1)^{k+1} }{ (k+1)!} \rho^{k} \right) \\
+	\partial_y G_\delta(z) &= \frac{1}{2\pi \delta^2} \left( \sum_{k=0}^\infty \frac{  y (-1)^{k+1} }{ (k+1)!} \rho^{k} \right).
+\end{align*}
+The second derivatives are
+\begin{align*}
+	\partial_{xx}G_\delta(z) &=  \frac{1}{\pi \delta^2} \sum_{k=0}^{\infty} \left[ \frac{ (-1)^{k+1} }{ 2(k+1)!} + \frac{x^2}{\delta^2} \frac{ (-1)^{k+2} (k+1)}{ (k+2)!} \right] \rho^k \\
+	\partial_{xy}G_\delta(z) &=  \frac{1}{\pi \delta^2} \sum_{k=0}^\infty \left[  \frac{  xy (-1)^{k+2} (k+1) }{ \delta^2 (k+2)!} \right] \rho^k \\
+	\partial_{yy}G_\delta(z) &=  \frac{1}{\pi \delta^2} \sum_{k=0}^{\infty} \left[ \frac{ (-1)^{k+1} }{ 2(k+1)!} + \frac{y^2}{\delta^2} \frac{ (-1)^{k+2} (k+1)}{ (k+2)!} \right] \rho^k .
+\end{align*}
+
+BEYOND THIS POINT THINGS NEED TO BE VETTED
+The third derivatives are
+\begin{align*}
+	\partial_{xxx} G_\delta(z) &= \frac{x}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) +  \frac{2x}{\pi \delta^4} \left( \sum_{k=2}^\infty \frac{  (-1)^k \rho^{k-2} }{ k!} \right)\\
+		&\quad + \frac{2x^3}{\pi \delta^6} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{xxy} G_\delta(z) &= \frac{y}{\pi \delta^4} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) + \frac{2x^2y}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{xyy}G_\delta(z) &=  \frac{y}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{  (k-1)(-1)^k \rho^{k-2} }{ k!} \right) +  \frac{x y^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2) (-1)^k \rho^{k-3} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{yyy} G_\delta(z) &= \frac{y}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) +  \frac{2y}{\pi \delta^4} \left( \sum_{k=2}^\infty \frac{  (-1)^k \rho^{k-2} }{ k!} \right)\\
+		&\quad + \frac{2y^3}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right).
+\end{align*}
+
+The fourth order derivatives are
+\begin{align*}
+	\partial_{xxxx}G_\delta(z) &= \frac{1}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) 
+		+ \frac{2x^2}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1) (k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+&\quad	+  \frac{2}{\pi \delta^4} \left( \sum_{k=2}^\infty \frac{  (-1)^k \rho^{k-2} }{ k!} \right)
+		+  \frac{4x^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+&\quad	+ \frac{6x^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right) 
+		+ \frac{4x^4}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3) (-1)^k \rho^{k-4} }{ k!} \right) 
+\end{align*}
+
+\begin{align*}
+	\partial_{xxxy} G_\delta(z) &= \frac{2xy}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1)(k-2) (-1)^k \rho^{k-3} }{ k!} \right) +  \frac{4xy}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2) (-1)^k \rho^{k-3} }{ k!} \right)\\
+		&\quad + \frac{4 x^3y}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3) (-1)^k \rho^{k-4} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{xxyy} G_\delta(z) &= \frac{1}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) 
+	+ \frac{2y^2}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1)(k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+	&\quad + \frac{2x^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right)
+	+ \frac{2x^2y}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3) (-1)^k \rho^{k-4} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{xyyy} G_\delta(z) &= \frac{2xy}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-2)(k-1) (-1)^k \rho^{k-3} }{ k!} \right) 
+		+ \frac{4xy}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2)(-1)^k \rho^{k-2} }{ k!} \right)\\
+		&\quad + \frac{4 x y^3}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3)(-1)^k \rho^{k-4} }{ k!} \right)
+\end{align*}
+
+\begin{align*}
+	\partial_{yyyy} G_\delta(z) &= \frac{1}{\pi \delta^2} \left( \sum_{k=2}^\infty \frac{ (k-1) (-1)^k \rho^{k-2} }{ k!} \right) 
+	+  \frac{2y^2}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1) (k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+	&\quad + \frac{2}{\pi \delta^4} \left( \sum_{k=2}^\infty \frac{  (-1)^k \rho^{k-2} }{ k!} \right)
+	+ \frac{4y^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2)(-1)^k \rho^{k-3} }{ k!} \right)\\
+	&\quad + \frac{6y^2}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right)
+	+ \frac{4y^4}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (-1)^k (k-3) \rho^{k-4} }{ k!} \right).
+\end{align*}
+
+The fifth order derivatives are
+\begin{align*}
+	\partial_{x}^5 G_\delta(z) &= \frac{2x}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1) (k-2) (-1)^k \rho^{k-3} }{ k!} \right) 
+		+ \frac{4x}{\pi \delta^2} \left( \sum_{k=3}^\infty \frac{ (k-1) (k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+&\quad	+ \frac{4x^3}{\pi \delta^2} \left( \sum_{k=4}^\infty \frac{ (k-1) (k-2) (k-3) (-1)^k \rho^{k-4} }{ k!} \right)
+		+  \frac{4x}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2) (-1)^k \rho^{k-3} }{ k!} \right) \\
+&\quad	+  \frac{8x}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (k-2) (-1)^k \rho^{k-3} }{ k!} \right) 
+		+  \frac{8x^3}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-2)(k-3) (-1)^k \rho^{k-4} }{ k!} \right) \\
+&\quad	+ \frac{12x}{\pi \delta^4} \left( \sum_{k=3}^\infty \frac{  (-1)^k \rho^{k-3} }{ k!} \right) 
+		+ \frac{6x^3}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3) (-1)^k \rho^{k-4} }{ k!} \right) \\
+&\quad	+ \frac{16x^3}{\pi \delta^4} \left( \sum_{k=4}^\infty \frac{  (k-3) (-1)^k \rho^{k-4} }{ k!} \right) 
+		+ \frac{8x^5}{\pi \delta^4} \left( \sum_{k=5}^\infty \frac{  (k-3) (k-4) (-1)^k \rho^{k-5} }{ k!} \right) 
+\end{align*}
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}

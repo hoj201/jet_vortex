@@ -1,0 +1,72 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{Equations of motion}
+\author{DD Holm}
+\date{9 Jan, 2015}
+
+
+\begin{document}
+
+\maketitle
+You were right, Henry! The $d$’s and $Q$’s must be time dependent!
+
+Upon substituting your 2nd-order jet vorticity momentum map
+\begin{align}
+\omega(\mathbf{z},t) =
+\sum_{a=1}^N{p}_a(t) \delta(\mathbf{z}-\mathbf{q}_a(t))
++ d_a^j(t)  \frac{\partial }{\partial z^j}\delta(\mathbf{z}-\mathbf{q}_a(t))
++ Q_a^{jk}(t)  \frac{\partial^2 }{\partial z^j\partial z^k}\delta(\mathbf{z}-\mathbf{q}_a(t))
+\label{Henry’s_vortex_momap}
+\end{align}
+with $j,k=1,2$ into the equation for conservation of vorticity on particles
+\[
+\partial_t \omega + u^j\partial_j \omega = 0\,,
+\]
+one finds the dynamical equations
+\begin{align}
+\begin{split}
+&\dot{p}_a = 0
+\,,\\&
+\dot{q}_a - u^k(q_a,t) = 0
+\,,\\&
+\dot{d}_a^j(t) - u^k_{,j}d^j_a + u^k_{,lm}Q^{lm}_a = 0
+\,,\\&
+\dot{Q}_a^{jk}(t) - \frac12u^k_{,m}(Q^{jm}_a+Q^{mj}_a) - \frac12u^j_{,m}(Q^{km}_a+Q^{mk}_a)  = 0
+\,.\end{split}
+\label{jet-dyn-eqns}
+\end{align}
+Thus, the vortex strength is still constant, but in order for your vortex jet momentum map to satisfy the vorticity equation in 2D, the dipole and quadrupole parameters $d^j_a$ and $Q_a^{jk}$ must depend on time, as above. It’d be interesting to identify the Hamiltonian structure for their dynamics!
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}
