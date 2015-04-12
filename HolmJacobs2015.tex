@@ -64,58 +64,8 @@ A new singular vortex theory is presented for regularised Euler fluid equations 
 
 \section{Introduction}
 \label{sec:intro}
-
-\subsection{Main contributions}
-Our main contributions are:
-\begin{enumerate}
-        \item We provide the equations of motion for jet vortices as exact solutions to a regularized fluid equation (\S \ref{sec:EOM}).
-        \item We show how the equations of motion for the moments form a closed system (remark \ref{rmk:moments}).
-        \item We perform numerical experiments with small numbers of jet vortices at orders $0$, $1$, and $2$.
-        \item We spectrally approximate an initial condition using jet-vortices and plot the convergence rate.
-        \item We illustrate the ability to ``group'' nearby jet vortices into a single jet-vortex of higher order (this can be used to reduce the number of pairwise interactions)
-        \item We provide the Hamiltonian structure of jet vortices.
-        \item We derive conserved quantities:  Energy, angular momentum, linear momentum, circulation.
-\end{enumerate}
-
-\subsection{The {vortex blob} method}
-The concept of regularising the singular vortex solutions of EulerÍs equations for the incompressible flow of an ideal fluid goes back to Rosenhead \cite{Ro1931} who refers to Kelvin.
-The introduction to Chorin's 1993 Les Houches lecture notes \cite{Ch1993} provides a quick synopsis of the development and application of vortex particle methods for incompressible flows since then.
-%
-\begin{quote}
-We shall restrict ourselves in these lectures to a special class of numerical vortex
-methods, those that are based on a Lagrangian transport of vorticity in hydrodynamics by
-smoothed particles (``blobs") and those whose analysis contributes to the understanding of
-blob methods. Blob methods started in the thirties as two-dimensional ``point" methods
-\cite{Ro1931}. By the fifties, it was discovered that ``point vortex" methods had drawbacks, and
-a misinterpretation of the Poincar\'e recurrence theorem led to the conclusion that the
-drawbacks could not be remedied (for an analysis, see \cite{Kr1986}). In the late sixties and
-early seventies, the virtues of smoothing were discovered \cite{Ch1972,Ch1973,ChBe1973,Ch1993} and viscosity and boundaries were added.
-The generalization to three dimensions followed soon \cite{Ch1980,Le1975,Le1985} and was found to
-be non-unique. Arrows, filaments, dipoles, magnets, all generalize two-dimensional blobs, \dots
-\end{quote}
-%
-For more details and subsequent developments, we refer to the vast literature on this subject, partially summarised with over 400 references in \cite{Stock2007}. \\
-
-Our motivation in the present paper is to use several recent developments in the geometric properties of  incompressible fluid mechanics \cite{CotterHolmJacobsMeier2014} to make the extension of vortex blob dynamics to include higher order derivatives in the singular representation of the vorticity. We aim to investigate the evolution of the shapes of those blobs and the dynamics of their mutual interactions. These higher order singular vortices will be called jet vortices, because they correspond to the jets (Taylor expansion coefficients) of the vortex blob Greens functions.
-
-\section{Background}
-
-We should mention these papers
-\begin{itemize}
-	\item \cite{UmWaBa2010} based on \cite{NagemSandriUminskyWayne2009}
-	\item \cite{BealeMajda1982}
-	\item \cite{HolmNitschePutkaradze2006}
-	\item \cite{MarsdenWeinstein1983}
-	\item \cite{OliverShkoller2001}
-	\item \cite{Chorin1973}
-	\item \cite{Hald1979}
-	\item \cite{GreengardRokhlin1987} (Fast Multipole Method)
-	\item \cite{DizesVerga2002}, mention mergers
-	\item \cite{Weiss1991,WeissMcWilliams1993}, OkuboWeis criterion, relation to turbulence, the second article mentions mergers.
-	\item \cite{Rossi1997,Rossi2005},the first is dedicted to merger algorithms, the second has higher order achieved by controlling eccentricity of gaussian vortices (the vorticity is treated as a scalar here).
-	\item \cite{GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}, singular solutions for Vlasov moment dynamics.
-\end{itemize}
-
+The vortex blob method, introduced in \cite{Chorin1973}, has undergone numerous variations.
+None...
 In this case the fluid velocity field is obtained from the 
 stream function via
 \begin{align*}
@@ -129,6 +79,79 @@ The planar vorticity equation is
   \partial_t \omega + u \partial_x \omega
   + v \partial_y \omega = 0. \label{eq:vorticity}
 \end{align}
+
+\subsection{Main contributions}
+Our main contributions are:
+\begin{enumerate}
+        \item We provide the equations of motion for jet vortices as exact solutions to a regularized fluid equation (\S \ref{sec:EOM}).
+        \item We show how the equations of motion for the moments form a closed system (remark \ref{rmk:moments}).
+        \item We perform numerical experiments with small numbers of jet vortices at orders $0$, $1$, and $2$.
+        \item We spectrally approximate an initial condition using jet-vortices and plot the convergence rate.
+        \item We illustrate the ability to ``group'' nearby jet vortices into a single jet-vortex of higher order (this can be used to reduce the number of pairwise interactions)
+        \item We provide the Hamiltonian structure of jet vortices.
+        \item We derive conserved quantities:  Energy, angular momentum, linear momentum, circulation.
+\end{enumerate}
+
+\section{Background}
+\label{sec:background}
+Vortex methods for fluid modeling predate the computer age, and can be found as early as  a 1931 paper concerning a ``line of discontinuity'' in planar fluid flow \cite{Rosenhead1931}.
+That point vortices induce an infinite velocity at the location of the vortex cores caused great difficulties numerically and theoretically,
+and the method did not become a competitive numerical method until the 70s.
+In particular, these problems related to singularities were overcome by regularizing the singular vortex kernel to form a \emph{vortex blob}.
+Additionally, stochastic perturbations were included to model viscosity and the Kutta condition was invoked to create vorticity around boundaries \cite{Chorin1973}.
+These three adjustments to the classical vortex method made the method of practical use for realistic fluid flow modeling.
+In particular, blob regularization proved much more amenable to analysis and the convergence to solutions of the Navier-Stokes equations was proven in \cite{Hald1979}.
+Stronger convergence rates were achieved by judicious choice of vortex kernels.
+By convolving the singular vortex kernel with sums of Guassian smoothing kernels yields a sequence of vortex blob kernels with faster and faster convergence rates.
+In particular the convergence rate of the $m$th kernel was found to be spectral, and of order $h^{mq}$ for any $q \in (0,1)$ where $h = \delta^q$
+is a grid-spacing parameter and $\delta > 0$ is a length scale associated to the smoothing kernel \cite{BealeMajda1982,BealeMajda1985}.
+
+Simultaneously, the symplectic geometry of point vortices was clarified in \cite{MarsdenWeinstein1983}
+by invoking Arnold's interpretation of ideal fluids \cite{Arnold1966}.
+The findings of \cite{MarsdenWeinstein1983} were later corrected in \cite{GayBalmazVizman2012} to handle fluid flow on manifolds with nontrivial homology.
+While this clarified the geometry of point vortices, vortex blobs were thought to be a numerical ``trick" which broke the geometric interpretation.
+However, this thought was vanquished with the invention of the Euler-$\alpha$ model, a regularized model of ideal fluids with a small parameter $1 \gg \alpha > 0$ \cite{HolmMarsdenRatiu1998}.
+In particular, vortex blob solutions associated to a specific kernel serve as \emph{exact} solutions to the Euler-$\alpha$ model \cite{OliverShkoller2001}\footnote{
+	This publication refers to the $\alpha$-model as a second grade fluid.}.
+The Euler-$\alpha$ kernel is different from the kernels used in \cite{Chorin1973} and \cite{BealeMajda1985}.
+A comparison of the Euler-$\alpha$ kernel to the $m=1$ kernel of \cite{BealeMajda1985} is given in \cite{HolmNitschePutkaradze2006}.
+
+While vortex blobs performed well, they did not capture much of the qualitative richness observed in vorticity field dynamics.
+In particular, blobs of vorticity in real ideal fluids are known to change shape and deviate from initially circular distributions.
+A numerical method is proposed in \cite{Rossi1997,Rossi2005} to capture these shape dynamics by adding
+basis functions with non-trivial moments and study vortex merger (see for example \cite{MelanderZabuskyMcWilliams1998,DizesVerga2002,MeunierDizesLeweke2005}).
+Another distinct model obtained by projection onto a Hermite basis is described in \cite{NagemSandriUminskyWayne2009}.
+This projection yields a finite-dimensional systems which models the (truncated) moments of the vorticity of an ideal incompressible fluid.
+The derivation of simplified combinatorial formulas invoked by the dynamics of this model were discovered in \cite{UminskyWayneBarbaro2010}
+and made the method numerically tractable at a large number of moments.
+
+%Mergers:  Weiss, Our jetlets 
+
+\section{Background}
+\label{sec:background}
+The derivation of the standard vortex method begins by considering
+the vorticity-stream formulation of the ideal incompressible fluid equations:
+\begin{align*}
+	\partial_t \omega + u \partial_x \omega + v \partial_y \omega \\
+\end{align*}
+
+We should mention these papers
+\begin{itemize}
+	\item \cite{UmWaBa2010} based on \cite{NagemSandriUminskyWayne2009}
+	\item \cite{BealeMajda1982}
+	\item \cite{HolmNitschePutkaradze2006}
+	\item \cite{MarsdenWeinstein1983}
+	\item \cite{OliverShkoller2001}
+	\item \cite{Chorin1973}
+	\item \cite{Hald1979}
+%	\item \cite{GreengardRokhlin1987} (Fast Multipole Method)
+	\item \cite{DizesVerga2002}, mention mergers
+	\item \cite{Weiss1991,WeissMcWilliams1993}, OkuboWeis criterion, relation to turbulence, the second article mentions mergers.
+	\item \cite{Rossi1997,Rossi2005},the first is dedicted to merger algorithms, the second has higher order achieved by controlling eccentricity of gaussian vortices (the vorticity is treated as a scalar here).
+%	\item \cite{GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}, singular solutions for Vlasov moment dynamics.
+\end{itemize}
+
+
 
 \section{Equations of motion}
 \label{sec:EOM}
