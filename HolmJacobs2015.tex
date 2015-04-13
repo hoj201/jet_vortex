@@ -712,51 +712,31 @@ the Hamiltonian is a function on a symplectic manifold, which produces equations
 An important instance of a symplectic manifold is a coadjoint orbit.
 In this section we compute the coadjoint orbit of a jet-vortex
 as well as the associated symplectic structure.
-
-Of course, the Hamiltonian we use is given by
-the kinetic energy
+For a general vorticity distribution $\omega$, the Hamiltonian is the kinetic energy
 \begin{align*}
-  H(\omega) = \frac{1}{2} \langle \omega , G* \omega \rangle.
+  H(\omega) = \frac{1}{2} \langle \omega , G_\delta* \omega \rangle.
 \end{align*}
 Where $\omega$ may be of the form \eqref{eq:ansatz N}.
 
-Note that for a smooth vorticity $\omega \in \bigwedge^2(\R^2)$
-the coadjoint orbit is
+The coadjoint orbit of $\omega$ is the set
 \begin{align*}
-  \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}.
+  \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}
 \end{align*}
-A vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by $\pounds_u[\tilde\omega] := u^i \partial_i \tilde{\omega}$ for some (non-unique) divergence free vector field
-$u \in \mathfrak{X}_{\rm div}(\R^2)$. There is a symplectic structure on $\Orb(\omega)$
-given by
+where $\varphi^* \omega$ denotes the distribution defined by
 \begin{align*}
-  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int \omega( u(x), v(x) ) \mu.
+	\int f(z) (\varphi^*\omega)(z) := \int f(\varphi(z)) \omega(z) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
-where $\mu$ is a volume form on $\R^2$.
-This formula is derived on page 313 of \cite{MarsdenWeinstein1983}
-but it is nothing more than a special case of the KKS theorem \cite[see the boxed formula on p.303]{FOM}.
-We would like to generalize it to the case of non-smooth vorticities such
-as point vorticies.  To do this, we can define the function $f_\omega = \frac{\omega}{\mu}$.  Then the symplectic form takes the form
-\begin{align*}
-  \Omega_\omega( \pounds_u[\omega] , \pounds_v[\omega] ) = \int f_{\omega}(x) \mu( u(x), v(x) ) \mu = \langle f_{\omega}, \mu(u,v) \rangle_{L^2(\mu)}.
-\end{align*}
-We can identify $\omega$ with the distribution $\langle f_\omega , \cdot \rangle_{L^2(\mu)}$.
-That is to say
-\begin{align*}
-  \langle \omega , \phi \rangle := \langle f_\omega , \phi \rangle_{L^2(\mu)}
-\end{align*}
-for all $\phi \in C^\infty(\R^2)$.
-This allows us to let $\omega$ be something like a Dirac-delta,
-or a distributional dirative of a Dirac-delta.
-Moreover, the symplectic form is written as
-\begin{align*}
-  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , \mu(u,v) \rangle.
-\end{align*}
-In the case that $\mu = dx \wedge dy$ we can 
-identify $\mu(u,v)$ with the function $u^x v^y - u^y v^x = u \times v$ so that
-\begin{align*}
-  \Omega_\omega( \pounds_u[\omega], \pounds_v[\omega]) = \langle \omega , u^x v^y - u^y v^x \rangle.
-\end{align*}
-
+In fact $\Orb(\omega)$ inherits the structure of a smooth manifold,
+and a tangent vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
+a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
+$\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
+The symplectic structure is nothing more than a special case of one derived via the KKS theorem \cite[see the boxed formula on p.303]{FOM}.
+In particular, the symplectic structure on $\Orb(\omega)$ is given by
+\begin{align}
+  \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2}[\omega] ) = \int \omega(z)  ( u_1(z) v_2(z) - v_1(z) u_2(z) ) dz. \label{eq:symplectic}
+\end{align}
+In the case that $\omega$ is a smooth distribution, it may be identified with a differential $2$-form and this formula matches the symplectic form derived on page 313 of \cite{MarsdenWeinstein1983}.
+In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that $\Orb(\omega)$ is finite dimensionally parametrizable in the following theorem.
 
 \begin{thm}
 	Let $\omega_0 = \gamma_i^\alpha \partial_{\alpha} \delta_{Z_i}$ for $\gamma_i^\alpha \neq 0$ and let
@@ -774,44 +754,33 @@ identify $\mu(u,v)$ with the function $u^x v^y - u^y v^x = u \times v$ so that
         Thus $\varphi_* \omega_0 \in M^{(k)}$.
 \end{proof}
 
-If we would like a more geometric description of what $M^{(k)}$ is,
-we could identify $M^{(k)}$ as a dual vector-bundle
-\begin{align*}
-  M^{(k)} = \left(\Jet^{(k)}( \R^2 , \R)^n \right)^*
-\end{align*}
-where we view $\Jet^{(k)}( \R^2 , \R)$ as a vector-bundle over $\R^2$.
-This identification is tautological upon noting that for $\omega \in M^{(k)}$
-the quantity $ \langle \omega , f \rangle$
-is a linear function of the $k$th order Taylor-coefficients of $f \in C^\infty(\R^2)$
-about some points $z_1,\dots,z_n$.
-
-Finally, as a check, we can also prove that the equations of motion derived previously are identical to the equations of motion obtained using this symplectic structure.
+Finally, as a check, we can also prove that the equations of motion are identical to the equations of motion obtained using this symplectic structure.
 
 \begin{thm}
 	Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
 	are given by
 	\begin{align*}
-		\partial_t \omega + \pounds_u[\Omega] \quad,\quad u = \nabla^\perp \psi \quad,\quad \psi = G*\omega.
+		\partial_t \omega + \partial_y \psi \partial_x \omega - \partial_x \psi \partial_y \omega \quad,\quad  \psi = G_\delta*\omega.
 	\end{align*}
 \end{thm}
 \begin{proof}
-  Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) = \pounds_u[\omega]$ for some (non-unique) $u \in \mathfrak{X}_{\rm div}(\R^2)$.
-  Out goal is to solve for $u$.
+  Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) =  \pounds_{\vec{u}}[\omega]$ for some (non-unique) $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
+  Out goal is to solve for $\vec{u}$.
   By the definition of $X_H$ we see that for any
-  $v \in \mathfrak{X}_{\rm div}(\R^2)$
+  $\vec{\hat{u}} = (\hat{u},\hat{v}) \in \mathfrak{X}_{\rm div}(\R^2)$
   \begin{align*}
-    \langle \omega , u^x v^y - u^y v^x \rangle &=
-    \Omega_{\omega}( \pounds_u[\omega] , \pounds_v[\omega] ) = \langle dH(\omega) , \pounds_v[\omega] \rangle \\
-    &= \langle G * \omega , \pounds_v[\omega] \rangle 
+    \int \omega(z) \left( u(z) \hat{v}(z)  - v(z) \hat{u}(z) \right) dz &=
+    \Omega_{\omega}( \pounds_{\vec{u}}[\omega] , \pounds_{\vec{\hat{u}}}[\omega] ) = - \langle dH(\omega) , \pounds_{\vec{\hat{u}}}[\omega] \rangle \\
+    &= - \langle G_\delta * \omega , \pounds_{\vec{v}}[\omega] \rangle .
   \end{align*}
-  If we let $\psi := G*\omega$ then
+  If we let $\psi := G_\delta*\omega$ then integration by parts implies
   \begin{align*}
-    = - \langle \omega , \pounds_{v}[\psi] \rangle 
-    = \langle \omega , v^x \partial_x \psi + v^y \partial_y \psi \rangle
+    =  \int \omega(z) \pounds_{\vec{v}}[\psi](z) 
+    =  \int \omega(z)  \left( v_1(z) \partial_x \psi (z)+ v_2(z) \partial_y \psi(z) \right) dz.
   \end{align*}
-  We see that $u = (-\partial_y \psi,\partial_x \psi)$
+  We see that $\vec{u} = (-\partial_y \psi,\partial_x \psi)$
   would be a possible solution.
-  As $\Omega$ is non-degenerate, this is the unique solution.
+  As $\Omega$ is non-degenerate on the tangent spaces of $\Orb(\omega)$, this is the unique solution.
 \end{proof}
 
 \subsection{The first order case}
@@ -838,42 +807,6 @@ The symplectic structure is
     - \delta \Gamma_i^x \cdot \dot{y}_i
   \end{align*}
 \end{thm}
-
-\begin{rmk}
-The corresponding Poisson bracket is given by\\
-
-\centerline{$
-\{(z,\Gamma),\,(z,\Gamma)\}
-=
-$
-%
-\begin{tabular}{| c | c |  }	\hline	
-$\{\,\cdot\,,\,\cdot\,\}$	& 	
-$
-\begin{array}{cc}
-\ z \quad &  \Gamma 
-\end{array}
-$
-\\ \hline
-$
-\begin{array}{c}
-z \\  \Gamma
-\end{array}
-$
-&	
-$
-\begin{array}{ccc}
-\gamma J   & J
-\\
-J &  0  
-\end{array}
-$\\
-\hline
-\end{tabular}
-}
-\todo[inline]{HOJ: Can you convert this table into $x,\Gamma,\Gamma^x,\Gamma^y$ coordinates?}
-\end{rmk}
-
 
 \begin{proof}
   Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
@@ -907,17 +840,11 @@ $\\
   and any collection of non-zero vectors $\Gamma_1,\dots,\Gamma_n \in \R^2 \backslash \{0\}$.
   This proves the first claim.
 
-  To derive the symplectic structure recall the symplectic structure for a general vorticity.
-  \begin{align}
-    \Omega( \pounds_u[\omega] , \pounds_v[\omega] )
-    = \langle \omega , u \wedge v \rangle \label{eq:vorticity_symplectic_form}
-  \end{align}
-  where we view $\omega$ as a distribution and $u \wedge v = u^x v^y - v^x u^y$
-  as a real-valued function.
+  To derive the symplectic structure recall the symplectic structure for a general vorticity \eqref{eq:symplectic}.
   Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
-  In this case the right hand side can be computed to be
+  In this case the left hand side of \eqref{eq:symplectic} can be computed to be
   \begin{align*}
-    \langle \omega , u \wedge v \rangle &= \gamma_i ( u^x(z_i)v^y(z_i) - v^x(z_i) u^y(z_i) ) \\
+    \int \omega(z) \left( u \wedge v \rangle \right) &= \gamma_i ( u^x(z_i)v^y(z_i) - v^x(z_i) u^y(z_i) ) \\
     &\quad + \Gamma_i^x ( u^x_{,x} v^y + u^x v^y_{,x} - v^x_{,x}u^y - v^x u^y_{,x})|_{z = z_i} \\
     &\quad + \Gamma_i^y ( u^x_{,y} v^y + u^x v^y_{,y} - v^x_{,y}u^y - v^x u^y_{,y})|_{z = z_i}
   \end{align*}
@@ -926,7 +853,7 @@ $\\
   Moreover, $\pounds_u[\omega] = \gamma_0 u^x(z_i) \partial_{z_i} + \dots$
   also has the property that it is only dependent on
   the one-jet of $u$ and $v$ at the points $z_1,\dots,z_n$.
-  Therefore both side of \eqref{eq:vorticity_symplectic_form}
+  Therefore both side of \eqref{eq:symplectic}
   can be written as a function of the finite collection of 
   numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
   The result then follows by noting
@@ -941,42 +868,24 @@ $\\
       \end{align*}
 \end{proof}
 
-\todo[inline]{Henry, Would we like to \emph{officially} state that the map $(z_i, \Gamma_i^{m,n})\in M^k\to \omega\in \mathfrak{X}(\mathbb{R}^2)$ is a symplectic momentum map? (It is, right?) After all, that is why the reduction $(z_i, \Gamma_i^{m,n})\to \omega$ works in the first place, correct?} 
+\begin{rmk}
+  The use of this symplectic structure makes the map $(z_i, \Gamma_i,\Gamma_i^x,\Gamma_i^y)\in \mapsto \omega \in \Orb(\omega)$ a symplectic momentum map.
+\end{rmk}
 
-BTW  Would we also like to write the Poisson structure for the $k$-th order case explicitly as follows?\\
-
-\centerline{$
-\{(z,\Gamma),\,(z,\Gamma)\}
-=
-$
-%
-\begin{tabular}{| c | c |  }	\hline	
-$\{\,\cdot\,,\,\cdot\,\}$	& 	
-$
-\begin{array}{cc}
-\ z \quad &  \Gamma 
-\end{array}
-$
-\\ \hline
-$
-\begin{array}{c}
-z \\  \Gamma
-\end{array}
-$
-&	
-$
-\begin{array}{ccc}
-\gamma J   & J
-\\
-J &  0  
-\end{array}
-$\\
+\begin{rmk}
+The corresponding Poisson bracket is given by\\
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
+	$\{ \cdot , \cdot \}$ & $x$ & $y$ & $\Gamma$ & $\Gamma^x$  & $\Gamma^y$ \\ \hline
+	$x$ & 0 & 1 & 0 & 0 & 1 \\ \hline
+	$y$ & -1 & 0 & 0 & -1 & 0 \\ \hline 
+	$\Gamma$ & 0 & 0 & 0 & 0 & 0 \\ \hline
+	$\Gamma^x$ & 0 & -1 & 0 & 0 & 1 \\ \hline
+	$\Gamma^y$ & 1 & 0 & 0 & -1 & 0  \\ \hline
 \end{tabular}
-}
-\bigskip
-
-\todo[inline]{Henry, that's the correct Poisson structure, right? What is it dual to, anyway? Do you know?}
+\end{center}
+\end{rmk}
 
 \section{Conclusion}
 
@@ -1179,99 +1088,99 @@ then
 \end{align*}
 Apparently the terms of the jet-vortices beyond the second order do not influence $J_{ang}$.
 
-\begin{thebibliography}{}
-
-\bibitem{Chen-etal1999} Chen-etal1999
-
-\bibitem{Ch1972} A. J. Chorin, Vortex methods for rapid flow, Proc. 2d Int. Cong. Num. Meth. Fluid
-Mech., Springer, 1972.
-
-\bibitem{Ch1973}  A. J. Chorin, Numerical study of slightly viscous flow, J. Fluid Mech., 57, 785-796 (1973)
-
-\bibitem{Ch1980} A. J. Chorin, Vortex models and boundary layer instability, SIAM J. Sc. Stat.
-Comp., 1, 1-21 (1980).
-
-\bibitem{Ch1993} 
-A. J. Chorin [1993] Vortex Methods,
-Presented at Les Houches Summer School of Theoretical Physics
-Les Houches, France, June 28-July 30, 1993. DoE Report LBL-34124 Rev.
-
-\bibitem{Ch1993} A. J. Chorin, \textit{Vorticity and Turbulence}, Springer, 1993.
-
-\bibitem{ChBe1973} A. J. Chorin and P. Bernard, discretization of a vortex sheet with an example of roll-up, J. Comp. Phys., 13, 423-429 (1973).
-
-\bibitem{CoKo2000}
-G.-H. Cottet and P. Koumoutsakos [2000] \textit{Vortex Methods: Theory and Practice}, Cambridge Univ. Press, Cambridge, UK.
-
-\bibitem{EbMa1970} Ebin and Marsden 1970
-
-\bibitem{FoHoTi2001} FoHoTi2001 Physica D
-
-\bibitem{FoHoTi2002} FoHoTi2002 Dyn Sys 
-
-\bibitem{Geurts-etal200X} Geurts-etal200X
-
-\bibitem{GjajaHolm1996} GjajaHolm1996
-
-\bibitem{Hecht-etal200Z} Hecht-etal200Z
-
-\bibitem{Ho2001} Ho2001 Physica D paper
-
-\bibitem{Ho2002} Ho2002 Chaos paper
-
-\bibitem{HoMaRa1998} HoMaRa 1998 AIM Paper
-
-\bibitem{HoRaTrYo2005}
-Darryl D. Holm, J. Tilak Ratnanather, Alain Trouv\'e, Laurent Younes [2004]
-Soliton dynamics in computational anatomy,
-NeuroImage, 23 (S1): S170--S178.
-
-\bibitem{Kr1986} R. Krasny, A study of singularity formation in a vortex sheet by the point vortex
-approximation, J. Fluid Mech., 167, 65-93 (1986)
-
-\bibitem{LANSalphaRefs} LANS-alpha Refs, 
-\begin{description}
-\item Gjaja and Holm
-\item Holm \textit{Chaos} and \textit{Physica D}
-\item Chen et al.
-\item Marsden and Shkoller
-\item FoHoTi2001 Physica D and FoHoTi2002 Dyn Syst
-\item Geurts et al.
-\item Fried et al.
-\item Rebholtz
-\item Pouquet et al.
-\item Hecht et al. 
-\end{description}
-
-
-\bibitem{Le1975} A. Leonard, Numerical simulation of interacting three-dimensional vortex filaments, Proc. 4th Int. Conf. Num. Meth. Fluids, Springer, 1975
-
-%\bibitem{Le1980}
-%A. Leonard [1980] Vortex methods for flow simulation, J. Comput. Phys. 37 (3): 289.
-
-\bibitem{Le1985} A. Leonard, Computing three dimensional vortex flows with vortex filaments, Ann. Rev. Fluid Mech., 17: 523-559 (1985)
-
-\bibitem{MaSh2002} Marsden and Shkoller, Phil Trans Roy Soc ??
-
-\bibitem{MiMu2014} Michor Mumford JGM 2014
-
-\bibitem{Newton} Paul Newton's book, \textit{The $N$-Vortex Problem}
-
-\bibitem{Pouquet-etal200Y} Pouquet-etal 200Y
-
-\bibitem{Ro1931} L. Rosenhead, The formation of vortices from a surface of discontinuity, Proc. Roy. Soc. London, A 134: 170-192 (1931)
-
-\bibitem{Saffman} Phil Saffman's book, \textit{Vorticity}
-
-\bibitem{Sa1989}
-T. Sarpkaya [1989] Computational methods with vortices—The 1988 Freeman Scholar Lecture, J. Fluids Eng. 111: 5.
-
-\bibitem{Stock2007} M. J. Stock, Summary of Vortex Methods Literature
-(A living document rife with opinion), Online at \url{http://markjstock.org/research/vortex_methods_literature.pdf}
-
-\bibitem{TrVi2012} A. Trouv\'e, F. X. Vialard [2012] Shape splines and stochastic shape evolutions: a second order point of view, Quart. Appl. Math 70: 219–251.
-
-\end{thebibliography}
+%\begin{thebibliography}{}
+%
+%\bibitem{Chen-etal1999} Chen-etal1999
+%
+%\bibitem{Ch1972} A. J. Chorin, Vortex methods for rapid flow, Proc. 2d Int. Cong. Num. Meth. Fluid
+%Mech., Springer, 1972.
+%
+%\bibitem{Ch1973}  A. J. Chorin, Numerical study of slightly viscous flow, J. Fluid Mech., 57, 785-796 (1973)
+%
+%\bibitem{Ch1980} A. J. Chorin, Vortex models and boundary layer instability, SIAM J. Sc. Stat.
+%Comp., 1, 1-21 (1980).
+%
+%\bibitem{Ch1993} 
+%A. J. Chorin [1993] Vortex Methods,
+%Presented at Les Houches Summer School of Theoretical Physics
+%Les Houches, France, June 28-July 30, 1993. DoE Report LBL-34124 Rev.
+%
+%\bibitem{Ch1993} A. J. Chorin, \textit{Vorticity and Turbulence}, Springer, 1993.
+%
+%\bibitem{ChBe1973} A. J. Chorin and P. Bernard, discretization of a vortex sheet with an example of roll-up, J. Comp. Phys., 13, 423-429 (1973).
+%
+%\bibitem{CoKo2000}
+%G.-H. Cottet and P. Koumoutsakos [2000] \textit{Vortex Methods: Theory and Practice}, Cambridge Univ. Press, Cambridge, UK.
+%
+%\bibitem{EbMa1970} Ebin and Marsden 1970
+%
+%\bibitem{FoHoTi2001} FoHoTi2001 Physica D
+%
+%\bibitem{FoHoTi2002} FoHoTi2002 Dyn Sys 
+%
+%\bibitem{Geurts-etal200X} Geurts-etal200X
+%
+%\bibitem{GjajaHolm1996} GjajaHolm1996
+%
+%\bibitem{Hecht-etal200Z} Hecht-etal200Z
+%
+%\bibitem{Ho2001} Ho2001 Physica D paper
+%
+%\bibitem{Ho2002} Ho2002 Chaos paper
+%
+%\bibitem{HoMaRa1998} HoMaRa 1998 AIM Paper
+%
+%\bibitem{HoRaTrYo2005}
+%Darryl D. Holm, J. Tilak Ratnanather, Alain Trouv\'e, Laurent Younes [2004]
+%Soliton dynamics in computational anatomy,
+%NeuroImage, 23 (S1): S170--S178.
+%
+%\bibitem{Kr1986} R. Krasny, A study of singularity formation in a vortex sheet by the point vortex
+%approximation, J. Fluid Mech., 167, 65-93 (1986)
+%
+%\bibitem{LANSalphaRefs} LANS-alpha Refs, 
+%\begin{description}
+%\item Gjaja and Holm
+%\item Holm \textit{Chaos} and \textit{Physica D}
+%\item Chen et al.
+%\item Marsden and Shkoller
+%\item FoHoTi2001 Physica D and FoHoTi2002 Dyn Syst
+%\item Geurts et al.
+%\item Fried et al.
+%\item Rebholtz
+%\item Pouquet et al.
+%\item Hecht et al. 
+%\end{description}
+%
+%
+%\bibitem{Le1975} A. Leonard, Numerical simulation of interacting three-dimensional vortex filaments, Proc. 4th Int. Conf. Num. Meth. Fluids, Springer, 1975
+%
+%%\bibitem{Le1980}
+%%A. Leonard [1980] Vortex methods for flow simulation, J. Comput. Phys. 37 (3): 289.
+%
+%\bibitem{Le1985} A. Leonard, Computing three dimensional vortex flows with vortex filaments, Ann. Rev. Fluid Mech., 17: 523-559 (1985)
+%
+%\bibitem{MaSh2002} Marsden and Shkoller, Phil Trans Roy Soc ??
+%
+%\bibitem{MiMu2014} Michor Mumford JGM 2014
+%
+%\bibitem{Newton} Paul Newton's book, \textit{The $N$-Vortex Problem}
+%
+%\bibitem{Pouquet-etal200Y} Pouquet-etal 200Y
+%
+%\bibitem{Ro1931} L. Rosenhead, The formation of vortices from a surface of discontinuity, Proc. Roy. Soc. London, A 134: 170-192 (1931)
+%
+%\bibitem{Saffman} Phil Saffman's book, \textit{Vorticity}
+%
+%\bibitem{Sa1989}
+%T. Sarpkaya [1989] Computational methods with vortices—The 1988 Freeman Scholar Lecture, J. Fluids Eng. 111: 5.
+%
+%\bibitem{Stock2007} M. J. Stock, Summary of Vortex Methods Literature
+%(A living document rife with opinion), Online at \url{http://markjstock.org/research/vortex_methods_literature.pdf}
+%
+%\bibitem{TrVi2012} A. Trouv\'e, F. X. Vialard [2012] Shape splines and stochastic shape evolutions: a second order point of view, Quart. Appl. Math 70: 219–251.
+%
+%\end{thebibliography}
 
 \bibliographystyle{amsalpha}
 \bibliography{hoj_2015}
