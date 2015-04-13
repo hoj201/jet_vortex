@@ -64,32 +64,58 @@ A new singular vortex theory is presented for regularised Euler fluid equations 
 
 \section{Introduction}
 \label{sec:intro}
-The vortex blob method, introduced in \cite{Chorin1973}, has undergone numerous variations.
-None...
-In this case the fluid velocity field is obtained from the 
-stream function via
-\begin{align*}
-  (u,v) = ( \partial_y \psi , - \partial_x \psi)
-\end{align*}
-where $\psi \in C^\infty(\R^2)$ is the stream function.
-The vorticity $\omega = \partial_x m^2 - \partial_y m^1$
-is related to $\psi$ via $\psi = G_\delta * \omega$.
-The planar vorticity equation is
+Consider the vorticity-stream formulation of an ideal incompressible planar fluid
 \begin{align}
-  \partial_t \omega + u \partial_x \omega
-  + v \partial_y \omega = 0. \label{eq:vorticity}
+  \partial_t \omega + \partial_x \omega  \partial_y \psi
+  + \partial_y \omega \partial_x \psi = 0. \label{eq:vorticity}
 \end{align}
+where $\omega = \Delta \psi$ and $\psi$ is the stream function.
+The Eulerian velocity field is given by
+\begin{align*}
+	(u,v) = (\partial_y \psi , - \partial_x \psi).
+\end{align*}
+If one is willing to view $\omega$ as a distribution, one can consider point vortex solutions.
+In particular, point vortices are obtained if one considers the point vortex ansatz $\omega = \sum_{i} \Gamma_i \delta_{z_i}$
+where $\Gamma_i \in \mathbb{R}$ and $\delta_{z_i}$ is the Dirac delta distribution centered at the point $z_i = (x_i,y_i) \in \mathbb{R}^2$.
+Substitution of this ansatz into \eqref{eq:vorticity} yields the finite dimensional system
+\begin{align}
+\begin{cases}
+	\frac{d \Gamma}{dt} = 0 \quad , \quad \psi(z) = \sum_i  \Gamma_i G(z-z_i) \\
+	\frac{dx_i}{dt} = \partial_y \psi(z_i) \quad , \quad \frac{dy_i}{dt} = \partial_x \psi(z_i)
+\end{cases} \label{eq:point_vortex},
+\end{align}
+where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$.
+One could consider the regularized form of the vorticity equation given by
+choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ and defining the regularized vorticity by 
+$K_\delta* \omega = \Delta \psi$.
+For example, $K_\delta (z) = \exp( - \| z\|^2 / \delta^2)$ is considered in \cite{BealeMajda1985}.
+In this case the point vortex ansatz yields \eqref{eq:point_vortex} again, except $G$ is replace by
+the kernel
+\begin{align}
+	G_\delta(z) := K_\delta*G(z) = \frac{1}{4\pi} \left( {\rm Ei}(- \| z \|^2 / \delta^2) - 2\ln ( \| z \|) \right). \label{eq:kernel}
+\end{align}
+where ${\rm Ei}( \cdot )$ denotes the exponential $i$ function.
+The vorticity kernel $G_\delta$ has no singularity at the origin for $\delta > 0$, and is known as a vortex blob.
+This system is the starting point for the vortex blob method, introduced in \cite{Chorin1973} (albeit with a different regularization).
+
+The economy of the vortex method derives itself from the hyper-local character of Dirac delta distributions,
+and the fact that \eqref{eq:vorticity} keeps them hyperlocal (i.e. parametrized by position).
+However, there are many distributions which are localized to a similar degree (e.g. $\partial_x \delta_{z_i}$).
+In this article we study the more general ansatz $\omega = \sum_i \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
+We will find that this ansatz yields a closed finite dimensional system which generalizes vortex blobs.
+We call these new carriers of vorticity \emph{jet vortices}.
 
 \subsection{Main contributions}
-Our main contributions are:
 \begin{enumerate}
         \item We provide the equations of motion for jet vortices as exact solutions to a regularized fluid equation (\S \ref{sec:EOM}).
         \item We show how the equations of motion for the moments form a closed system (remark \ref{rmk:moments}).
+        \item We derive conserved quantities:  Energy, angular momentum, linear momentum (remark \ref{rmk:conserved} and Appendix \ref{sec:symmetries})
+        \item We observe the manifestation of Kelvin's circulation theorem for jet-vortices (\S \ref{rmk:Kelvin}).
         \item We perform numerical experiments with small numbers of jet vortices at orders $0$, $1$, and $2$.
-        \item We spectrally approximate an initial condition using jet-vortices and plot the convergence rate.
-        \item We illustrate the ability to ``group'' nearby jet vortices into a single jet-vortex of higher order (this can be used to reduce the number of pairwise interactions)
-        \item We provide the Hamiltonian structure of jet vortices.
-        \item We derive conserved quantities:  Energy, angular momentum, linear momentum, circulation.
+        \item We spectrally approximate an initial condition using jet-vortices and plot the convergence rate (\S \ref{sec:approximation}). 
+        \item We illustrate the ability to ``group'' nearby jet vortices into a single jet-vortex of higher order.
+        	This can be used to reduce the number of pairwise interactions (\S \ref{sec:grouping}).
+        \item We provide the symplectic and Hamiltonian structure of jet vortices (\S \ref{sec:symplectic}).
 \end{enumerate}
 
 \section{Background}
@@ -125,34 +151,6 @@ This projection yields a finite-dimensional systems which models the (truncated)
 The derivation of simplified combinatorial formulas invoked by the dynamics of this model were discovered in \cite{UminskyWayneBarbaro2010}
 and made the method numerically tractable at a large number of moments.
 
-%Mergers:  Weiss, Our jetlets 
-
-\section{Background}
-\label{sec:background}
-The derivation of the standard vortex method begins by considering
-the vorticity-stream formulation of the ideal incompressible fluid equations:
-\begin{align*}
-	\partial_t \omega + u \partial_x \omega + v \partial_y \omega \\
-\end{align*}
-
-We should mention these papers
-\begin{itemize}
-	\item \cite{UmWaBa2010} based on \cite{NagemSandriUminskyWayne2009}
-	\item \cite{BealeMajda1982}
-	\item \cite{HolmNitschePutkaradze2006}
-	\item \cite{MarsdenWeinstein1983}
-	\item \cite{OliverShkoller2001}
-	\item \cite{Chorin1973}
-	\item \cite{Hald1979}
-%	\item \cite{GreengardRokhlin1987} (Fast Multipole Method)
-	\item \cite{DizesVerga2002}, mention mergers
-	\item \cite{Weiss1991,WeissMcWilliams1993}, OkuboWeis criterion, relation to turbulence, the second article mentions mergers.
-	\item \cite{Rossi1997,Rossi2005},the first is dedicted to merger algorithms, the second has higher order achieved by controlling eccentricity of gaussian vortices (the vorticity is treated as a scalar here).
-%	\item \cite{GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}, singular solutions for Vlasov moment dynamics.
-\end{itemize}
-
-
-
 \section{Equations of motion}
 \label{sec:EOM}
 In this section we derive the equations of motion for jet-vortices.
@@ -182,7 +180,8 @@ An image of the stream function and the velocity field induced by a single vorte
    \centering
    \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.6\textwidth]{./images/zero.pdf} 
    \caption{A 0th order jet vortex with $z = 0$ and $\Gamma=1$.
-   This is equivalent to a standard vortex blob.}
+   With respect to the kernel $G_\delta$ of \eqref{eq:kernel}.
+   By using vortices of this form we obtain one of the vortex blobs presented in \cite{BealeMajda1985}.}
    \label{fig:zero}
 \end{figure}
 
@@ -476,9 +475,8 @@ The solutions of this finite-dimensional ODE
 will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
 into a solution of \eqref{eq:vorticity}.
 
-\begin{rmk}
-  We will find that the following quantities are conserved:
-  
+\begin{rmk} \label{rmk:conserved}
+  We will find that the following quantities are conserved:\\
   \begin{tabular}{|c|c|}
   	\hline
 	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
@@ -487,16 +485,15 @@ into a solution of \eqref{eq:vorticity}.
 	  \hline
 	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
 	  \hline
-  \end{tabular}
-
+  \end{tabular}\\
   The first two are momenta derived by observing the rotational and
   translational symmetry of the fluid and applying Noether's theorem (see Appendix \ref{sec:symmetries} for derivation).
   In section \ref{sec:symplectic} we will characterize fluids, and the jet-vortices as Hamiltonian systems
   and the Linear and angular momentum serve as symplectic momentum maps.
 \end{rmk}
 
-\begin{rmk}
-	Let $\vec{u}$ be a time-dependent vector field which satisfies \eqref{eq:u_EoM}.
+\begin{rmk} \label{rmk:Kelvin}
+	Let $\vec{u}$ be a time-dependent vector field which satisfies \eqref{eq:vorticity}.
 	The flow of $\vec{u}$ is the diffeomorphism, $\Phi_t: \mathbb{R}^2 \to \mathbb{R}^2$,
 	which sends particle labels at time $0$ to their positions at time $t$.
 	If $\omega_t$ is the vorticity at time $t$ then $\omega_t( \Phi_t(z) ) = \omega_0$ is constant in time.
@@ -559,7 +556,7 @@ into a solution of \eqref{eq:vorticity}.
 	would yield a closed dynamical system for the $\mu$'s.
 	That the equations of motion for the moments forms a closed at order $N$
 	is in contrast to other methods for deriving dynamical systems for moments
-	\cite{UmWaBa2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
+	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
 	where a projection must be invoked in order to form a closed system.
 \end{rmk}
 
@@ -625,28 +622,32 @@ In particular, $2^N$ zeroth order jet vortices can be approximated with a single
 
 The computation of pairwise interactions in the vortex method was a primary bottleneck in implementing the standard vortex method for real-world applications.
 It was not until the inention of the fast multipole method, that it became tractable to compute millions of pairwise interactions by
-reducing the complexity from an $O(n^2)$ calculation to an $O(n \log (n))$ calculation, where $n$ is the number of vortices \cite{GreengardRokhlin1987}.
-However, the success of the fast multipole method brought forth a new challenge.
-In the case of fluids with boundaries, vorticity is shed from the boundaries.
-As a result, vortex methods wherein new point vortices would abruptly emerge on the boundary were invented \todo{cite stuff}.
+reducing the complexity from an $\mathcal{O}(n^2)$ calculation to an $\mathcal{O}(n \log (n))$ calculation, where $n$ is the number of vortices \cite{GreengardRokhlin1987}.
+However, in the case of viscous fluids with boundaries, vorticity is shed from the boundaries.
+As a result, the vortex blob method of \cite{Chorin1973} created new vortices at the boundary by using the Kutta condition as a creation criteria.
 For these applications, $n$ will grow in time without bound, and some means of discarding vortices must be appealed to.
 It is here that the grouping of jet-vortices  could be useful.
-If one mergers two $k$-jet vortices to obtained a $(k+1)$-jet vortex, the amount of scalars and data typically increases.
-So one must still make a tough decision as to what data to discard (e.g. through some tolerance or simply truncating at level $k$).
-The analysis presented here could shed light on how best to implement this.
+If one mergers two $N$-jet vortices to obtained a $(N+1)$-jet vortex, the amount of scalars and data typically increases.
+So one must still make a tough decision as to what data to discard (e.g. through some tolerance or simply truncating at level $M$).
+Nonetheless, the analysis presented here could shed light on how best to implement this.
 \end{rmk}
 
 \begin{rmk}
-The merging of blobs of vorticity has been observed in numerical experiments
-as well as experimentally \cite{MelanderZabuskyMcWilliams1998}\todo{Describe this publication in more detail}.
-
-Grouping can also be useful for resolving collision events.
+The merging of blobs of vorticity has been studied analytically \cite{MelanderZabuskyMcWilliams1998},
+numerically \cite{WeissMcWilliams1993,MelanderZabuskyMcWilliams1998,DizesVerga2002}
+as well as in the lab \cite{FineDriscollMalmbergMitchell1991}.
+All of this is in the lightly viscous (or nearly inviscid) regime.
+Grouping can be used to numerically resolve such collision events.
 In theory, there is no issue with collisions because we are considering regularized vortices where
 the induced velocity field from a single jet-vortex is always finite.
-However, as $\delta$ becomes smaller, the velocity near the vortex core becomes larger and larger.
-As a result, we observe numerical difficulties when the vortices are close.
+However, as $\delta$ becomes smaller, the velocity near the vortex core diverges.
+This should be of concern as the convergence analysis of the vortex method pre-supposes that $\delta \ll 1$.
 Typically such a near collision is dealt with by using a smaller time-step (as the ODE is quite stiff).
 Grouping suggests an alternative by avoiding this pair-wise interaction altogether.
+Perhaps such an approach could be viewed as a variation of the punctuated dissipation events
+described in \cite{WeissMcWilliams1993} where an initial vorticity distribution is found to asymptotically
+approach a smoother axisymmetric vortex blob,
+and discrete vortex mergers are implemented to model this behavior.
 \end{rmk}
 
 \subsection{Approximation of initial conditions}
@@ -710,7 +711,7 @@ In the modern conception of Hamiltonian mechanics, as described in \cite{FOM,Arn
 the Hamiltonian is a function on a symplectic manifold, which produces equations of motion.
 An important instance of a symplectic manifold is a coadjoint orbit.
 In this section we compute the coadjoint orbit of a jet-vortex
-as well as the symplectic structure.
+as well as the associated symplectic structure.
 
 Of course, the Hamiltonian we use is given by
 the kinetic energy
