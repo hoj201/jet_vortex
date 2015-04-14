@@ -511,14 +511,18 @@ def energy(jv):
     G0 = kernel(jv)
     out = 0.5*np.einsum('i,j,ij',gamma,gamma,G0)
     if jv.order > 0:
+        G_x = kernel(jv,m=1)
+        G_y = kernel(jv,n=1)
         G_xx = kernel(jv,m=2)
         G_yy = kernel(jv,n=2)
-        G_xy = kernel(jv,m=1,n=1) 
+        G_xy = kernel(jv,m=1,n=1)
         gamma_x = jv.gamma_x
         gamma_y = jv.gamma_y
-        out += 0.5*np.einsum('i,j,ij',gamma_x,gamma_x,G_xx)
-        out += np.einsum('i,j,ij',gamma_x,gamma_y,G_xy)
-        out += 0.5*np.einsum('i,j,ij',gamma_y,gamma_y,G_yy)
+        out -= 0.5*np.einsum('i,j,ij',gamma_x,gamma_x,G_xx)
+        out -= np.einsum('i,j,ij',gamma_x,gamma_y,G_xy)
+        out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma_y,G_yy)
+        out += np.einsum('i,j,ij',gamma,gamma_x,G_x)
+        out += np.einsum('i,j,ij',gamma,gamma_y,G_y)
         if jv.order > 1:
             G_xxxx = kernel(jv,m=4)
             G_xxxy = kernel(jv,m=3,n=1)
