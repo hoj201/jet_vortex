@@ -369,6 +369,9 @@ def stream_function( jv , X=None , Y=None , m=0 , n=0 ):
     # Computes \partial^m_x \partial^n_y \psi(X,Y)
     # induced by the jet vortex configuration, jv.
     # Note m + n <= 2 must hold
+    if X is None:
+        X = jv.x
+        Y = jv.y
     store = np.zeros( np.size(X) )
     store += np.dot(kernel(jv, X, Y, m, n), jv.gamma)
     if jv.order > 0:
