@@ -522,7 +522,8 @@ def energy(jv):
         gamma_x = jv.gamma_x
         gamma_y = jv.gamma_y
         out -= 0.5*np.einsum('i,j,ij',gamma_x,gamma_x,G_xx)
-        out -= np.einsum('i,j,ij',gamma_x,gamma_y,G_xy)
+        out -= 0.5*np.einsum('i,j,ij',gamma_x,gamma_y,G_xy)
+        out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma_x,G_xy)
         out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma_y,G_yy)
         out += np.einsum('i,j,ij',gamma,gamma_x,G_x)
         out += np.einsum('i,j,ij',gamma,gamma_y,G_y)
