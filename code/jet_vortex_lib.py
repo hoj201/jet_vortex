@@ -384,22 +384,8 @@ def velocity_field( jv , X=None , Y=None , m=0 , n=0 ):
     # Computes \partial^m_x \partial^n_y \psi(X,Y)
     # induced by the jet vortex configuration, jv.
     # Note m + n <= 2 must hold
-    u = np.dot(kernel(jv, X, Y, m, n+1), jv.gamma)
-    if jv.order > 0:
-        u -= np.dot( kernel(jv, X, Y, m+1, n+1) , jv.gamma_x)
-        u -= np.dot( kernel(jv, X, Y, m, n+2) , jv.gamma_y)
-        if jv.order > 1:
-            u += np.dot(kernel(jv, X, Y, m+2, n+1), jv.gamma_xx)
-            u += np.dot(kernel(jv, X, Y, m+1, n+2), jv.gamma_xy)
-            u += np.dot(kernel(jv, X, Y, m, n+3), jv.gamma_yy)
-    v = -np.dot(kernel(jv, X, Y, m+1, n), jv.gamma)
-    if jv.order > 0:
-        v += np.dot(kernel(jv, X, Y, m+2, n), jv.gamma_x)
-        v += np.dot(kernel(jv, X, Y, m+1, n+1), jv.gamma_y)
-        if jv.order > 1:
-            v -= np.dot(kernel(jv, X, Y, m+3, n), jv.gamma_xx)
-            v -= np.dot(kernel(jv, X, Y, m+2, n+1), jv.gamma_xy)
-            v -= np.dot(kernel(jv, X, Y, m+1, n+2), jv.gamma_yy)
+    u = stream_function(jv,X,Y,m,n+1)
+    v = -stream_function(jv,X,Y,m+1,n)
     return u,v
 
 def get_gamma( psi , x , y , order ):
