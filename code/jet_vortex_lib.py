@@ -413,14 +413,14 @@ def get_gamma( psi , x , y , order ):
         elif order == 2:
             matrix = np.zeros( [6*N,6*N] )
         matrix[0:N,0:N] = G0
-        matrix[0:N,N:(2*N)] = -G_x
-        matrix[0:N,(2*N):(3*N)] = -G_y
+        matrix[0:N,N:(2*N)] = G_x
+        matrix[0:N,(2*N):(3*N)] = G_y
         matrix[N:(2*N),0:N] = G_x
-        matrix[N:(2*N),N:(2*N)] = -G_xx
-        matrix[N:(2*N),(2*N):(3*N)] = -G_xy
+        matrix[N:(2*N),N:(2*N)] = G_xx
+        matrix[N:(2*N),(2*N):(3*N)] = G_xy
         matrix[(2*N):(3*N),0:N] = G_y
-        matrix[(2*N):(3*N),N:(2*N)] = -G_xy
-        matrix[(2*N):(3*N),(2*N):(3*N)] = -G_yy
+        matrix[(2*N):(3*N),N:(2*N)] = G_xy
+        matrix[(2*N):(3*N),(2*N):(3*N)] = G_yy
         if order == 2:
             G_xxx = kernel(jv,m=3)
             G_xxy = kernel(jv,m=2,n=1)
@@ -441,20 +441,20 @@ def get_gamma( psi , x , y , order ):
             matrix[(2*N):(3*N),(4*N):(5*N)] = G_xyy
             matrix[(2*N):(3*N),(5*N):(6*N)] = G_yyy
             matrix[(3*N):(4*N),0:N] = G_xx
-            matrix[(3*N):(4*N),N:(2*N)] = -G_xxx
-            matrix[(3*N):(4*N),(2*N):(3*N)] = -G_xxy
+            matrix[(3*N):(4*N),N:(2*N)] = G_xxx
+            matrix[(3*N):(4*N),(2*N):(3*N)] = G_xxy
             matrix[(3*N):(4*N),(3*N):(4*N)] = G_xxxx
             matrix[(3*N):(4*N),(4*N):(5*N)] = G_xxxy
             matrix[(3*N):(4*N),(5*N):(6*N)] = G_xxyy
             matrix[(4*N):(5*N),0:N] = G_xy
-            matrix[(4*N):(5*N),N:(2*N)] = -G_xxy
-            matrix[(4*N):(5*N),(2*N):(3*N)] = -G_xyy
+            matrix[(4*N):(5*N),N:(2*N)] = G_xxy
+            matrix[(4*N):(5*N),(2*N):(3*N)] = G_xyy
             matrix[(4*N):(5*N),(3*N):(4*N)] = G_xxxy
             matrix[(4*N):(5*N),(4*N):(5*N)] = G_xxyy
             matrix[(4*N):(5*N),(5*N):(6*N)] = G_xyyy
             matrix[(5*N):(6*N),0:N] = G_yy
-            matrix[(5*N):(6*N),N:(2*N)] = -G_xyy
-            matrix[(5*N):(6*N),(2*N):(3*N)] = -G_yyy
+            matrix[(5*N):(6*N),N:(2*N)] = G_xyy
+            matrix[(5*N):(6*N),(2*N):(3*N)] = G_yyy
             matrix[(5*N):(6*N),(3*N):(4*N)] = G_xxyy
             matrix[(5*N):(6*N),(4*N):(5*N)] = G_xyyy
             matrix[(5*N):(6*N),(5*N):(6*N)] = G_yyyy            
