@@ -372,8 +372,8 @@ def stream_function( jv , X=None , Y=None , m=0 , n=0 ):
     store = np.zeros( np.size(X) )
     store += np.dot(kernel(jv, X, Y, m, n), jv.gamma)
     if jv.order > 0:
-        store -= np.dot(kernel(jv, X, Y, m+1, n), jv.gamma_x)
-        store -= np.dot(kernel(jv, X, Y, m, n+1), jv.gamma_y)
+        store += np.dot(kernel(jv, X, Y, m+1, n), jv.gamma_x)
+        store += np.dot(kernel(jv, X, Y, m, n+1), jv.gamma_y)
         if jv.order > 1:
             store += np.dot(kernel(jv, X, Y, m+2, n), jv.gamma_xx)
             store += np.dot(kernel(jv, X, Y, m+1, n+1), jv.gamma_xy)
