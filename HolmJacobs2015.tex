@@ -67,7 +67,7 @@ A new singular vortex theory is presented for regularised Euler fluid equations 
 Consider the vorticity-stream formulation of an ideal incompressible planar fluid
 \begin{align}
   \partial_t \omega + \partial_x \omega  \partial_y \psi
-  + \partial_y \omega \partial_x \psi = 0. \label{eq:vorticity}
+  - \partial_y \omega \partial_x \psi = 0. \label{eq:vorticity}
 \end{align}
 where $\omega = \Delta \psi$ and $\psi$ is the stream function.
 The Eulerian velocity field is given by
@@ -81,10 +81,10 @@ Substitution of this ansatz into \eqref{eq:vorticity} yields the finite dimensio
 \begin{align}
 \begin{cases}
 	\frac{d \Gamma}{dt} = 0 \quad , \quad \psi(z) = \sum_i  \Gamma_i G(z-z_i) \\
-	\frac{dx_i}{dt} = \partial_y \psi(z_i) \quad , \quad \frac{dy_i}{dt} = \partial_x \psi(z_i)
+	\frac{dx_i}{dt} = \partial_y \psi(z_i) \quad , \quad \frac{dy_i}{dt} = - \partial_x \psi(z_i)
 \end{cases} \label{eq:point_vortex},
 \end{align}
-where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$.
+where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$.\todo{Should be be using $z$'s as shorthand for $(x,y) \in \R^2$}
 One could consider the regularized form of the vorticity equation given by
 choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ and defining the regularized vorticity by 
 $K_\delta* \omega = \Delta \psi$.
@@ -164,13 +164,13 @@ for constants $\Gamma_i(t) \in \R$ for $i$ in some finite set $S$
 and where the points $z_i \in \R^2$ are distinct.
 The stream function is 
 \begin{align*}
-  \psi(x,y;t) = \sum_{i} \Gamma_i(t) G_\delta (x - x_i (t), y-y_i(t) )
+  \psi(z;t) = \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )
 \end{align*}
 and so the corresponding velocity field is given by
 \begin{align}
 \begin{cases}
-  u(x,y;t) = \sum_{i} \Gamma_i(t) \partial_y G_\delta (x - x_i (t), y-y_i(t) ) \\
-  v(x,y;t) = - \sum_{i} \Gamma_i(t) \partial_x G_\delta (x - x_i (t), y-y_i(t) )
+  u(z;t) = \sum_{i} \Gamma_i(t) \partial_y G_\delta (z-z_i(t) ) \\
+  v(z;t) = - \sum_{i} \Gamma_i(t) \partial_x G_\delta (z-z_i(t) )
 \end{cases} \label{eq:u 0}
 \end{align}
 
@@ -246,21 +246,18 @@ Consider the first order jet-vortex ansatz for the vorticity
   + \Gamma_i^y \partial_y \delta_{z_i}\label{eq:ansatz 1}
 \end{align}
 for constants $\Gamma_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i = 1,\dots,N$.
-The stream function is 
+The stream function is given by convolution
 \begin{align*}
-  \psi(x,y;t) &= \sum_{i} \Gamma_i(t) G_\delta (x - x_i (t), y-y_i(t) ) \\
-  	&\qquad - \Gamma_i^x(t) \partial_x G_\delta( x- x_i(t) , y- y_i(t)) \\
-	&\qquad - \Gamma_i^y(t) \partial_y G_\delta( x- x_i(t) , y- y_i(t))
+  &\psi(z;t) = G_\delta * \omega = \int G(z - \tilde{z}) \omega(\tilde{z}) d \tilde{z} \\
+  &\quad = \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )  + \Gamma_i^x(t) \partial_x G_\delta( z - z_i(t))  + \Gamma_i^y(t) \partial_y G_\delta( z- z_i(t))
 \end{align*}
 and so the corresponding velocity field is given by
 \begin{align}
 \begin{array}{ll}
-  u(x,y;t) &= \sum_{i} \Gamma_i(t) \partial_yG_\delta (x - x_i (t), y-y_i(t) ) \\
-  	&\qquad - \Gamma_i^x(t) \partial_{xy} G_\delta( x- x_i(t) , y- y_i(t)) \\
-	&\qquad - \Gamma_i^y(t) \partial_y^2 G_\delta( x- x_i(t) , y- y_i(t)) \\
-  v(x,y;t) &= \sum_{i} - \Gamma_i(t) \partial_x G_\delta (x - x_i (t), y-y_i(t) ) \\
-  	&\qquad + \Gamma_i^x(t) \partial_x^2 G_\delta( x- x_i(t) , y- y_i(t)) \\
-	&\qquad + \Gamma_i^y(t) \partial_{xy} G_\delta( x- x_i(t) , y- y_i(t))
+  u(z;t) &= \sum_{i} \Gamma_i(t) \partial_yG_\delta (z-z_i(t) ) + \Gamma_i^x(t) \partial_{xy} G_\delta( z-z_i(t))\\
+  &\qquad + \Gamma_i^y(t) \partial_y^2 G_\delta( z-z_i(t)) \\
+  v(z;t) &= \sum_{i} -\Gamma_i(t) \partial_x G_\delta (z-z_i(t) ) - \Gamma_i^x(t) \partial_x^2 G_\delta( z-z_i(t)) \\
+  &\qquad - \Gamma_i^y(t) \partial_{xy} G_\delta( z-z_i(t))
 \end{array}
 \label{eq:u 1}
 \end{align}
@@ -283,7 +280,7 @@ We then find
   &\frac{d \Gamma_i^x}{dt} \partial_x\delta_{z_i} 
   - \Gamma_i^x \frac{dx_i}{dt} \partial_x^2 \delta_{z_i}
   - \Gamma_i^x \frac{dy_i}{dt} \partial_{xy} \delta_{z_i} \\
-  &\frac{d \Gamma_i^y}{dt} \delta_{z_i} 
+  &\frac{d \Gamma_i^y}{dt} \partial_y \delta_{z_i} 
   - \Gamma_i^y \frac{dx_i}{dt} \partial_{xy} \delta_{z_i}
   - \Gamma_i^y \frac{dy_i}{dt} \partial_y^2 \delta_{z_i}
 \end{align*}
@@ -310,7 +307,7 @@ Similarly
 \begin{align*}
     v \partial_y \omega &= \sum_{i} \Gamma_i ( v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} ) \\
    &\quad \Gamma_i^x (v(z_i) \partial_{xy} \delta_{z_i} 
-   - \partial_x v(z_i) \partial_x \delta_{z_i}
+   - \partial_x v(z_i) \partial_y \delta_{z_i}
    - \partial_y v(z_i) \partial_x \delta_{z_i}
    + \partial_{xy} v(z_i) \delta_{z_i} ) \\
    &\quad \Gamma_i^y ( v(z_i) \partial_{y}^2 \delta_{z_i} 
@@ -338,12 +335,12 @@ Again, as the flow is divergence free we find
 \end{align*}
 The vanishing of the coefficients of $\partial_x^2 \delta_{z_i}$ yields
 \begin{align*}
-  \Gamma_i^x ( u(z_i) - \frac{dx_i}{dt} ) = 0.
+  \Gamma_i^x \left( u(z_i) - \frac{dx_i}{dt} \right) = 0.
 \end{align*}
 Similarly, by looking at the coefficient of $\partial_y^2 \delta_{z_i}$
 we find
 \begin{align*}
-  \Gamma_i^y ( v(z_i) - \frac{dy_i}{dt} ) = 0.
+  \Gamma_i^y \left( v(z_i) - \frac{dy_i}{dt} \right) = 0.
 \end{align*}
 Assuming $\Gamma_i^x$ and $\Gamma_i^y$ are non-zero we
 obtain \eqref{eq:point motion} again.\footnote{
@@ -372,13 +369,13 @@ Consider the $N$th order jet-vortex ansatz for the vorticity
 for constants $\Gamma^{mn}_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i \in S$.
 The stream function is 
 \begin{align*}
-  \psi(x,y;t) = \sum_{i, m+n \leq N} (-1)^{m+n} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n G_\delta (x - x_i (t), y-y_i(t) )
+  \psi(z;t) = \sum_{i, m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n G_\delta (z-z_i(t) )
 \end{align*}
 and so the corresponding velocity field is given by
 \begin{align}
 \begin{cases}
-  u(x,y;t) = \sum_{i \in S,m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^{n+1} G_\delta (x - x_i (t), y-y_i(t) ) \\
-  v(x,y;t) = - \sum_{i \in S, m+n \leq N} \Gamma^{mn}_i(t) \partial_x^{m+1} \partial_y^n G_\delta (x - x_i (t), y-y_i(t) )
+  u(z;t) = \sum_{i \in S,m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^{n+1} G_\delta (z-z_i(t) ) \\
+  v(z;t) = - \sum_{i \in S, m+n \leq N} \Gamma^{mn}_i(t) \partial_x^{m+1} \partial_y^n G_\delta (z-z_i(t) )
 \end{cases} \label{eq:u N}
 \end{align}
 
@@ -466,10 +463,10 @@ For $\ell+k \leq N$ the vanishing of the coefficient of $\partial_{\ell,k} \delt
       m > \ell \\
       n > k \\
       n+m \leq p}
-    }\Gamma_i^{mn} \Big[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
-   \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i)  \Big]
+    }\Gamma_i^{mn} \Bigg[  \binom{n}{k} \binom{m}{\ell-1} \partial_{m-\ell+1,n-k} u^x(z_i) \\
+   + \binom{n}{k-1} \binom{m}{\ell} \partial_{m-\ell,n-k+1} u^y(z_i)  \Bigg]
 \end{align*}
-Again, we have found equations of motion for $x_i(t),y_i(t)$ and the
+Again, we have found equations of motion for $z_i(t)$'s and the
 $\Gamma_i(t)$'s.
 The solutions of this finite-dimensional ODE
 will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
@@ -486,10 +483,11 @@ into a solution of \eqref{eq:vorticity}.
 	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
 	  \hline
   \end{tabular}\\
+  \todo[inline]{This table is too cramped.  Find a way to fix the spacing}
   The first two are momenta derived by observing the rotational and
-  translational symmetry of the fluid and applying Noether's theorem (see Appendix \ref{sec:symmetries} for derivation).
+  translational symmetry of the fluid and applying Noether's theorem.
   In section \ref{sec:symplectic} we will characterize fluids, and the jet-vortices as Hamiltonian systems
-  and the Linear and angular momentum serve as symplectic momentum maps.
+  and the Linear and angular momentum serve as symplectic momentum maps (see Appendix \ref{sec:symmetries} for derivation).
 \end{rmk}
 
 \begin{rmk} \label{rmk:Kelvin}
@@ -557,6 +555,7 @@ into a solution of \eqref{eq:vorticity}.
 	That the equations of motion for the moments forms a closed at order $N$
 	is in contrast to other methods for deriving dynamical systems for moments
 	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
+	\todo{Is this characterization of \cite{GibbonsHolmTronci2008a} correct?}
 	where a projection must be invoked in order to form a closed system.
 \end{rmk}
 
@@ -889,11 +888,7 @@ The corresponding Poisson bracket is given by\\
 
 \section{Conclusion}
 
-\todo[inline]{Darryl should take a stab at this first.  We should at least float the idea of jet-vortex filaments.}\bigskip
-
- 
-\todo[inline]{For higher-order vortex jet-filament methods, maybe we could work from my Regge-Rasetti paper!}
-
+\todo[inline]{Say what we did.  Say why it's cool.  Mention future ideas (filaments, sphere, connection with jetlets)}
 
 \appendix
 
@@ -907,7 +902,7 @@ However, when $\omega$ is not smooth (e.g. a Dirac delta distribution),
 then one really needs to invoke the mathematics of distributions
 as distinct from that of real valued functions.
 Therefore, we have included this appendix to remind the reader of the basic theory of distributions.
-The main reference for this section is \cite{Hormander2003}.\todo{We should refer to specific formulas from here.}
+The main reference for this section is \cite{Hormander2003}.
 
 The space of distributions $D(\R^2)$ is the dual-vector space to the space of smooth functions $C^\infty(\R^2)$.
 Therefore a distribution is defined by how it maps functions to real numbers.
@@ -981,7 +976,7 @@ action by a Lie group $G$, a momentum map associated to $G$ is a map $J:S \to \m
 for all $\xi \in \mathfrak{g}$, where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
 Equivalently we could express the previous condition as
 \begin{align}
-  d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x \rangle \label{eq:momap}
+  d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x ) \label{eq:momap}
 \end{align}
 for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
 
