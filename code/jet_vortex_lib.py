@@ -283,8 +283,8 @@ def kernel( jv , X=None , Y=None , m=0 , n=0 ):
     r = np.sqrt(r2)
     rho = r2 / (delta**2)
     store = np.zeros( [np.size(X), jv.N] )
-    near = (r < delta/10.)
-    far = (r >= delta/10.)
+    near = (r < delta/100.)
+    far = (r >= delta/100.)
     r_far = r*far+2.0*near
     r2_far = r_far**2
     dx_far = dx + near*1.0
@@ -387,6 +387,9 @@ def velocity_field( jv , X=None , Y=None , m=0 , n=0 ):
     # Computes \partial^m_x \partial^n_y \psi(X,Y)
     # induced by the jet vortex configuration, jv.
     # Note m + n <= 2 must hold
+    if X is None:
+        X = jv.x
+        Y = jv.y
     u = stream_function(jv,X,Y,m,n+1)
     v = -stream_function(jv,X,Y,m+1,n)
     return u,v
@@ -493,14 +496,14 @@ def ode_func( state , t , pars): #pars = (order,N)
         u_x,v_x = velocity_field(jv,m=1)
         u_y,v_y = velocity_field(jv,n=1)
         djv.gamma_x = jv.gamma_x*u_x + jv.gamma_y*u_y
-        djv.dgamma_y = jv.gamma_x*v_x + jv.gamma_y*v_y
-        if jv.order ==2:
+        djv.gamma_y = jv.gamma_x*v_x + jv.gamma_y*v_y
+        if jv.order > 1:
             u_xx,v_xx = velocity_field(jv,m=2)
             u_xy,v_xy = velocity_field(jv,m=1,n=1)
             u_yy,v_yy = velocity_field(jv,n=2)
-            djv.dgamma_xx = 2*jv.gamma_xx*u_x + jv.gamma_xy*u_y
-            djv.dgamma_yy = 2*jv.gamma_yy*v_y + jv.gamma_xy*v_x
-            djv.dgamma_xy = 2*jv.gamma_xx*v_x + 2*jv.gamma_yy*u_y
+            djv.gamma_xx = 2*jv.gamma_xx*u_x + jv.gamma_xy*u_y
+            djv.gamma_yy = 2*jv.gamma_yy*v_y + jv.gamma_xy*v_x
+            djv.gamma_xy = 2*jv.gamma_xx*v_x + 2*jv.gamma_yy*u_y
             djv.gamma_x += - jv.gamma_xx*u_xx \
                    - jv.gamma_xy*u_xy - jv.gamma_yy*u_yy
             djv.gamma_y += - jv.gamma_xx*v_xx \
@@ -508,6 +511,24 @@ def ode_func( state , t , pars): #pars = (order,N)
     return djv.state()
 
 def energy(jv):
+    #computes the conserved energy
+    psi = stream_function(jv) 
+    out = 0.5*np.dot( psi , jv.gamma )
+    if jv.order > 0:
+        psi_x = stream_function(jv,m=1)
+        psi_y = stream_function(jv,n=1)
+        out = out - 0.5*np.dot( psi_x , jv.gamma_x)
+        out = out - 0.5*np.dot( psi_y , jv.gamma_y)
+        if jv.order > 1:
+            psi_xx = stream_function(jv,m=2)
+            psi_xy = stream_function(jv,m=1,n=1)
+            psi_yy = stream_function(jv,n=2)
+            out = out + 0.5*np.dot(psi_xx,jv.gamma_xx)
+            out = out + 0.5*np.dot(psi_xy,jv.gamma_xy)
+            out = out + 0.5*np.dot(psi_yy,jv.gamma_yy)
+    return out
+
+def energy__(jv):
     # computes the conserved energy as a sanity check
     Dx = jv.dx() ; Dy = jv.dy()
     gamma = jv.gamma
@@ -525,8 +546,10 @@ def energy(jv):
         out -= 0.5*np.einsum('i,j,ij',gamma_x,gamma_y,G_xy)
         out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma_x,G_xy)
         out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma_y,G_yy)
-        out += np.einsum('i,j,ij',gamma,gamma_x,G_x)
-        out += np.einsum('i,j,ij',gamma,gamma_y,G_y)
+        out += 0.5*np.einsum('i,j,ij',gamma,gamma_x,G_x)
+        out += 0.5*np.einsum('i,j,ij',gamma,gamma_y,G_y)
+        out -= 0.5*np.einsum('i,j,ij',gamma_x,gamma,G_x)
+        out -= 0.5*np.einsum('i,j,ij',gamma_y,gamma,G_y)
         if jv.order > 1:
             G_xxxx = kernel(jv,m=4)
             G_xxxy = kernel(jv,m=3,n=1)
