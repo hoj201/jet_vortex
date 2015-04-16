@@ -69,8 +69,8 @@ Consider the vorticity-stream formulation of an ideal incompressible planar flui
   \partial_t \omega + \partial_x \omega  \partial_y \psi
   - \partial_y \omega \partial_x \psi = 0. \label{eq:vorticity}
 \end{align}
-where $\omega = \Delta \psi$ and $\psi$ is the stream function.
-The Eulerian velocity field is given by
+where $\omega = \Delta \psi$ is the vorticity and $\psi$ is the stream function.
+The $(x,y)$ components of the Eulerian velocity field are given by
 \begin{align*}
 	(u,v) = (\partial_y \psi , - \partial_x \psi).
 \end{align*}
@@ -101,7 +101,7 @@ This system is the starting point for the vortex blob method, introduced in \cit
 The economy of the vortex method derives itself from the hyper-local character of Dirac delta distributions,
 and the fact that \eqref{eq:vorticity} keeps them hyperlocal (i.e. parametrized by position).
 However, there are many distributions which are localized to a similar degree (e.g. $\partial_x \delta_{z_i}$).
-In this article we study the more general ansatz $\omega = \sum_i \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
+In this article we study the more general ansatz $\omega = \sum_{i,m,n} \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
 We will find that this ansatz yields a closed finite dimensional system which generalizes vortex blobs.
 We call these new carriers of vorticity \emph{jet vortices}.
 
@@ -122,13 +122,13 @@ We call these new carriers of vorticity \emph{jet vortices}.
 \label{sec:background}
 Vortex methods for fluid modeling predate the computer age, and can be found as early as  a 1931 paper concerning a ``line of discontinuity'' in planar fluid flow \cite{Rosenhead1931}.
 That point vortices induce an infinite velocity at the location of the vortex cores caused great difficulties numerically and theoretically,
-and the method did not become a competitive numerical method until the 70s.
+and the method did not become a competitive numerical method until the 1970s.
 In particular, these problems related to singularities were overcome by regularizing the singular vortex kernel to form a \emph{vortex blob}.
 Additionally, stochastic perturbations were included to model viscosity and the Kutta condition was invoked to create vorticity around boundaries \cite{Chorin1973}.
 These three adjustments to the classical vortex method made the method of practical use for realistic fluid flow modeling.
 In particular, blob regularization proved much more amenable to analysis and the convergence to solutions of the Navier-Stokes equations was proven in \cite{Hald1979}.
 Stronger convergence rates were achieved by judicious choice of vortex kernels.
-By convolving the singular vortex kernel with sums of Guassian smoothing kernels yields a sequence of vortex blob kernels with faster and faster convergence rates.
+By convolving the singular vortex kernel with sums of Gaussian smoothing kernels yields a sequence of vortex blob kernels with faster and faster convergence rates.
 In particular the convergence rate of the $m$th kernel was found to be spectral, and of order $h^{mq}$ for any $q \in (0,1)$ where $h = \delta^q$
 is a grid-spacing parameter and $\delta > 0$ is a length scale associated to the smoothing kernel \cite{BealeMajda1982,BealeMajda1985}.
 
@@ -137,15 +137,14 @@ by invoking Arnold's interpretation of ideal fluids \cite{Arnold1966}.
 The findings of \cite{MarsdenWeinstein1983} were later corrected in \cite{GayBalmazVizman2012} to handle fluid flow on manifolds with nontrivial homology.
 While this clarified the geometry of point vortices, vortex blobs were thought to be a numerical ``trick" which broke the geometric interpretation.
 However, this thought was vanquished with the invention of the Euler-$\alpha$ model, a regularized model of ideal fluids with a small parameter $1 \gg \alpha > 0$ \cite{HolmMarsdenRatiu1998}.
-In particular, vortex blob solutions associated to a specific kernel serve as \emph{exact} solutions to the Euler-$\alpha$ model \cite{OliverShkoller2001}\footnote{
-	This publication refers to the $\alpha$-model as a second grade fluid.}.
+In particular, vortex blob solutions associated to a specific kernel serve as \emph{exact} solutions to the Euler-$\alpha$ model \cite{OliverShkoller2001}.
 The Euler-$\alpha$ kernel is different from the kernels used in \cite{Chorin1973} and \cite{BealeMajda1985}.
 A comparison of the Euler-$\alpha$ kernel to the $m=1$ kernel of \cite{BealeMajda1985} is given in \cite{HolmNitschePutkaradze2006}.
 
 While vortex blobs performed well, they did not capture much of the qualitative richness observed in vorticity field dynamics.
 In particular, blobs of vorticity in real ideal fluids are known to change shape and deviate from initially circular distributions.
 A numerical method is proposed in \cite{Rossi1997,Rossi2005} to capture these shape dynamics by adding
-basis functions with non-trivial moments and study vortex merger (see for example \cite{MelanderZabuskyMcWilliams1998,DizesVerga2002,MeunierDizesLeweke2005}).
+basis functions with non-trivial moments in the study of vortex merger (see for example \cite{MelanderZabuskyMcWilliams1998,DizesVerga2002,MeunierDizesLeweke2005}).
 Another distinct model obtained by projection onto a Hermite basis is described in \cite{NagemSandriUminskyWayne2009}.
 This projection yields a finite-dimensional systems which models the (truncated) moments of the vorticity of an ideal incompressible fluid.
 The derivation of simplified combinatorial formulas invoked by the dynamics of this model were discovered in \cite{UminskyWayneBarbaro2010}
@@ -166,7 +165,7 @@ The stream function is
 \begin{align*}
   \psi(z;t) = \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )
 \end{align*}
-and so the corresponding velocity field is given by
+and consequently, the corresponding velocity field is given by
 \begin{align}
 \begin{cases}
   u(z;t) = \sum_{i} \Gamma_i(t) \partial_y G_\delta (z-z_i(t) ) \\
@@ -202,8 +201,8 @@ and
 \end{align*}
 Here $u \partial_x \delta$ should be interpreted
 in terms of the basic theory of distrbutions.
-Invoking \eqref{eq:func times partial delta} (see Appendix
-\ref{sec:distributions}) we find
+Upon invoking \eqref{eq:func times partial delta} in Appendix
+\ref{sec:distributions} we find
 \begin{align}
   u \partial_x \omega = \sum_{i} \Gamma_i u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i}. \label{eq:u term}
 \end{align}
@@ -277,10 +276,10 @@ We then find
   \partial_t \omega = \sum_{i} & \frac{d \Gamma_i}{dt} \delta_{z_i} 
   - \Gamma_i \frac{dx_i}{dt} \partial_x \delta_{z_i}
   - \Gamma_i \frac{dy_i}{dt} \partial_y \delta_{z_i} \\
-  &\frac{d \Gamma_i^x}{dt} \partial_x\delta_{z_i} 
+  &+\frac{d \Gamma_i^x}{dt} \partial_x\delta_{z_i} 
   - \Gamma_i^x \frac{dx_i}{dt} \partial_x^2 \delta_{z_i}
   - \Gamma_i^x \frac{dy_i}{dt} \partial_{xy} \delta_{z_i} \\
-  &\frac{d \Gamma_i^y}{dt} \partial_y \delta_{z_i} 
+  &+\frac{d \Gamma_i^y}{dt} \partial_y \delta_{z_i} 
   - \Gamma_i^y \frac{dx_i}{dt} \partial_{xy} \delta_{z_i}
   - \Gamma_i^y \frac{dy_i}{dt} \partial_y^2 \delta_{z_i}
 \end{align*}
@@ -294,27 +293,27 @@ Invoking \eqref{eq:func times partial delta} (see Appendix
 \ref{sec:distributions}) we can revise the previous equation to
 obtain
 \begin{align*}
-  u \partial_x \omega &= \sum_{i} \Gamma_i ( u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i} ) \\
-   &\Gamma_i^x (u(z_i) \partial_x^2 \delta_{z_i} 
+  u \partial_x \omega &= \sum_{i} \Gamma_i \Big( u(z_i) \partial_x \delta_{z_i} - \partial_x u(z_i) \delta_{z_i} \Big) \\
+   &+\Gamma_i^x \Big(u(z_i) \partial_x^2 \delta_{z_i} 
    - 2\partial_x u(z_i) \partial_x \delta_{z_i}
-   + \partial_x^2u(z_i) \delta_{z_i} ) \\
-   &\Gamma_i^y ( u(z_i) \partial_{xy} \delta_{z_i} 
+   + \partial_x^2u(z_i) \delta_{z_i} \Big) \\
+   &+\Gamma_i^y \Big( u(z_i) \partial_{xy} \delta_{z_i} 
    - \partial_x u(z_i) \partial_y \delta_{z_i} 
    - \partial_y u(z_i) \partial_x \delta_{z_i} 
-   + \partial_{xy}u(z_i) \delta_{z_i}
+   + \partial_{xy}u(z_i) \delta_{z_i}\Big)
 \end{align*}
 Similarly
 \begin{align*}
-    v \partial_y \omega &= \sum_{i} \Gamma_i ( v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} ) \\
-   &\quad \Gamma_i^x (v(z_i) \partial_{xy} \delta_{z_i} 
+    v \partial_y \omega &= \sum_{i} \Gamma_i \Big( v(z_i) \partial_y \delta_{z_i} - \partial_y v(z_i) \delta_{z_i} \Big) \\
+   &\quad + \Gamma_i^x \Big(v(z_i) \partial_{xy} \delta_{z_i} 
    - \partial_x v(z_i) \partial_y \delta_{z_i}
    - \partial_y v(z_i) \partial_x \delta_{z_i}
-   + \partial_{xy} v(z_i) \delta_{z_i} ) \\
-   &\quad \Gamma_i^y ( v(z_i) \partial_{y}^2 \delta_{z_i} 
+   + \partial_{xy} v(z_i) \delta_{z_i} \Big) \\
+   &\quad + \Gamma_i^y \Big( v(z_i) \partial_{y}^2 \delta_{z_i} 
    - 2\partial_y v(z_i) \partial_y \delta_{z_i} 
-   + \partial_{y}^2v(z_i) \delta_{z_i})
+   + \partial_{y}^2v(z_i) \delta_{z_i} \Big)
 \end{align*}
-Substituion of these expressions into \eqref{eq:vorticity} yields
+Substitution of these expressions into \eqref{eq:vorticity} yields
 the vanishing of
 a linear combination of the distributions
 $\delta_{z_i},\partial_x\delta_{z_i},\partial_y \delta_{z_i}, \partial_x^2 \delta_{z_i},
@@ -552,10 +551,9 @@ into a solution of \eqref{eq:vorticity}.
 	Invoking the equation of motion for the $\Gamma$'s and substituting the identity be tween the $\Gamma$'s
 	and the $\mu$'s
 	would yield a closed dynamical system for the $\mu$'s.
-	That the equations of motion for the moments forms a closed at order $N$
+	That the equations of motion for the moments forms a closed system at order $N$
 	is in contrast to other methods for deriving dynamical systems for moments
 	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
-	\todo{Is this characterization of \cite{GibbonsHolmTronci2008a} correct?}
 	where a projection must be invoked in order to form a closed system.
 \end{rmk}
 
@@ -620,11 +618,11 @@ Such reductions are even more dramatic when considering higher order jets.
 In particular, $2^N$ zeroth order jet vortices can be approximated with a single $N$th order jet vortex by applying the above approximations iteratively.
 
 The computation of pairwise interactions in the vortex method was a primary bottleneck in implementing the standard vortex method for real-world applications.
-It was not until the inention of the fast multipole method, that it became tractable to compute millions of pairwise interactions by
+It was not until the invention of the fast multipole method, that it became tractable to compute millions of pairwise interactions by
 reducing the complexity from an $\mathcal{O}(n^2)$ calculation to an $\mathcal{O}(n \log (n))$ calculation, where $n$ is the number of vortices \cite{GreengardRokhlin1987}.
 However, in the case of viscous fluids with boundaries, vorticity is shed from the boundaries.
 As a result, the vortex blob method of \cite{Chorin1973} created new vortices at the boundary by using the Kutta condition as a creation criteria.
-For these applications, $n$ will grow in time without bound, and some means of discarding vortices must be appealed to.
+For these applications, $n$ will grow in time without bound, and some means of discarding vortices must be invoked.
 It is here that the grouping of jet-vortices  could be useful.
 If one mergers two $N$-jet vortices to obtained a $(N+1)$-jet vortex, the amount of scalars and data typically increases.
 So one must still make a tough decision as to what data to discard (e.g. through some tolerance or simply truncating at level $M$).
@@ -642,7 +640,7 @@ the induced velocity field from a single jet-vortex is always finite.
 However, as $\delta$ becomes smaller, the velocity near the vortex core diverges.
 This should be of concern as the convergence analysis of the vortex method pre-supposes that $\delta \ll 1$.
 Typically such a near collision is dealt with by using a smaller time-step (as the ODE is quite stiff).
-Grouping suggests an alternative by avoiding this pair-wise interaction altogether.
+Grouping of jet-vortices suggests an alternative by avoiding this pair-wise interaction altogether.
 Perhaps such an approach could be viewed as a variation of the punctuated dissipation events
 described in \cite{WeissMcWilliams1993} where an initial vorticity distribution is found to asymptotically
 approach a smoother axisymmetric vortex blob,
@@ -721,15 +719,15 @@ The coadjoint orbit of $\omega$ is the set
 \begin{align*}
   \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}
 \end{align*}
-where $\varphi^* \omega$ denotes the distribution defined by
+where $\varphi_* \omega$ denotes the distribution defined by
 \begin{align*}
-	\int f(z) (\varphi^*\omega)(z) := \int f(\varphi(z)) \omega(z) \quad , \quad \forall f \in C^\infty(\R^2).
+	\int f(z) (\varphi_*\omega)(z) := \int f(\varphi(z)) \omega(z) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
 In fact $\Orb(\omega)$ inherits the structure of a smooth manifold,
 and a tangent vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
 a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
 $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
-The symplectic structure is nothing more than a special case of one derived via the KKS theorem \cite[see the boxed formula on p.303]{FOM}.
+The symplectic structure is nothing more than a special case of one derived via the Kirillov-Kostant-Souriau theorem \cite[see the boxed formula on p.303]{FOM}.
 In particular, the symplectic structure on $\Orb(\omega)$ is given by
 \begin{align}
   \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2}[\omega] ) = \int \omega(z)  ( u_1(z) v_2(z) - v_1(z) u_2(z) ) dz. \label{eq:symplectic}
