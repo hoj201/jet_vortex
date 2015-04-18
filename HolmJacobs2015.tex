@@ -559,11 +559,25 @@ into a solution of \eqref{eq:vorticity}.
 
 \section{Numerical Aspects}
 \label{sec:numerics}
-\todo[inline]{Write intro to numerics section}
+In this section we discuss various numerical aspects of using jet-vortices to model fluids.
+We will present an algorithm for constructing an initial condition of jet vortices from a given stream
+function, as well as the ability to group multiple lower order jet vortices into higher order ones.
 
-\subsection{Convergence to Euler's}
-\todo[inline]{Write this section}
-This is basically proven already, as we can invoke the error bounds of BealeMajda.
+\begin{rmk}
+A full convergence proof is well beyond the scope of this article,
+which merely introduces the concept of jet-vortices.
+Nonetheless, convergence can be quickly verified by observing the convergence proof of the standard vortex blob method.
+The convergence of the standard vortex blob method begins by initializing a regular grid of vortex blobs
+and observing convergence as the grid spacing vanishes.
+In \S \ref{sec:approximation} we will obtain an approximation scheme for the initial condition.
+Under this approximation scheme, the order 1 and higher circulation coefficients will vanish as the 
+grid resolution vanishes (assuming the initial condition is sufficiently smooth).
+So that the jet-vortex blob approximation and the standard vortex blob method must converge to the same place.
+As the standard vortex blob method converges to the solutions of the Euler equation, we obtain convergence.
+At the moment we do not know if the jet-vortex blob method converges faster (in space and time) than the vortex blob method.
+However, it is clear that jet-vortices provide an improved approximation in space,
+as will be shown in \S \ref{sec:approximation}.
+\end{rmk}
 
 \subsection{Grouping and reduction of pairwise computations}
 \label{sec:grouping}
@@ -646,6 +660,69 @@ described in \cite{WeissMcWilliams1993} where an initial vorticity distribution 
 approach a smoother axisymmetric vortex blob,
 and discrete vortex mergers are implemented to model this behavior.
 \end{rmk}
+
+\subsubsection{A numerical experiment with grouping}
+\label{sec:numerical_grouping}
+For illustrative purposes we can numerically group four 0th order jet-vortices into two 1st order jet-vortices, and then one 2nd order jet-vortex.
+In particular, we can consider the initial condition
+\begin{align}
+	\begin{cases}
+		z_0 = (-0.25,-0.25) \quad,\quad \Gamma_0 = \phantom{-}0.3 \\
+		z_1 = (-0.25,\phantom{-}0.25) \quad,\quad \Gamma_1 = -0.35 \\
+		z_2 = (\phantom{-}0.25,\phantom{-}0.25) \quad,\quad \Gamma_2 = -0.2 \\
+		z_3 = (\phantom{-}0.25,-0.25) \quad,\quad \Gamma_3 = \phantom{-}0.4 \\		
+	\end{cases}
+	\label{eq:ic_0}
+\end{align}
+The corresponding dynamics are depicted in the top row of figure \ref{fig:grouping}.
+
+Next we group $z_1$ with $z_0$ and $z_2$ with $z_3$ in order to obtain two $1$st order jet vortices with initial condition
+\begin{align}
+	\begin{cases}
+		z_0 = (-0.25,0.0) \quad,\quad \Gamma_0 = -0.05 \quad,\quad \Gamma^x = 0.0 \quad, \quad \Gamma^y = 0.1625\\
+		z_1 = (\phantom{-}0.25,0.0) \quad,\quad \Gamma_1 = \phantom{-}0.20 \quad, \quad \Gamma^x = 0.0 \quad,\quad \Gamma^y = 0.15\phantom{00}\\
+	\end{cases}
+	\label{eq:ic_1}
+\end{align}
+The corresponding dynamics are depicted in the middle row of figure \ref{fig:grouping}.
+The dynamics appear qualitatively similar at the beginning of the evolution.
+Then the dynamics diverge around time $t=150$ when the two $1$st order jet-vortices separate from one another, 
+in contrast to the dynamics of the $0$th order jet-vortices.
+
+Finally, we group the two 1st order jet-vortices to obtain a single 2nd order jet vortex.
+Again, the dynamics appear qualitatively similar at the beginning of the the evolution.
+Oddly, the dynamics of the $2$nd order jet vortex appear qualitatively similar to the $0$th
+order case even at $t=253$.
+As there is only a single vortex, the separation of vortices spoken of in the $1$st order
+jet vortex experiment is impossible here.  As a result the dynamics of the original $0$th 
+order jet vortex dynamics appears to be somewhat recovered.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_253}	
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_253}	
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_253}
+	\caption{Snapshots of the evolution for various initial conditions at time $t=0,51,101,152,202,253$.
+		The top row depicts the evolution of four 0th order jet vortices given by the initial condition \eqref{eq:ic_0}.
+		}
+	\label{fig:grouping}
+\end{figure}
+
 
 \subsection{Approximation of initial conditions}
 \label{sec:approximation}
@@ -746,7 +823,7 @@ Here we consider the initial condition
 \end{align}
 and all the other circulation variables are set to $0$.
 The results are depicted in figure \ref{fig:singleton_order2}.
-We observe a structure which rigid rotates counter-clockwise.
+We observe a structure which rigidly rotates counter-clockwise.
 
 \begin{figure}[h!]
 	\centering
@@ -808,7 +885,7 @@ Specifically, we consider the initial condition:
 \end{align}
 with $\Gamma_i^{mn} = 0$ for $m+n > 1$ and $i=0,1$.
 
-The resulting dynamics are depicted in figure \ref{fig:moi}
+The resulting dynamics are depicted in figure \ref{fig:moi}.
 
 \begin{figure}[h!]
 	\centering
@@ -823,10 +900,6 @@ The resulting dynamics are depicted in figure \ref{fig:moi}
 	\label{fig:moi}
 \end{figure}
 
-
-\subsection{Grouping}
-\label{sec:numerical_grouping}
-
 \subsection{A jet-vortex perturbation of a known solution}
 \label{sec:triangle}
 
@@ -838,19 +911,19 @@ An important instance of a symplectic manifold is a coadjoint orbit.
 In this section we compute the coadjoint orbit of a jet-vortex
 as well as the associated symplectic structure.
 For a general vorticity distribution $\omega$, the Hamiltonian is the kinetic energy
-\begin{align*}
-  H(\omega) = \frac{1}{2} \langle \omega , G_\delta* \omega \rangle.
-\end{align*}
+\begin{align}
+  H(\omega) = \frac{1}{2} \int \omega(z) G_\delta(z-\tilde{z}) \omega(\tilde{z}) dz d\tilde{z}. \label{eq:Hamiltonian}
+\end{align}
 Where $\omega$ may be of the form \eqref{eq:ansatz N}.
 
 The coadjoint orbit of $\omega$ is the set
 \begin{align*}
-  \Orb(\omega) := \{ \varphi_* \omega \mid \varphi \in \SDiff(\R^2) \}
+  \Orb(\omega) := \{ \omega \circ \varphi^{-1} \mid \varphi \in \SDiff(\R^2) \}.
 \end{align*}
-where $\varphi_* \omega$ denotes the distribution defined by
-\begin{align*}
-	\int f(z) (\varphi_*\omega)(z) := \int f(\varphi(z)) \omega(z) \quad , \quad \forall f \in C^\infty(\R^2).
-\end{align*}
+%where $\varphi_* \omega$ denotes the distribution defined by
+%\begin{align*}
+%	\int f(z) (\varphi_*\omega)(z) := \int f(\varphi(z)) \omega(z) \quad , \quad \forall f \in C^\infty(\R^2).
+%\end{align*}
 In fact $\Orb(\omega)$ inherits the structure of a smooth manifold,
 and a tangent vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
 a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
@@ -865,24 +938,26 @@ In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that
 
 \begin{thm}
 	Let $\omega_0 = \gamma_i^\alpha \partial_{\alpha} \delta_{Z_i}$ for $\gamma_i^\alpha \neq 0$ and let
-	$M^{(k)} = \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$.
+	$M^{(k)} = \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$ be the space of $k$th order jet-vortices.
 	Then $\Orb(\omega_0)$ is a sub-manifold of the $M^{(k)}$.
 \end{thm}
 \begin{proof}
-	Let $\varphi \in \SDiff(\R^2)$.  Then
+	Let $\varphi \in \SDiff(\R^2)$.  Then by applying the change of variables formula
+	and noting that $\det(D\varphi)=1$, we find
 	\begin{align*}
-		\langle \varphi_* \omega_0 , f \rangle &= \langle \omega_0 , f \circ \varphi \rangle \\
-                &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z) \\
-                &= \gamma_i^\alpha \partial_{\beta}|_{\varphi(Z_i)} f \partial_\beta|_{Z_i} \varphi^\alpha.
+		\int \omega_0(\varphi^{-1}(z)) f(z) dz &= \int \omega_0(z) , f (\varphi(z)) dz \\
+                &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z).
 	\end{align*}
-        Where we have used the Fa\`a di Bruno formula via the multi-indexing convention of \cite{Jacobs2014b}.
-        Thus $\varphi_* \omega_0 \in M^{(k)}$.
+	By the multivariate Fa\' di Bruno formula, the expression $\partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z)$
+	is a sum of the partial derivative of $f$ at the points $\varphi(Z_i)$
+	of order less than that of the multi-index $\alpha$ \cite{ConstantineSavits1996}.
+        Thus $ \omega_0 \circ \varphi^{-1} \in M^{(k)}$.
 \end{proof}
 
 Finally, as a check, we can also prove that the equations of motion are identical to the equations of motion obtained using this symplectic structure.
 
 \begin{thm}
-	Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega \rangle_{L^2}$.  Then Hamilton's equations on $\Orb(\omega_0)$
+	Let $H(\omega)$ be given by \eqref{eq:Hamiltonian}.  Then Hamilton's equations on $\Orb(\omega_0)$
 	are given by
 	\begin{align*}
 		\partial_t \omega + \partial_y \psi \partial_x \omega - \partial_x \psi \partial_y \omega \quad,\quad  \psi = G_\delta*\omega.
@@ -892,16 +967,16 @@ Finally, as a check, we can also prove that the equations of motion are identica
   Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) =  \pounds_{\vec{u}}[\omega]$ for some (non-unique) $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
   Out goal is to solve for $\vec{u}$.
   By the definition of $X_H$ we see that for any
-  $\vec{\hat{u}} = (\hat{u},\hat{v}) \in \mathfrak{X}_{\rm div}(\R^2)$
+  $\vec{u}' = (u',v') \in \mathfrak{X}_{\rm div}(\R^2)$
   \begin{align*}
-    \int \omega(z) \left( u(z) \hat{v}(z)  - v(z) \hat{u}(z) \right) dz &=
-    \Omega_{\omega}( \pounds_{\vec{u}}[\omega] , \pounds_{\vec{\hat{u}}}[\omega] ) = - \langle dH(\omega) , \pounds_{\vec{\hat{u}}}[\omega] \rangle \\
-    &= - \langle G_\delta * \omega , \pounds_{\vec{v}}[\omega] \rangle .
+    \int \omega(z) \left( u(z) v'(z)  - v(z) u'(z) \right) dz &=
+    \Omega_{\omega}( \pounds_{\vec{u}}[\omega] , \pounds_{\vec{u}'}[\omega] ) = - \int \frac{\delta H}{\delta \omega} (z) \left( \pounds_{\vec{u}'}[\omega] \right)(z) dz  \\
+    &= - \int G_\delta(z-\tilde{z}) \omega (\tilde{z}) \left( \pounds_{\vec{u}'}[\omega] \right)(z) d\tilde{z} dz .
   \end{align*}
-  If we let $\psi := G_\delta*\omega$ then integration by parts implies
+  If we let $\psi := G_\delta*\omega = \int G_\delta(\cdot -\tilde{z}) \omega (\tilde{z}) d \tilde{z}$ then integration by parts implies
   \begin{align*}
-    =  \int \omega(z) \pounds_{\vec{v}}[\psi](z) 
-    =  \int \omega(z)  \left( v_1(z) \partial_x \psi (z)+ v_2(z) \partial_y \psi(z) \right) dz.
+    =  \int \omega(z) \pounds_{\vec{u}'}[\psi](z) 
+    =  \int \omega(z)  \left( u'(z) \partial_x \psi (z)+ v'(z) \partial_y \psi(z) \right) dz.
   \end{align*}
   We see that $\vec{u} = (-\partial_y \psi,\partial_x \psi)$
   would be a possible solution.
@@ -923,21 +998,23 @@ is
   &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
 \end{align*}
 The symplectic structure is
-  \begin{align*}
+  \begin{align}
+  \begin{split}
     \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
     \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
     &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
     - \dot{\Gamma}_i^y \cdot \delta x_i
     + \delta \Gamma_i^y \cdot \dot{x}_i 
     - \delta \Gamma_i^x \cdot \dot{y}_i
-  \end{align*}
+    \end{split} \label{eq:first_order_symplectic}
+  \end{align}
 \end{thm}
 
 \begin{proof}
   Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
   We find that for any function $f$
   \begin{align*}
-    \langle \varphi_* \omega \mid f \rangle := \langle \omega , \varphi^* f\rangle
+    \int \omega \left(\varphi^{-1}(z)\right) f(z)dz &:= \int \omega (z)f\left(\varphi(z)\right) dz \\
     &= \gamma_i f(\varphi(Z_i)) \\
     &\quad - \gamma_i^x \partial_x \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
     - \gamma_i^x \partial_x \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)} \\
@@ -946,7 +1023,7 @@ The symplectic structure is
   \end{align*}
   Collecting like terms we find
   \begin{align*}
-    \varphi_* \omega = \gamma_i \delta_{\varphi(Z_i)} + \Gamma_i^x \partial_x \delta_{\varphi(Z_i)} + \Gamma_i^y \partial_y \delta_{\varphi(Z_i)}
+    \omega \circ \varphi^{-1} = \gamma_i \delta_{\varphi(Z_i)} + \Gamma_i^x \partial_x \delta_{\varphi(Z_i)} + \Gamma_i^y \partial_y \delta_{\varphi(Z_i)}
   \end{align*}
   where
   \begin{align*}
@@ -967,30 +1044,28 @@ The symplectic structure is
 
   To derive the symplectic structure recall the symplectic structure for a general vorticity \eqref{eq:symplectic}.
   Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
-  In this case the left hand side of \eqref{eq:symplectic} can be computed to be
+  In this case the left hand side of \eqref{eq:symplectic} can be computed with respect to 
+  divergence free vector field $\vec{u} = (u,v)$ and $\vec{u}' = (u',v')$ as
   \begin{align*}
-    \int \omega(z) \left( u \wedge v \rangle \right) &= \gamma_i ( u^x(z_i)v^y(z_i) - v^x(z_i) u^y(z_i) ) \\
-    &\quad + \Gamma_i^x ( u^x_{,x} v^y + u^x v^y_{,x} - v^x_{,x}u^y - v^x u^y_{,x})|_{z = z_i} \\
-    &\quad + \Gamma_i^y ( u^x_{,y} v^y + u^x v^y_{,y} - v^x_{,y}u^y - v^x u^y_{,y})|_{z = z_i}
+    \int \omega(z) \left( u v' - v u' \right) (z) dz &= \gamma_i ( u(z_i)v'(z_i) - v(z_i) u'(z_i) ) \\
+    &\quad + \Gamma_i^x ( u_{,x} v' + u {v'}_{,x} - {u'}_{,x}v - u' v_{,x})|_{z = z_i} \\
+    &\quad + \Gamma_i^y ( u_{,y} v' + u {v'}_{,y} - {u'}_{,y}v - u' v_{,y})|_{z = z_i}
   \end{align*}
-  Note that this is writen entirely in terms of the 1-jet of $u$ and $v$ evaluated 
+  Note that this is written entirely in terms of the 1st order Taylor expansion of $\vec{u}$ and $\vec{u}'$ evaluated 
   at $z_i$.
-  Moreover, $\pounds_u[\omega] = \gamma_0 u^x(z_i) \partial_{z_i} + \dots$
+  Moreover, $\pounds_{\vec{u}}[\omega] = \gamma_0 u(z_i) \partial_x \delta_{z_i} + \dots$
   also has the property that it is only dependent on
   the one-jet of $u$ and $v$ at the points $z_1,\dots,z_n$.
   Therefore both side of \eqref{eq:symplectic}
   can be written as a function of the finite collection of 
   numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
-  The result then follows by noting
+  The result then follows by identifying the scalars
   \begin{align*}
     u(z_i) \mapsto u_{z_i}\\
     u^x_{,x}(z_i) \Gamma^x_i + u^x_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^x \\
     u^y_{,x}(z_i) \Gamma^x_i + u^y_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^y.
     \end{align*}
-    under the tangent lift of the coordinate chart
-    \begin{align*}
-      \sum_i \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} \mapsto (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n)
-      \end{align*}
+    with those which appear in \eqref{eq:first_order_symplectic}.
 \end{proof}
 
 \begin{rmk}
@@ -1013,8 +1088,38 @@ The corresponding Poisson bracket is given by\\
 \end{rmk}
 
 \section{Conclusion}
+\label{sec:Conclusion}
+In this paper we considered a generalization of the standard vortex blob method
+by augmenting the vortices with higher-order circulation variables
+and dubbing them ``jet-vortices''.
+We then obtained equations of motion for jet vortices in the same way that vortex
+blob equations of motion are derived.
 
-\todo[inline]{Say what we did.  Say why it's cool.  Mention future ideas (filaments, sphere, connection with jetlets)}
+The extra degrees of freedom of jet-vortices resulted in richer dynamics near the vortex core.
+Moreover, these new vortices exhibited a variety of interesting behavior, including the ability
+to achieve faster convergence rates using higher order jet vortices,
+as well as decrease the number of pairwise interactions, by grouping.
+Moreover, the manifestation of Kelvin's circulation theorem was substantially richer in the case of jet-vortices.
+
+We then demonstrated the behavior of the jet vortices with a sequence of simple numerical experiments
+consisting of small numbers of jet-vortices of various degrees.
+We found 1st order jet vortices correspond to dipoles which simply propagate themselves forward,
+while the 2nd order circulation variables activated richer (non-propogating) dynamics near the vortex core.
+
+Finally, we derived the symplectic structure of jet vortices using \cite{MarsdenWeinstein1983}.
+The resulting structure turned out to be a direct generalization of the standard
+symplectic structure for vortex blobs.
+
+Future avenues of inquiry could include
+\begin{itemize}
+	\item Jet-vortex filament methods for $3$ dimensional fluid modelling
+	\item Jet-vortices on manifolds, such as the sphere
+	\item The convergence properties of the jet-vortex method
+\end{itemize}
+
+\section{Acknowledgements}
+H.J. and D.D.H. were supported by the European Research
+Council Advanced Grant 267382 FCCA.
 
 \appendix
 
