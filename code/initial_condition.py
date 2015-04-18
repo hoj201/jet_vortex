@@ -7,16 +7,111 @@ order = 1
 
 def get_ic():
     jv = jvl.Jet_vortex(order=order,N=N)
-    jv.x[0] = 10.0
-    jv.y[0] = 0.5
+    jv.x[0] = 20.0 
+    jv.y[0] = 0.25
     jv.x[1] = 0.0
-    jv.y[1] = -0.5
+    jv.y[1] = -0.25
     jv.gamma[0] = 0.0
     jv.gamma[1] = 1.0
     jv.gamma_x[0] = 0.0
-    jv.gamma_y[0] = 1.0
+    jv.gamma_y[0] = 2.0
     return jv
 
+def get_ic_grouping(order):
+    a = 0.25
+    gamma_0 = 0.3   #bottom left
+    gamma_1 = -0.35 #top left
+    gamma_2 = -0.2   #top right
+    gamma_3 = 0.4  #bottom right
+    
+    gamma_x0 = 0.0
+    gamma_y0 = -a*(gamma_1-gamma_0)
+    gamma_x1 = 0.0
+    gamma_y1 = -a*(gamma_2-gamma_3)
+
+    gamma_xx = 0.0
+    gamma_xy = -a*(gamma_y1-gamma_y0)
+    gamma_yy = 0.0
+    gamma_y = gamma_y0 + gamma_y1
+
+    if order == 0:
+        jv = jvl.Jet_vortex(order=0,N=4)
+        jv.x[0] = -a
+        jv.y[0] = -a
+        jv.gamma[0] = gamma_0
+        jv.x[1] = -a
+        jv.y[1] = a
+        jv.gamma[1] = gamma_1
+        jv.x[2] = a
+        jv.y[2] = a
+        jv.gamma[2] = gamma_2
+        jv.x[3] = a
+        jv.y[3] = -a
+        jv.gamma[3] = gamma_3
+    if order == 1:
+        jv = jvl.Jet_vortex(order=1,N=2)
+        jv.x[0] = -a
+        jv.y[0] = 0.0
+        jv.gamma[0] = gamma_0 + gamma_1
+        jv.gamma_y[0] = gamma_y0
+        jv.x[1] = a
+        jv.y[1] = 0.0
+        jv.gamma[1] = gamma_2 + gamma_3
+        jv.gamma_y[1] = gamma_y1
+    if order == 2:
+        jv = jvl.Jet_vortex(order = 2 , N = 1)
+        jv.gamma[0] = gamma_0 + gamma_1 + gamma_2 + gamma_3
+        jv.gamma_y[0] = gamma_y
+        jv.gamma_x[0] = 0.0
+        jv.gamma_xx[0] = gamma_xx
+        jv.gamma_xy[0] = gamma_xy
+        jv.gamma_yy[0] = gamma_yy
+    return jv
+def get_ic_singleton(order):
+    jv = jvl.Jet_vortex(order=order,N=1)
+    if order == 1:
+        jv.gamma_x[0] = 1.
+        jv.gamma_y[0] = 1.
+        jv.x[0] = 3.
+        jv.y[0] = -3.
+        return jv
+    if order == 2:
+        jv.gamma_xx[0] = 1.
+        return jv
+
+def get_ic_moi():
+    jv = jvl.Jet_vortex(order=1,N=2)
+    jv.y[0] = 1.5
+    jv.y[1] = -jv.y[0]
+    jv.x[0] = 1.5
+    jv.x[1] = 1.5
+    jv.gamma[0] = 0.5
+    jv.gamma[1] = -jv.gamma[0]
+    jv.gamma_x[0] = 0.5
+    jv.gamma_x[1] = -jv.gamma_x[0] 
+    jv.gamma_y[0] = 1.5
+    jv.gamma_y[1] = jv.gamma_y[0] 
+#    jv.gamma_xx[0] = 0.0*np.random.randn()
+#    jv.gamma_xx[1] = jv.gamma_xx[0] 
+#    jv.gamma_xy[0] = 0.0*np.random.randn()
+#    jv.gamma_xy[1] = -jv.gamma_xy[0] 
+#    jv.gamma_yy[0] = 0.0*np.random.randn()
+#    jv.gamma_yy[1] = -jv.gamma_yy[0] 
+    return jv
+
+def get_ic_triangle():
+    scale = 5
+    jv = jvl.Jet_vortex(order=0,N=3)
+    jv.x[0] = 0.0
+    jv.y[0] = scale*1.0
+    jv.x[1] = scale*np.sqrt(3.) / 2.
+    jv.y[1] = -scale/2.
+    jv.x[2] = -scale*np.sqrt(3.)/2.
+    jv.y[2] = -scale/2
+    jv.gamma[0] = 1.
+    jv.gamma[1] = 1.
+    jv.gamma[2] = 1.
+    return jv
 #  THE FOLLOWING BLOCK OF CODE IS TO MANUALLY DESCRIBE THE INITIAL CONDITION
 def get_random_ic():
     jv = jvl.Jet_vortex(order=order,N=N)
