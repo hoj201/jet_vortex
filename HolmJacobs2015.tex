@@ -84,7 +84,7 @@ Substitution of this ansatz into \eqref{eq:vorticity} yields the finite dimensio
 	\frac{dx_i}{dt} = \partial_y \psi(z_i) \quad , \quad \frac{dy_i}{dt} = - \partial_x \psi(z_i)
 \end{cases} \label{eq:point_vortex},
 \end{align}
-where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$.\todo{Should be be using $z$'s as shorthand for $(x,y) \in \R^2$}
+where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$.
 One could consider the regularized form of the vorticity equation given by
 choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ and defining the regularized vorticity by 
 $K_\delta* \omega = \Delta \psi$.
@@ -575,8 +575,8 @@ Let us consider the vorticity distribution
 if $z_1$ and $z_2$ are close we can define the quantities $\bar{z} = (z_1+z_2)/2$ and $\delta z = z_1 - z_2 $ to obtain the approximation
 \begin{align*}
 	\int \omega(z) f(z)dz &= \Gamma_1 f(z_1) + \Gamma_2 f(z_2) \\
-		&= \Gamma_1 \left( f(\bar{z}) + \partial_x f(\bar(z)) \cdot \frac{\delta x}{2} + \partial_y f(\bar(z)) \cdot \frac{\delta y}{2}  \right)\\
-		&\quad + \Gamma_2 \left( f(\bar{z}) - \partial_x f(\bar(z)) \cdot \frac{\delta x}{2} - \partial_y f(\bar(z)) \cdot \frac{\delta y}{2}  \right) + o( h ) 
+		&= \Gamma_1 \left( f(\bar{z}) + \partial_x f(\bar{z}) \cdot \frac{\delta x}{2} + \partial_y f(\bar{z}) \cdot \frac{\delta y}{2}  \right)\\
+		&\quad + \Gamma_2 \left( f(\bar{z}) - \partial_x f(\bar{z}) \cdot \frac{\delta x}{2} - \partial_y f(\bar{z}) \cdot \frac{\delta y}{2}  \right) + o( h ) 
 \end{align*}
 where $h = \| \delta z \|$.
 Therefore the distribution
@@ -585,7 +585,7 @@ Therefore the distribution
 \end{align*}
 with 
 \begin{align*}
-	\Gamma = \Gamma_1 + \Gamma_2 \quad,\quad \Gamma^x = \frac{\delta x}{2} (\Gamma_1 -\Gamma_1) \quad,\quad \Gamma^y = \frac{\delta y}{2} (\Gamma_1 -\Gamma_1)
+	\Gamma = \Gamma_1 + \Gamma_2 \quad,\quad \Gamma^x = \frac{\delta x}{2} (\Gamma_2 -\Gamma_1) \quad,\quad \Gamma^y = \frac{\delta y}{2} (\Gamma_2 -\Gamma_1)
 \end{align*}
 serves as a $o(h)$ approximation of $\omega$ in the sense of distributions.
 Moreover, the stream function $\tilde{\psi} := G_\delta * \tilde{\omega}$ is an $o(h)$ approximation of $\psi := G_\delta * \omega$ in the traditional sense of analysis on functions.
@@ -692,15 +692,143 @@ Nonetheless, higher order jet vortices appear to out perform lower order ones fo
         \centering
         \includegraphics[width=0.7\textwidth]{./images/convergence.pdf}
         \caption{A convergence plot of the error in the sup-norm
-        of the reconstructed stream function approximated with zeroth (blue),
-        first (green), and second (red) order jet-vortices.
+        of the reconstructed stream function approximated using jet-vortices of order $0$, $1$, and $2$.
         The method converges spectrally, so no specific convergence rate is observed.}
         \label{fig:convergence}
 \end{figure}
 
-\subsection{Numerical experiments}
+\section{Numerical experiments}
 \label{sec:numerical_expirements}
-\todo[inline]{Write numerical experiments section}
+In these section we present the results of numerical experiments involving small numbers of vortices, i.e $N=1,2$, or $3$.
+
+\subsection{Behavior of isolated jet-vortices}
+\label{sec:singles}
+In this section we will briefly explore the behavior of a single isolated $k$th order jet vortices with $\Gamma^{mn} = 0$ for $m+n < k$ for $k=0,1,2$.
+This allows us to explore the dynamics induced by the higher order circulation variables
+in the absence of the lower order ones.
+
+\subsection{Order 0}
+The behavior of a single $0$th order jet vortex is explicitly solvable because the dynamics are stationary.
+
+\subsection{Order 1}  
+The behavior of a single $1$st order jet vortex with $\Gamma= 0$ is explicitly solvable.
+Given the initial condition $(x(0) , y(0) ,  \Gamma (0) , \Gamma^x(0) , \Gamma^y(0) )$ with $\Gamma(0) = 0$ we find
+\begin{align*}
+	&x(t) = x(0) + v^x \quad , \quad y(t) = y(0) + v^y \quad , \quad \Gamma(t) = \Gamma(0) \\
+	&\Gamma^x(t) = \Gamma^x(0)\quad , \quad \Gamma^y(t) = \Gamma^y(0)
+\end{align*}
+where $v^x = \Gamma^x(0) \partial_{xy}G_\delta(0) + \Gamma^y(0) \partial_{yy}G_\delta(0)$
+and $v_y =  -\Gamma^y(0) \partial_{xy}G_\delta(0) - \Gamma^x(0) \partial_{xx}G_\delta(0)$.
+In figure \ref{fig:singleton_order1}
+we depict such a trajectory with initial condition
+\begin{align}
+	x(0) = -3 , y(0) = -3 , \Gamma(0) = 0 , \Gamma^x = 1, \Gamma^y = 1 \label{eq:ic_order1}
+\end{align}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_0}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_5}
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_10}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_15}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_20}
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_25}
+	\caption{A $1$st order jet vortex with initial conditions given by \eqref{eq:ic_order1}
+		with snapshots taking at $t=0,10,25$.}
+	\label{fig:singleton_order1}
+\end{figure}
+
+\subsection{Order 2}
+The behavior of a second order vortex is not explicitly solvable as far as we know.
+Here we consider the initial condition
+\begin{align}
+	x(0) = 0 \quad,\quad y(0) = 0 \quad,\quad \Gamma(0)^{xx} = 1 \label{eq:ic_order2}
+\end{align}
+and all the other circulation variables are set to $0$.
+The results are depicted in figure \ref{fig:singleton_order2}.
+We observe a structure which rigid rotates counter-clockwise.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_0}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_5}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_10}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_15}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_20}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_25}
+	\caption{A $1$st order jet vortex with initial conditions given by \eqref{eq:ic_order2}
+		with snapshots taking at $t=0,5,10,15,20,25$.}
+	\label{fig:singleton_order2}
+\end{figure}
+
+
+\subsection{A scattering expiriment}
+\label{sec:scattering}
+Here we consider two jet vortices.  The first is a first order jet-vortex with an initial velocity pointed just slightly above origin.
+The secong jet vortex is a standard zeroth order vortex located at the origin.
+Specificaly, we consider the initial conditions
+\begin{align}
+	\begin{cases}
+	z_0 = (20.0 , \phantom{-}0.25)\quad, \quad \Gamma_0^{0,0} = 0.0 \quad,\quad \Gamma_0^{1,0} = 0.0 \quad,\quad \Gamma_0^{0,1} = -1.0 \\
+	z_1 = (\phantom{2}0.0 , -0.25)\quad, \quad \Gamma_0^{0,0} = 1.0 \quad,\quad \Gamma_0^{1,0} = 0.0 \quad,\quad \Gamma_0^{0,1} = \phantom{-}0.0
+	\end{cases}
+	\label{eq:ic}
+\end{align}
+with $\Gamma_i^{mn} = 0$ for $m+n > 1$ and $i=0,1$.
+The vortex at the origin appears to remain at the origin throughout the numerical run ($t=0$ to $t=150$).
+The first order jet vortex starts by moving to the left in a straightline until it comes into proximity of the zeroth order vortex.
+Then the first order jet vortex swings around the the zeroth order vortex, traversing an angle of roughly 30 degrees
+before zooming off into the lower left quadrant of the plane in a straight line.  These results are depicted in figure \ref{fig:scatter}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_0}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_25}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_50}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_75}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_101}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_126}
+	\caption{A numerical run with initial condition given by \eqref{eq:ic}.
+		From left to right and top to bottom these are snapshots at times $t=0,25,50,75,100,125$ respectively.}
+	\label{fig:scatter}
+\end{figure}
+
+\subsection{The method of images}
+\label{sec:method_of_images}
+Here we incorporate first order jet-vortices into the method of images\todo{Cite something}.
+We consider the initial conditions consisting of two first order jet-vortices which are mirror images of each other with respect to the $x$-axis.
+By symmetry, the resulting vector-field should be tangential to the $x$-axis, and provides a means of considering a boundary that satisfied the no-penetration condition.
+Specifically, we consider the initial condition:
+\begin{align}
+	\begin{cases}
+	z_0 = (1.5 , \phantom{-}1.5)\quad, \quad \Gamma_0^{0,0} = \phantom{-}0.5 \quad,\quad \Gamma_0^{1,0} = \phantom{-}0.5 \quad,\quad \Gamma_0^{0,1} = 1.5 \\
+	z_1 = (1.5,-1.5)\quad, \quad \Gamma_0^{0,0} = -0.5 \quad,\quad \Gamma_0^{1,0} = -0.5 \quad,\quad \Gamma_0^{0,1} =1.5
+	\end{cases}
+	\label{eq:ic moi}
+\end{align}
+with $\Gamma_i^{mn} = 0$ for $m+n > 1$ and $i=0,1$.
+
+The resulting dynamics are depicted in figure \ref{fig:moi}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_0}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_1p7}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_3p4}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_5}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_6p7}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_8p4}
+	\caption{A numerical run with initial condition given by \eqref{eq:ic moi}.
+		From left to right and top to bottom these are snapshots at times $t=0,1.7,3.4,5,6.7,8.4$ respectively.}
+	\label{fig:moi}
+\end{figure}
+
+
+\subsection{Grouping}
+\label{sec:numerical_grouping}
+
+\subsection{A jet-vortex perturbation of a known solution}
+\label{sec:triangle}
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
