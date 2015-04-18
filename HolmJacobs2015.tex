@@ -473,6 +473,8 @@ into a solution of \eqref{eq:vorticity}.
 
 \begin{rmk} \label{rmk:conserved}
   We will find that the following quantities are conserved:\\
+  % FOR INCREASING THE SPACING IN THE TABULAR ENVIRONMENT
+\def\arraystretch{1.5}%  1 is the default, change whatever you need
   \begin{tabular}{|c|c|}
   	\hline
 	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
@@ -482,7 +484,6 @@ into a solution of \eqref{eq:vorticity}.
 	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
 	  \hline
   \end{tabular}\\
-  \todo[inline]{This table is too cramped.  Find a way to fix the spacing}
   The first two are momenta derived by observing the rotational and
   translational symmetry of the fluid and applying Noether's theorem.
   In section \ref{sec:symplectic} we will characterize fluids, and the jet-vortices as Hamiltonian systems
@@ -1139,6 +1140,10 @@ The space of distributions $D(\R^2)$ is the dual-vector space to the space of sm
 Therefore a distribution is defined by how it maps functions to real numbers.
 Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
 we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
+In the main text we will often use the notation $\int \omega(z) f(z) dz$ to denote this as well
+because it is more common in the fluids literature.
+However, this notation fallaciously suggests that we may view distributions as functions,
+so we will drop its use here.
 
 Given a distribution $\omega \in D(\R^2)$.
 We can define the distributional derivative of $\omega$ in the $i$th coordinate direction
@@ -1210,13 +1215,16 @@ Equivalently we could express the previous condition as
   d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x ) \label{eq:momap}
 \end{align}
 for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
+Momentum maps are significant for a number of reasons.
+In particular, given a Hamiltonian on $S$ with $G$-symmetry, the momentum map $J$ will be conserved under the evolution of
+Hamilton's equations \cite[Theorem 4.2.2]{FOM}
 
-In our case $S = {\rm Orb}(\omega_0) = \{ \varphi_* \omega_0 \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$, and the sympectic form at a ``point'' $\omega \in S$ is given by Kostant's formula
+In our case $S = {\rm Orb}(\omega_0) = \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$, and the sympectic form at a ``point'' $\omega \in S$ is given by Kostant's formula
 \begin{align*}
   \Omega_\omega( \pounds_u[\omega] , \pounds_v [\omega] ) :=
   \langle \omega , u \times v \rangle.
 \end{align*}
-where $u,v \in \mathfrak{X}(\mathbb{R}^2)$ and $u \times v \in C^{\infty}(\mathbb{R}^2)$.
+where $u,v \in \mathfrak{X}(\mathbb{R}^2)$ and $u \times v \in C^{\infty}(\mathbb{R}^2)$ (see \S \ref{sec:symplectic} of this article).
 
 We now will translate \eqref{eq:momap} to this more specific scenario.
 Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
@@ -1226,13 +1234,18 @@ In this context, a momentum map $J$ associated to a $G$-action is defined by the
 \end{align}
 
 \subsection{Translational symmetry and $J_{tran}$}
+In this section we consider the action of translation in $\R^2$.
+This action on $\R^2$ will induce a symplectic group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
+
 The group $\mathbb{R}^2$ acts upon $\mathbb{R}^2$ by translation.
-This action induces an action on $S$ in the obvious way.  For any $(a,b) \in \mathbb{R}^2$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $(a,b)^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $(a,b)^*\phi(x,y) := \phi(x +a,y+b)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
- In particular, the left-action on distribution, denoted $(a,b)_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+This fact induces an action on $S$.
+In particular, for any $(a,b) \in \mathbb{R}^2$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi(z)$ to the function  $(a,b)_*\phi(z) := \phi(z+(a,b))$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distributions sends $\omega \in \mathcal{D}(\R^2)$ to the distribution $(a,b)_*\omega$ given by
 \begin{align*}
-  \langle (a,b)_* \omega , \phi \rangle := \langle \omega , (a,b)^* \phi \rangle
+  \langle (a,b)_* \omega , \phi \rangle := \langle \omega , (a,b)^* \phi \rangle.
 \end{align*}
-As translation of $\mathbb{R}^2$ by $(a,b)$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+As translation of $\mathbb{R}^2$ by $(a,b)$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.
+Moreover, we observe the action on $S$ is symplectic because
 \begin{align*}
   \Omega_{(a,b)_* \omega}( (a,b)_*\pounds_{u}[ \omega] , (a,b)_*\pounds_v[\omega] ) &= \Omega_{(a,b)_* \omega} ( \pounds_{(a,b)_*u}[ (a,b)_*\omega] ,
   \pounds_{(a,b)_*v}[(a,b)_*\omega] ) \\
@@ -1270,6 +1283,9 @@ then
 Apparently the terms of the jet-vortices beyond the first order do not influence $J_{tran}$.
 
 \subsection{Rotational symmetry and $J_{ang}$}
+In this section we consider the action of rotation about the origin in $\R^2$.
+This action on $\R^2$ will induce a symplectic Lie group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
+
 The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin.
 This action induces an action on $S$ in the obvious way.  For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
  In particular, the left-action on distribution, denoted $\theta_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
