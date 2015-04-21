@@ -17,6 +17,23 @@ def get_ic():
     jv.gamma_y[0] = 2.0
     return jv
 
+def get_ic_momentum_exchange():
+    k=0.1
+    jv = jvl.Jet_vortex(order=2,N=2)
+    jv.x[0] = -10.0
+    jv.y[0] = -0.1
+    jv.x[1] = 10.0
+    jv.y[1] = 0.1
+    jv.gamma_y[0] = -1.0
+    jv.gamma_y[1] = 1.0
+    jv.gamma[0] = 0.5
+    jv.gamma[1] = 0.5
+    for i in {0,1}:
+        jv.gamma_xx[i] = k*np.random.randn()
+        jv.gamma_xy[i] = k*np.random.randn()
+        jv.gamma_yy[i] = k*np.random.randn()
+    return jv
+
 def get_ic_grouping(order):
     a = 0.25
     gamma_0 = 0.3   #bottom left

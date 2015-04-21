@@ -20,6 +20,21 @@ class Jet_vortex:
                 self.gamma_xx = np.zeros(N)
                 self.gamma_xy = np.zeros(N)
                 self.gamma_yy = np.zeros(N)
+    
+    def get_vortex( self, i ):
+        jv = Jet_vortex( order = self.order, N = 1)
+        jv.x[0] = self.x[i]
+        jv.y[0] = self.y[i]
+        jv.gamma[0] = self.gamma[i]
+        if self.order > 0:
+            jv.gamma_x[0] = self.gamma_x[i]
+            jv.gamma_y[0] = self.gamma_y[i]
+            if self.order > 1:
+                jv.gamma_xx[0] = self.gamma_xx[i]
+                jv.gamma_xy[0] = self.gamma_xy[i]
+                jv.gamma_yy[0] = self.gamma_yy[i]
+        return jv
+
     def use_state( self, state ):
         #converts numpy-array into a jet-vortex
         N = self.N

@@ -177,7 +177,7 @@ An image of the stream function and the velocity field induced by a single vorte
 
 \begin{figure}[h] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.6\textwidth]{./images/zero.pdf} 
+   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.3\textwidth]{./images/zero.pdf} 
    \caption{A 0th order jet vortex with $z = 0$ and $\Gamma=1$.
    With respect to the kernel $G_\delta$ of \eqref{eq:kernel}.
    By using vortices of this form we obtain one of the vortex blobs presented in \cite{BealeMajda1985}.}
@@ -263,7 +263,7 @@ and so the corresponding velocity field is given by
 
 \begin{figure}[h] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.6\textwidth]{./images/one.pdf} 
+   \includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.4\textwidth]{./images/one.pdf} 
    \caption{A 1st order jet vortex with $\Gamma = 0,\Gamma^x = 1,\Gamma^y=1$.}
    \label{fig:one}
 \end{figure}
@@ -472,19 +472,24 @@ will make the first order jet-vortex ansatz, \eqref{eq:ansatz 1},
 into a solution of \eqref{eq:vorticity}.
 
 \begin{rmk} \label{rmk:conserved}
-  We will find that the following quantities are conserved:\\
+  We will find that the following quantities are conserved under the evolution:%\\ \vspace{1em}
   % FOR INCREASING THE SPACING IN THE TABULAR ENVIRONMENT
-\def\arraystretch{1.5}%  1 is the default, change whatever you need
-  \begin{tabular}{|c|c|}
-  	\hline
-	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
-	  \hline
-	  Angular momentum & $J_{ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
-	  \hline
-	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
-	  \hline
-  \end{tabular}\\
-  The first two are momenta derived by observing the rotational and
+%\def\arraystretch{1.5}%  1 is the default, change whatever you need
+%  \begin{tabular}{|c|c|}
+%  	\hline
+%	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
+%	  \hline
+%	  Angular momentum & $J_{ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
+%	  \hline
+%	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
+%	  \hline
+%  \end{tabular}\\
+  \begin{align*}
+	  {\bf J}_{\rm ang} &= \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2} \\
+	  {\bf J}_{\rm lin} &= \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i ) \\
+	  E &= \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j).
+  \end{align*}
+  The first two quantities, ${\bf J}_{\rm ang}$ and ${\bf J}_{\rm lin}$, are momenta derived by observing the rotational and
   translational symmetry of the fluid and applying Noether's theorem.
   In section \ref{sec:symplectic} we will characterize fluids, and the jet-vortices as Hamiltonian systems
   and the Linear and angular momentum serve as symplectic momentum maps (see Appendix \ref{sec:symmetries} for derivation).
@@ -901,8 +906,6 @@ The resulting dynamics are depicted in figure \ref{fig:moi}.
 	\label{fig:moi}
 \end{figure}
 
-\subsection{A jet-vortex perturbation of a known solution}
-\label{sec:triangle}
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
@@ -1070,11 +1073,11 @@ The symplectic structure is
 \end{proof}
 
 \begin{rmk}
-  The use of this symplectic structure makes the map $(z_i, \Gamma_i,\Gamma_i^x,\Gamma_i^y)\in \mapsto \omega \in \Orb(\omega)$ a symplectic momentum map.
+  The use of this symplectic structure makes the map $(z_i, \Gamma_i,\Gamma_i^x,\Gamma_i^y) \mapsto \omega \in \Orb(\omega)$ a symplectic momentum map.
 \end{rmk}
 
 \begin{rmk}
-The corresponding Poisson bracket is given by\\
+The corresponding Poisson bracket is given in tabular form by\\
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -1093,14 +1096,14 @@ The corresponding Poisson bracket is given by\\
 In this paper we considered a generalization of the standard vortex blob method
 by augmenting the vortices with higher-order circulation variables
 and dubbing them ``jet-vortices''.
-We then obtained equations of motion for jet vortices in the same way that vortex
-blob equations of motion are derived.
+By viewing the vorticity equation as an advection equation we obtained equations of motion for jet vortices.
 
 The extra degrees of freedom of jet-vortices resulted in richer dynamics near the vortex core.
-Moreover, these new vortices exhibited a variety of interesting behavior, including the ability
-to achieve faster convergence rates using higher order jet vortices,
-as well as decrease the number of pairwise interactions, by grouping.
-Moreover, the manifestation of Kelvin's circulation theorem was substantially richer in the case of jet-vortices.
+Moreover, these new vortices exhibited a variety of interesting behavior.
+We observed faster convergence rates in space using higher order jet vortices.
+Moreover, we proposed a scheme to decrease the number of pairwise interactions, by grouping
+jet vortices of lower order into a smaller number of jet vortices of higher order.
+Lastly, the manifestation of Kelvin's circulation theorem was substantially richer in the case of jet-vortices.
 
 We then demonstrated the behavior of the jet vortices with a sequence of simple numerical experiments
 consisting of small numbers of jet-vortices of various degrees.
@@ -1111,7 +1114,7 @@ Finally, we derived the symplectic structure of jet vortices using \cite{Marsden
 The resulting structure turned out to be a direct generalization of the standard
 symplectic structure for vortex blobs.
 
-Future avenues of inquiry could include
+Future avenues of inquiry could include:
 \begin{itemize}
 	\item Jet-vortex filament methods for $3$ dimensional fluid modelling
 	\item Jet-vortices on manifolds, such as the sphere
