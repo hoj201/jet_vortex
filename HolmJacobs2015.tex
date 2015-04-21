@@ -247,7 +247,7 @@ Consider the first order jet-vortex ansatz for the vorticity
 for constants $\Gamma_i(t),\Gamma_i^x(t),\Gamma_i^y(t) \in \R$ for $i = 1,\dots,N$.
 The stream function is given by convolution
 \begin{align*}
-  &\psi(z;t) = G_\delta * \omega = \int G(z - \tilde{z}) \omega(\tilde{z}) d \tilde{z} \\
+  &\psi(z;t) = G_\delta * \omega = \int G_\delta(z - \tilde{z}) \omega(\tilde{z}) d \tilde{z} \\
   &\quad = \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )  + \Gamma_i^x(t) \partial_x G_\delta( z - z_i(t))  + \Gamma_i^y(t) \partial_y G_\delta( z- z_i(t))
 \end{align*}
 and so the corresponding velocity field is given by
@@ -479,7 +479,7 @@ into a solution of \eqref{eq:vorticity}.
 %  	\hline
 %	  Linear momentum & $J_{lin} = \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i )$ \\
 %	  \hline
-%	  Angular momentum & $J_{ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
+%	  Angular momentum & ${\bf J}_{\rm ang} = \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2}$ \\
 %	  \hline
 %	  Energy & $E = \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)$ \\
 %	  \hline
@@ -732,24 +732,28 @@ order jet vortex dynamics appears to be somewhat recovered.
 
 \subsection{Approximation of initial conditions}
 \label{sec:approximation}
-In this section we will illustrate how using jet-vortices will increase the accuracy of approximation of a vorticity field in a distributional sense
-with respect to a reproducing kernel Hilbert space (RKHS).
-Let $H(\omega) = \frac{1}{2} \langle \omega , G*\omega\rangle_{L^2} =: \frac{1}{2} \langle \omega , \omega \rangle_G$, for a Green's kernel $G:\R^2 \to \R$.
+In this section we will illustrate how using jet-vortices will increase the accuracy of approximation of a vorticity field in a distributional sense.
+We can begin by defining an inner-product on the space of distribution on $\R^2$ given by
+\[
+	\langle \omega_1 , \omega_2 \rangle_{G_\delta} := \int \omega_1(z) G_\delta (z - \tilde{z}) \omega_2(\tilde{z}) dz d\tilde{z}.
+\]
+It is notable that energy of the fluid is given by $H(\omega) = \frac{1}{2} \|\omega\|^2_{G_\delta} = \frac{1}{2} \langle \omega,\omega\rangle_{G_\delta}$.
+
 Let $h > 0$ be small and define $h \mathbb{Z}^2 = \{ (ah,bh) \in \R^2 \mid (a,b) \in \mathbb{Z}^2 \}$.
 Given an $\omega \in \mathcal{D}'(\R^2)$, we can attempt to approximate $\omega$ via Dirac-deltas supported on $h \mathbb{Z}^2$.
-There is a natural way to do this with respect to the Hilbert-norm because we have a reproducing kernel.
-We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \Gamma_i \delta_{z_i}$ by requiring the error, $\omega_h^{(0)} - \omega$, to be $\langle \cdot , \cdot \rangle_{G}$-orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
-This means that $G*\omega(z) =  \sum_i \Gamma_i G(z-z_i)$ for each $z \in h\mathbb{Z}^2$.
-Thus $\psi_h^{(0)} = \sum_i \Gamma_i G(z-z_i)$ can be seen as a $0$th order approximation to $\psi = G*\omega$
+There is a natural way to do this with respect to the inner product $\langle \cdot , \cdot \rangle_{G_\delta}$.
+We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \Gamma_i \delta_{z_i}$ by requiring the error, $\omega_h^{(0)} - \omega$, to be $\langle \cdot , \cdot \rangle_{G_\delta}$-orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
+This means that $G_\delta *\omega(z) =  \sum_i \Gamma_i G_\delta (z-z_i)$ for each $z \in h\mathbb{Z}^2$.
+Thus $\psi_h^{(0)} = \sum_i \Gamma_i G_\delta (z-z_i)$ can be seen as a $0$th order approximation to $\psi = G_\delta *\omega$
 because $\psi_h^{(0)}(z) = \psi(z)$ for all $z \in h\mathbb{Z}$.
  
 The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,m+n \leq N} \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
 We define the scalars $\Gamma_i^{mn}$ via the equations
 \begin{align*}
-  \partial_x^\ell \partial_y^k \psi (z_i) = \sum_j (-1)^{m+n} \Gamma_j^{mn} \partial_x^{m+\ell} \partial_y^{n+k} G(z_i - z_j)
+  \partial_x^\ell \partial_y^k \psi (z_i) = \sum_j (-1)^{m+n} \Gamma_j^{mn} \partial_x^{m+\ell} \partial_y^{n+k} G_\delta(z_i - z_j)
 \end{align*}
-for $\psi = G*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
-Then $\psi^{(k)}_h = \sum_{i,\alpha} (-1)^{m+n} \Gamma_k^{mn} \partial_x^m \partial_y^n G_{z_i}$
+for $\psi = G_\delta*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
+Then $\psi^{(k)}_h (z)= \sum_{i,\alpha} (-1)^{m+n} \Gamma_k^{mn} \partial_x^m \partial_y^n G_\delta( z - z_i)$
 serves as an order $k$ approximation of $\psi$ when $\psi \in C^k$.
 
 This is not to say that the convergence rate is simple $O(h^k)$.
@@ -1141,37 +1145,37 @@ The main reference for this section is \cite{Hormander2003}.
 
 The space of distributions $D(\R^2)$ is the dual-vector space to the space of smooth functions $C^\infty(\R^2)$.
 Therefore a distribution is defined by how it maps functions to real numbers.
-Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
-we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
-In the main text we will often use the notation $\int \omega(z) f(z) dz$ to denote this as well
-because it is more common in the fluids literature.
-However, this notation fallaciously suggests that we may view distributions as functions,
-so we will drop its use here.
+%Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
+%we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
+%In the main text we will often use the notation $\int \omega(z) f(z) dz$ to denote this as well
+%because it is more common in the fluids literature.
+%However, this notation fallaciously suggests that we may view distributions as functions,
+%so we will drop its use here.
 
 Given a distribution $\omega \in D(\R^2)$.
 We can define the distributional derivative of $\omega$ in the $i$th coordinate direction
 as the distribution $\partial_i \omega$ defined by
 \begin{align*}
-	\langle \partial_i \omega , f \rangle = - \langle \omega , \partial_i f \rangle.
+	\int \partial_i \omega (z) f(z) dz = - \int \omega \omega(z) \partial_i f (z) dz.
 \end{align*}
 For example, the Dirac-delta distribution, $\delta_0$, is defined as the unique distribution such that
 \begin{align*}
-	\langle \delta_0 , f \rangle = f(0) \quad , \quad \forall f \in C^\infty(\R^2).
+	\int \delta_0(z) , f (z) dz = f(0) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
-The distributional derivative of $\partial_i \delta_0$ is given by
+The distributional derivative, $\partial_i \delta_0$, is given by
 \begin{align*}
-	\langle \partial_i \delta_0 , f \rangle = -\partial_i f(0) \quad , \quad \forall f \in C^\infty(\R^2).
+	\int \partial_i \delta_0 (z) f(z) dz = -\partial_i f(0) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
 Given a distribution $\omega \in D(\R^2)$ and a function $g \in C^\infty(\R^2)$ we can define the
 distribution $g \omega$ given by
 \begin{align*}
-	\langle g \omega , f \rangle = \langle \omega , gf \rangle \quad , \quad \forall f \in C^\infty(\R^2).
+	\int (g \omega)(z)  f(z) dz = \int \omega(z) g(z)f(z) dz \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
 For example, we find that $g \delta _0 = g(0) \delta_0$.
 A slightly more involved example is given by the computation of $g \partial_i \delta_0$.
 We find
 \begin{align*}
-	\langle g \partial_i \delta_0 ,  f \rangle = \langle \partial_i \delta_0 , gf \rangle =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
+	\int (g \partial_i \delta_0) (z)  f(z) dz = \int \partial_i \delta_0(z) g(z)f(z) dz =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
 \end{align*}
 Therefore
 \begin{align*}
@@ -1181,7 +1185,7 @@ On the left hand side, note that $g(0)$ and $\partial_i g(0)$ are merely real nu
 which are multiplying the distributions $\partial_i \delta_0$ and $\delta_0$.
 More generally, we find
 \begin{align*}
-	\langle g \partial_x^m \partial_y^n \delta_0 , f \rangle &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
+	\int (g \partial_x^m \partial_y^n \delta_0)(z) f(z) dz &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
 		&= (-1)^{m+n} \sum_{\ell,k=0}^{m,n} \binom{m}{\ell} \binom{n}{k}
 		\left(\partial_{x}^{\ell} \partial_y^k f(0) \right) 
 		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
@@ -1196,84 +1200,110 @@ which means
                 \label{eq:func times partial delta}
 \end{align}
 
-Let $L$ be the pseudo-differential operator dual to $G*$.
-Let $L$ be the pseudo-differential operator dual to $G*$.
-Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
-and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
-for any $f$ in the RKHS produced by $G$.
-Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
-and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
-for any $f$ in the RKHS produced by $G$.
+%Let $L$ be the pseudo-differential operator dual to $G*$.
+%Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+%and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+%for any $f$ in the RKHS produced by $G$.
+%Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+%and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+%for any $f$ in the RKHS produced by $G$.
 \section{Symmetries and Conserved Momenta}
 \label{sec:symmetries}
-Let us recall the definition of a momentum map from Definition 4.2.1 of \cite{FOM}.
-Given a symplectic manifold $(S,\Omega)$ and a symplectic group
-action by a Lie group $G$, a momentum map associated to $G$ is a map $J:S \to \mathfrak{g}^*$ such that
+Let $G$ be a Lie group with Lie algebra $\mathfrak{g}$.
+We will denote the dual of $\mathfrak{g}$ by $\mathfrak{g}^*$.
+A (left) group action of $G$ on a manifold $S$ is a map $\rho: G \times S \to S$
+such that $\rho( g h , x) = \rho(g , \rho(h , x))$ for all $g,h, \in G$ and $x \in S$.
+We can also construct a group action, $D\rho: G \times TS \to TS$,  given by
+$D\rho( g , u ) := \left.\frac{d}{dt}\right|_{t=0} \rho(g, x(t) )$ for $u = \frac{dx}{dt} \in T_x S$ and $g \in G$.
+There is also a natural Lie-algebra action, which we could also denote by $\rho: \mathfrak{g} \times S \to TS$
+defined by $\rho( \xi , x) := \left. \frac{d}{d \epsilon} \right|_{\epsilon =0} \rho( g_\epsilon , x)$.
+In particular, the map $\rho( \xi , \cdot ) : S \to TS$ is a vector-field on $S$ which we call the
+\emph{infinitesimal generator} of $\xi$.
+When no confusion arises it is typical to use the notation $g \cdot x$, $g \cdot u$, and $\xi \cdot x$ to denote $\rho(g,x)$,$D\rho(g,u)$,  and $\rho(\xi,x)$ respectively.
+Finally, if $(S,\Omega)$ is a symplectic manifold, then we say that $G$ acts \emph{symplectically} (or \emph{canonically})
+if $\Omega_{g \cdot x}( g \cdot u , g \cdot v) = \Omega_x(u,v)$ for all $g \in G$, $u,v \in T_x S$ and $x \in S$.
+
+Let us now recall the notion of a momentum map \cite[Definition 4.2.1]{FOM}.
+Given a symplectic manifold $(S,\Omega)$ and a Lie group $G$ which acts on $(S,\Omega)$ symplectically
+, a momentum map is a map ${\bf J}:S \to \mathfrak{g}^*$ such that
 \begin{align*}
-  d \langle J , \xi \rangle = i_{\xi_S} \Omega
+  d \langle {\bf J} , \xi \rangle = i_{\xi_S} \Omega
 \end{align*}
-for all $\xi \in \mathfrak{g}$, where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
+where $\langle {\bf J} , \xi \rangle$ denotes the real-valued function on $S$ obtained by pairing $J$ with an arbitrary
+ $\xi \in \mathfrak{g}$, and where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
 Equivalently we could express the previous condition as
 \begin{align}
-  d \langle J,\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x ) \label{eq:momap}
+  d \langle {\bf J},\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x ) \label{eq:momap}
 \end{align}
 for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
 Momentum maps are significant for a number of reasons.
 In particular, given a Hamiltonian on $S$ with $G$-symmetry, the momentum map $J$ will be conserved under the evolution of
-Hamilton's equations \cite[Theorem 4.2.2]{FOM}
+Hamilton's equations \cite[Theorem 4.2.2]{FOM}.
+This is nothing but the Hamiltonian version of Noether's theorem.
 
-In our case $S = {\rm Orb}(\omega_0) = \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$, and the sympectic form at a ``point'' $\omega \in S$ is given by Kostant's formula
+In our case $S = {\rm Orb}(\omega_0) = \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$.
+Tangent vectors on $S$ are of the form $$\pounds_{\vec{u}} [\omega] := u \partial_x \omega + v \partial_y \omega$$ for a (perhaps non-unique) divergence free vector-field $\vec{u} = (u,v)$.
+Under this identification, the symplectic form at some $\omega \in S$ is given by an application of Kostant's formula.
+This is derived in section \ref{sec:symplectic} and found to be
 \begin{align*}
-  \Omega_\omega( \pounds_u[\omega] , \pounds_v [\omega] ) :=
-  \langle \omega , u \times v \rangle.
+  \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2} [\omega] ) :=
+  \int \omega(z) ( \vec{u}_1(z) \times \vec{u}_2(z) ) dz.
 \end{align*}
-where $u,v \in \mathfrak{X}(\mathbb{R}^2)$ and $u \times v \in C^{\infty}(\mathbb{R}^2)$ (see \S \ref{sec:symplectic} of this article).
+where $\vec{u}_1$ and $\vec{u}_2$ are divergence free vector-fields and $\times$ denotes the planar cross product.
+Here we interpret the planar cross product as taking values in the space of real-numbers so that $\vec{u}_1 \times \vec{u}_2$ is
+merely a smooth function.
 
 We now will translate \eqref{eq:momap} to this more specific scenario.
 Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
 In this context, a momentum map $J$ associated to a $G$-action is defined by the equation
 \begin{align}
-  \langle d \langle J , \xi \rangle (\omega) , \pounds_v[\omega] \rangle = \langle \omega , \xi_{\mathbb{R}^2} \times v \rangle \label{eq:momap2}
+  \int \frac{\delta  \langle {\bf J} , \xi \rangle }{\delta \omega} (z)  \left( \pounds_{\vec{u}}[\omega] \right)(z) dz = \int \omega(z)  \left( (\xi \cdot z) \times \vec{u}(z) \right)dz \label{eq:momap2}
 \end{align}
+Where $\xi \cdot z$ denotes the action of $\xi \in \mathfrak{g}$ on $z \in \R^2$
+and ``$\times$'' denotes the planar cross-product.
 
-\subsection{Translational symmetry and $J_{tran}$}
-In this section we consider the action of translation in $\R^2$.
-This action on $\R^2$ will induce a symplectic group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
+\subsection{Translational symmetry and ${\bf J}_{\rm lin}$}
+%In this section we consider the action of translation in $\R^2$.
+%This action on $\R^2$ will induce a symplectic group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
 
 The group $\mathbb{R}^2$ acts upon $\mathbb{R}^2$ by translation.
-This fact induces an action on $S$.
-In particular, for any $(a,b) \in \mathbb{R}^2$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi(z)$ to the function  $(a,b)_*\phi(z) := \phi(z+(a,b))$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
- In particular, the left-action on distributions sends $\omega \in \mathcal{D}(\R^2)$ to the distribution $(a,b)_*\omega$ given by
+That is to say, sending any $\tilde{z} \in \R^2$ to $z + \tilde{z} \in \R^2$ for any $\tilde{z}  \in \R^2$.
+This fact induces an action on smooth functions.
+In particular, there is a natural (right) action on $C^{\infty}(\mathbb{R}^2)$ sending the function $\phi(z)$ to the function  $(\tilde{z})^*\phi(z) := \phi(z-\tilde{z})$.
+We denote the inverse operation by $(\tilde{z})_* \phi(z) := \phi( z + \tilde{z})$.
+This induces a (left) action on distributions which sends $\omega \in \mathcal{D}'(\R^2)$ to the distribution $(\tilde{z})_*\omega(z) := \omega( z +\tilde{z})$.
+As translation of $\mathbb{R}^2$ by $\tilde{z}$ is a volume-preserving diffeomorphism, we see that the coadjoint orbit $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.
+Moreover, we observe the action, restricted to $S$, is symplectic because
 \begin{align*}
-  \langle (a,b)_* \omega , \phi \rangle := \langle \omega , (a,b)^* \phi \rangle.
-\end{align*}
-As translation of $\mathbb{R}^2$ by $(a,b)$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.
-Moreover, we observe the action on $S$ is symplectic because
-\begin{align*}
-  \Omega_{(a,b)_* \omega}( (a,b)_*\pounds_{u}[ \omega] , (a,b)_*\pounds_v[\omega] ) &= \Omega_{(a,b)_* \omega} ( \pounds_{(a,b)_*u}[ (a,b)_*\omega] ,
-  \pounds_{(a,b)_*v}[(a,b)_*\omega] ) \\
-  &= \langle (a,b)_* \omega , (a,b)_*(u \times v) \rangle = \langle \omega, u \times v \rangle \\
+  \Omega_{ \tilde{z}_* \omega}( \tilde{z}_*\pounds_{u}[ \omega] , \tilde{z}_*\pounds_v[\omega] ) &= \Omega_{\tilde{z}_* \omega} ( \pounds_{\tilde{z}_*u}[ \tilde{z}_*\omega] ,
+  \pounds_{\tilde{z}_*v}[\tilde{z}_*\omega] ) \\
+  &= \int \tilde{z}_* \omega(z)  \left( \tilde{z}_*(u \times v) \right)(z) dz \\
+  &= \int \omega( z+\tilde{z}) \left(u \times v \right)(z + \tilde{z}) dz \\ 
+  &= \int \omega(z) \left( u \times v \right)(z) dz  \\
   &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
 \end{align*}
 
-Given this action is symplectic we can seek a momentum map, $J_{tran}:S \to (\mathbb{R}^2)^*$.  Consider an arbitrary element of the Lie-algebra $(\xi_1,\xi_2) \in \mathbb{R}^2$ and use \eqref{eq:momap2} to obtain
+Given this action is symplectic we can seek a momentum map, ${\bf J}_{\rm lin}:S \to (\mathbb{R}^2)^*$.  Consider an arbitrary element of the Lie-algebra $\delta \tilde{z}  = (\delta \tilde{x}, \delta \tilde{y}) \in \mathbb{R}^2$ and use \eqref{eq:momap2} to obtain
 \begin{align*}
-  \langle d \langle J_{tran} , (\xi_1,\xi_2) \rangle , \pounds_v[\omega] \rangle
-  = \langle \omega , \xi_1 v_2 - \xi_2 v_1 \rangle
+  \int \frac{\delta \langle {\bf J}_{\rm lin} , \delta \tilde{z} \rangle}{\delta \omega}(z)   \pounds_{\vec{u}}[\omega] dz
+  = \int \omega(z) \left( \delta \tilde{x} \, v(z) - \delta \tilde{y} \, u(z) \right) dz
 \end{align*}
 We can re-write the right hand side as
 \begin{align*}
-  = \langle \omega , \pounds_v[ \xi_1 y - \xi_2 x] \rangle 
-  = - \langle \pounds_v[\omega] , \xi_1 y - \xi_2 x \rangle
+  = \int \omega(z)  \pounds_{\vec{u}} [ \delta \tilde{x} \, y - \delta \tilde{y} \, x] dz
+\end{align*}
+and upon integrating by parts this is equivalent to
+\begin{align*}
+  = - \int \pounds_{\vec{u}}[\omega](z)  \left( \delta \tilde{x}\, y - \delta \tilde{y}\, x \right) dz
 \end{align*}
 Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
 \begin{align*}
-  d \langle J_{tran} , (\xi_1,\xi_2) \rangle(\omega) = \xi_2 x - \xi_1 y
+  \frac{\delta  \langle {\bf J}_{\rm lin} , \delta \tilde{z} \rangle}{\delta \omega} = \delta \tilde{y} x - \delta \tilde{x} y
 \end{align*}
 Integrating by $\omega$ we find
 \begin{align*}
   \boxed{
-    J_{tran}(\omega) = ( -\langle \omega ,y \rangle , \langle \omega , x \rangle ) \in (\mathbb{R}^2)^* \equiv \mathbb{R}^2}
+    {\bf J}_{\rm lin}(\omega) = \left( -\int \omega(z) y dz \, , \, \int \omega(z) x dz \right) \in (\mathbb{R}^2)^* \equiv \mathbb{R}^2}
 \end{align*}
 If $\omega$ satisfies the jet-vortex ansatz
 \begin{align*}
@@ -1281,46 +1311,34 @@ If $\omega$ satisfies the jet-vortex ansatz
 \end{align*}
 then
 \begin{align*}
-  J_{tran}(\omega) = \sum_i ( \Gamma_i^{y} - \Gamma_i y_i , \Gamma_i x_i -\Gamma_i^{x} ).
+  {\bf J}_{\rm lin}(\omega) = \sum_i ( \Gamma_i^{y} - \Gamma_i y_i , \Gamma_i x_i -\Gamma_i^{x} ).
 \end{align*}
-Apparently the terms of the jet-vortices beyond the first order do not influence $J_{tran}$.
+Apparently the terms of the jet-vortices beyond the first order do not influence ${\bf J}_{\rm lin}$.
 
-\subsection{Rotational symmetry and $J_{ang}$}
-In this section we consider the action of rotation about the origin in $\R^2$.
-This action on $\R^2$ will induce a symplectic Lie group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
-
-The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin.
-This action induces an action on $S$ in the obvious way.  For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ by pull-back, sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi \in C^{\infty}(\mathbb{R}^2)$ given by $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
- In particular, the left-action on distribution, denoted $\theta_* \omega$ for $\omega \in \mathcal{D}'(\mathbb{R}^2)$, is naturally given by
+\subsection{Rotational symmetry and ${\bf J}_{\rm ang}$}
+The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin sending $z \in \R^2$ to $R_\theta \cdot z := ( \cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y )$.
+For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distribution sends $\omega \in \mathcal{D}'(\mathbb{R}^2)$ to the distribution $\theta_* \omega(z) := \omega( R_\theta \cdot z)$.
+Again, we can verify that the coadjoint orbit $S$ is invariant under this action, and that $\SO(2)$ acts symplectically upon $S$
+through computations which are analogous to those performed in the previous subsection.
+Given this action is symplectic we can seek a momentum map, ${\bf J}_{\rm ang}:S \to \mathfrak{so}(2)^* \equiv \mathbb{R}$.  Consider an arbitrary element of the Lie-algebra $\xi \in \mathfrak{so}(2) \equiv \mathbb{R}$ and use \eqref{eq:momap2} to obtain
 \begin{align*}
-  \langle \theta_* \omega , \phi \rangle := \langle \omega , \theta^* \phi \rangle
+  \int  \frac{\delta  \langle {\bf J}_{\rm ang} (z) , \xi \rangle }{\delta \omega} (z) \, \pounds_{\vec{u}}[\omega] (z) dz
+  = \int \omega(z) \left( -y\xi v - x\xi u \right) dz
 \end{align*}
-As any rotation of $\mathbb{R}^2$ is a volume-preserving diffeomorphism, we see that $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.  Moreover, we observe the action on $S$ is symplectic because
+We can re-write the right hand side and integrate by parts to find
 \begin{align*}
-  \Omega_{\theta_* \omega}( \theta_*\pounds_{u}[ \omega] , \theta_*\pounds_v[\omega] ) &= \Omega_{\theta_* \omega} ( \pounds_{\theta_*u}[ \theta_*\omega] ,
-  \pounds_{\theta_*v}[\theta_*\omega] ) \\
-  &= \langle \theta_* \omega , \theta_*(u \times v) \rangle \stackrel{COV}{=} \langle \omega, u \times v \rangle \\
-  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+  = -\xi \int \omega(z) \pounds_{\vec{u}} \left[\frac{x^2+y^2}{2}\right] dz
+  = \xi \int \pounds_{\vec{u}}[\omega](z) \left( \frac{x^2+y^2}{2} \right) dz.
 \end{align*}
-
-Given this action is symplectic we can seek a momentum map, $J_{ang}:S \to \mathfrak{so}(2)^* \equiv \mathbb{R}$.  Consider an arbitrary element of the Lie-algebra $\xi \in \mathfrak{so}(2) \equiv \mathbb{R}$ and use \eqref{eq:momap2} to obtain
+As the vector $\pounds_{\vec{u}}[\omega] \in T_\omega S$ is arbitrary we find
 \begin{align*}
-  \langle d \langle J_{ang} , \xi \rangle , \pounds_v[\omega] \rangle
-  = \langle \omega , -y\xi v_2 - x\xi v_1 \rangle
-\end{align*}
-We can re-write the right hand side as
-\begin{align*}
-  = \langle \omega , - \xi \pounds_v[\frac{1}{2} (x^2 + y^2)] \rangle 
-  = \xi \langle \pounds_v[\omega] , \frac{1}{2}(x^2 + y^2) \rangle
-\end{align*}
-Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
-\begin{align*}
-  d \langle J_{ang} , \xi \rangle(\omega) = \frac{\xi}{2}(x^2+y^2)
+  \frac{\delta \langle {\bf J}_{\rm ang} , \xi \rangle}{\delta \omega} = \xi \frac{x^2+y^2}{2}
 \end{align*}
 Integrating by $\omega$ we find
 \begin{align*}
   \boxed{
-    J_{ang}(\omega) = \frac{1}{2}\langle \omega, x^2 + y^2\rangle \in \mathbb{R} \equiv \mathfrak{so}(2)^*
+    {\bf J}_{\rm ang}(\omega) = \frac{1}{2}\int \omega(z) ( x^2 + y^2) dz \in \mathbb{R} \equiv \mathfrak{so}(2)^*
     }
 \end{align*}
 If $\omega$ satisfies the jet-vortex ansatz
@@ -1329,9 +1347,9 @@ If $\omega$ satisfies the jet-vortex ansatz
 \end{align*}
 then
 \begin{align*}
-  J_{ang}(\omega) = \frac{\Gamma_i}{2} (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy} .
+  {\bf J}_{\rm ang}(\omega) = \frac{\Gamma_i}{2} (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy} .
 \end{align*}
-Apparently the terms of the jet-vortices beyond the second order do not influence $J_{ang}$.
+Apparently the terms of the jet-vortices beyond the second order do not influence ${\bf J}_{\rm ang}$.
 
 %\begin{thebibliography}{}
 %
