@@ -1156,7 +1156,7 @@ Given a distribution $\omega \in D(\R^2)$.
 We can define the distributional derivative of $\omega$ in the $i$th coordinate direction
 as the distribution $\partial_i \omega$ defined by
 \begin{align*}
-	\int \partial_i \omega (z) f(z) dz = - \int \omega \omega(z) \partial_i f (z) dz.
+	\int \partial_i \omega (z) f(z) dz = - \int \omega(z) \partial_i f (z) dz.
 \end{align*}
 For example, the Dirac-delta distribution, $\delta_0$, is defined as the unique distribution such that
 \begin{align*}
@@ -1167,32 +1167,32 @@ The distributional derivative, $\partial_i \delta_0$, is given by
 	\int \partial_i \delta_0 (z) f(z) dz = -\partial_i f(0) \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
 Given a distribution $\omega \in D(\R^2)$ and a function $g \in C^\infty(\R^2)$ we can define the
-distribution $g \omega$ given by
+distribution $g \, \omega$ given by
 \begin{align*}
-	\int (g \omega)(z)  f(z) dz = \int \omega(z) g(z)f(z) dz \quad , \quad \forall f \in C^\infty(\R^2).
+	\int (g \, \omega)(z)  f(z) dz = \int \omega(z) g(z)f(z) dz \quad , \quad \forall f \in C^\infty(\R^2).
 \end{align*}
-For example, we find that $g \delta _0 = g(0) \delta_0$.
-A slightly more involved example is given by the computation of $g \partial_i \delta_0$.
+For example, we find that $g \, \delta _0 = g(0) \delta_0$.
+A slightly more involved example is given by the computation of $g\, \partial_i \delta_0$.
 We find
 \begin{align*}
-	\int (g \partial_i \delta_0) (z)  f(z) dz = \int \partial_i \delta_0(z) g(z)f(z) dz =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
+	\int (g \, \partial_i \delta_0) (z)  f(z) dz = \int \partial_i \delta_0(z) g(z)f(z) dz =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
 \end{align*}
 Therefore
 \begin{align*}
-	g \partial_i \delta_0 = g(0) \partial_i \delta_0 - \partial_i g(0) \delta_0.
+	g \, \partial_i \delta_0 = g(0) \partial_i \delta_0 - \partial_i g(0) \delta_0.
 \end{align*}
 On the left hand side, note that $g(0)$ and $\partial_i g(0)$ are merely real numbers,
 which are multiplying the distributions $\partial_i \delta_0$ and $\delta_0$.
 More generally, we find
 \begin{align*}
-	\int (g \partial_x^m \partial_y^n \delta_0)(z) f(z) dz &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
+	\int (g\, \partial_x^m \partial_y^n \delta_0)(z) f(z) dz &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
 		&= (-1)^{m+n} \sum_{\ell,k=0}^{m,n} \binom{m}{\ell} \binom{n}{k}
 		\left(\partial_{x}^{\ell} \partial_y^k f(0) \right) 
 		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
 \end{align*}
 which means
 \begin{align}
-	g \partial_x^m \partial_y^n \delta_0 =
+	g \, \partial_x^m \partial_y^n \delta_0 =
 		(-1)^{m+n} \sum_{\ell,k=0}^{m,n} (-1)^{\ell + k}
 		\binom{m}{\ell} \binom{n}{k}
 		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
@@ -1211,15 +1211,21 @@ which means
 \label{sec:symmetries}
 Let $G$ be a Lie group with Lie algebra $\mathfrak{g}$.
 We will denote the dual of $\mathfrak{g}$ by $\mathfrak{g}^*$.
-A (left) group action of $G$ on a manifold $S$ is a map $\rho: G \times S \to S$
-such that $\rho( g h , x) = \rho(g , \rho(h , x))$ for all $g,h, \in G$ and $x \in S$.
-We can also construct a group action, $D\rho: G \times TS \to TS$,  given by
-$D\rho( g , u ) := \left.\frac{d}{dt}\right|_{t=0} \rho(g, x(t) )$ for $u = \frac{dx}{dt} \in T_x S$ and $g \in G$.
-There is also a natural Lie-algebra action, which we could also denote by $\rho: \mathfrak{g} \times S \to TS$
-defined by $\rho( \xi , x) := \left. \frac{d}{d \epsilon} \right|_{\epsilon =0} \rho( g_\epsilon , x)$.
-In particular, the map $\rho( \xi , \cdot ) : S \to TS$ is a vector-field on $S$ which we call the
+A (left) group action of $G$ on a manifold $S$ is a map $\varrho: G \times S \to S$
+such that $\varrho( g h , x) = \varrho(g , \varrho(h , x))$ for all $g,h, \in G$ and $x \in S$.
+\begin{rmk}
+The group action $\varrho$ is not to be confused with the fluid density.
+This portion of the texts relates to more general mathematical constructions which are usually beyond the purview of fluid mechanics.
+In particular, the symbol $\varrho$ is the Greek `r', and is used as a reference to the word ``representation''
+as in ``representation theory''.
+\end{rmk}
+We can also construct a group action, $D\varrho: G \times TS \to TS$,  given by
+$D\varrho( g , u ) := \left.\frac{d}{dt}\right|_{t=0} \rho(g, x(t) )$ for $u = \frac{dx}{dt} \in T_x S$ and $g \in G$.
+There is also a natural Lie-algebra action, which we could also denote by $\varrho: \mathfrak{g} \times S \to TS$
+defined by $\varrho( \xi , x) := \left. \frac{d}{d \epsilon} \right|_{\epsilon =0} \varrho( g_\epsilon , x)$.
+In particular, the map $\varrho( \xi , \cdot ) : S \to TS$ is a vector-field on $S$ which we call the
 \emph{infinitesimal generator} of $\xi$.
-When no confusion arises it is typical to use the notation $g \cdot x$, $g \cdot u$, and $\xi \cdot x$ to denote $\rho(g,x)$,$D\rho(g,u)$,  and $\rho(\xi,x)$ respectively.
+When no confusion arises it is typical to use the notation $g \cdot x$, $g \cdot u$, and $\xi \cdot x$ to denote $\varrho(g,x)$,$D\varrho(g,u)$,  and $\varrho(\xi,x)$ respectively.
 Finally, if $(S,\Omega)$ is a symplectic manifold, then we say that $G$ acts \emph{symplectically} (or \emph{canonically})
 if $\Omega_{g \cdot x}( g \cdot u , g \cdot v) = \Omega_x(u,v)$ for all $g \in G$, $u,v \in T_x S$ and $x \in S$.
 
@@ -1229,7 +1235,7 @@ Given a symplectic manifold $(S,\Omega)$ and a Lie group $G$ which acts on $(S,\
 \begin{align*}
   d \langle {\bf J} , \xi \rangle = i_{\xi_S} \Omega
 \end{align*}
-where $\langle {\bf J} , \xi \rangle$ denotes the real-valued function on $S$ obtained by pairing $J$ with an arbitrary
+where $\langle {\bf J} , \xi \rangle$ denotes the real-valued function on $S$ obtained by pairing ${\bf J}$ with an arbitrary
  $\xi \in \mathfrak{g}$, and where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
 Equivalently we could express the previous condition as
 \begin{align}
@@ -1237,7 +1243,7 @@ Equivalently we could express the previous condition as
 \end{align}
 for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
 Momentum maps are significant for a number of reasons.
-In particular, given a Hamiltonian on $S$ with $G$-symmetry, the momentum map $J$ will be conserved under the evolution of
+In particular, given a Hamiltonian on $S$ with $G$-symmetry, the momentum map ${\bf J}$ will be conserved under the evolution of
 Hamilton's equations \cite[Theorem 4.2.2]{FOM}.
 This is nothing but the Hamiltonian version of Noether's theorem.
 
@@ -1255,7 +1261,7 @@ merely a smooth function.
 
 We now will translate \eqref{eq:momap} to this more specific scenario.
 Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
-In this context, a momentum map $J$ associated to a $G$-action is defined by the equation
+In this context, a momentum map ${\bf J}$ associated to a $G$-action is defined by the equation
 \begin{align}
   \int \frac{\delta  \langle {\bf J} , \xi \rangle }{\delta \omega} (z)  \left( \pounds_{\vec{u}}[\omega] \right)(z) dz = \int \omega(z)  \left( (\xi \cdot z) \times \vec{u}(z) \right)dz \label{eq:momap2}
 \end{align}
