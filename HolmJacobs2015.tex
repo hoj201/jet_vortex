@@ -855,7 +855,7 @@ before zooming off into the lower left quadrant of the plane in a straight line.
 
 \subsection{The method of images}
 \label{sec:method_of_images}
-Here we incorporate first order jet vortices into the method of images\cite{Jackson1975}.
+Here we incorporate first order jet vortices into the method of images~\cite{Jackson1975}.
 We consider the initial conditions consisting of two first order jet vortices which are mirror images of each other with respect to the $x$-axis.
 By symmetry, the resulting vector-field should be tangential to the $x$-axis, and provides a means of considering a boundary that satisfied the no-penetration condition.
 Specifically, we consider the initial condition:
@@ -886,7 +886,7 @@ The resulting dynamics depicted in Figure \ref{fig:moi} shows that as a first or
 
 \section{Hamiltonians and symplectic structures}
 \label{sec:symplectic}
-In modern Hamiltonian mechanics, as described in \cite{FOM,Arnold2000},
+In modern Hamiltonian mechanics, as described in~\cite{FOM,Arnold2000},
 the Hamiltonian is a function on a symplectic manifold, which produces equations of motion.
 An important instance of a symplectic manifold is a coadjoint orbit (defined below).
 In this section we compute the coadjoint orbit of a jet vortex
@@ -907,7 +907,7 @@ The coadjoint orbit of $\omega$ is the set
 %\end{align*}
 In fact $\Orb(\omega)$ inherits the structure of a smooth manifold,
 and a tangent vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
-a distribution denoted as $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
+a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
 $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
 The symplectic structure is nothing more than a special case of the one derived via the Kirillov-Kostant-Souriau theorem \cite[see the boxed formula on p.303]{FOM}.
 In particular, the symplectic structure on $\Orb(\omega)$ is given by
@@ -915,25 +915,19 @@ In particular, the symplectic structure on $\Orb(\omega)$ is given by
   \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2}[\omega] ) = \int \omega(z)  ( u_1(z) v_2(z) - v_1(z) u_2(z) ) dz. \label{eq:symplectic}
 \end{align}
 When $\omega$ is a smooth distribution, the symplectic structure may be identified with a differential $2$-form and this formula matches the symplectic form derived on page 313 of \cite{MarsdenWeinstein1983}.
-In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that $\Orb(\omega)$ may be parametrized finite dimensionally in the following theorem.
-
-\begin{thm}
-	Let $\omega_0 = \gamma_i^\alpha \partial_{\alpha} \delta_{Z_i}$ for $\gamma_i^\alpha \neq 0$ and let
-	$M^{(k)} = \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$ be the space of $k$th order jet vortices.
-	Then $\Orb(\omega_0)$ is a sub-manifold of the $M^{(k)}$.
-\end{thm}
-\begin{proof}
-	Let $\varphi \in \SDiff(\R^2)$.  By applying the change of variables formula
-	and noting that $\det(D\varphi)=1$, we find
+In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that given any $\varphi \in \SDiff(\R^2)$
+	that
 	\begin{align*}
 		\int \omega_0(\varphi^{-1}(z)) f(z) dz &= \int \omega_0(z) , f (\varphi(z)) dz \\
                 &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z).
 	\end{align*}
+	Here we have used the change of variables formula and the fact that $\det( D\varphi) = 1$.
 	By the multivariate Fa\'a di Bruno formula, the expression $\partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z)$
 	is a sum of the partial derivatives of $f$ at the points $\varphi(Z_i)$
 	of order less than that of the multi-index $\alpha$ \cite{ConstantineSavits1996}.
-        Thus $ \omega_0 \circ \varphi^{-1} \in M^{(k)}$.
-\end{proof}
+        Thus $ \omega_0 \circ \varphi^{-1}$ is contained in the finitely parametrized subset $M^{(k)} := \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$
+        for any $\varphi \in \SDiff( \R^2)$.
+        Therefore $\Orb(\omega_0)$ is a finite-dimensional manifold when $\omega_0$ satisfies the jet-vortex ansatz.
 
 Finally, as a check, we can also prove that the equations of motion are identical to the equations of motion obtained using this symplectic structure.
 
@@ -941,7 +935,7 @@ Finally, as a check, we can also prove that the equations of motion are identica
 	Let $H(\omega)$ be given by \eqref{eq:Hamiltonian}.  Then Hamilton's equations on $\Orb(\omega_0)$
 	are given by
 	\begin{align*}
-		\partial_t \omega + \partial_y \psi \partial_x \omega - \partial_x \psi \partial_y \omega \quad,\quad  \psi = G_\delta*\omega.
+		\partial_t \omega + \partial_y \psi \, \partial_x \omega - \partial_x \psi \, \partial_y \omega \quad,\quad  \psi = G_\delta*\omega.
 	\end{align*}
 \end{thm}
 \begin{proof}
