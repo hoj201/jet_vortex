@@ -59,7 +59,14 @@ Imperial College, London SW7 2AZ, UK}
 \begin{document}
 
 \begin{abstract}
-A new singular vortex theory is presented for regularised Euler fluid equations of ideal incompressible flow in the plane. We determine the conditions under which such regularised Euler fluid equations may admit vorticity singularities which are stronger than delta functions, e.g., derivatives of delta functions. We also characterise the Hamiltonian dynamics of the higher-order singular vortices. Applications to the design of numerical methods similar to vortex blob methods are also discussed. 
+Vortex blob methods are typically characterized by a regularization length scale, below which the the dynamics are trivial for isolated blobs.
+In this article we will find that the dynamics need not be trivial if one is willing to consider distributional derivatives of Dirac delta functionals as valid vorticity distributions.
+More specifically, a new singular vortex theory is presented for regularised Euler fluid equations of ideal incompressible flow in the plane.
+We determine the conditions under which such regularised Euler fluid equations may admit vorticity singularities which are stronger than delta functions, e.g., derivatives of delta functions.
+We also characterise the Hamiltonian dynamics of the higher-order singular vortices.
+Applications to the design of numerical methods similar to vortex blob methods are also discussed.
+Such findings shed light onto the rich dynamics which occur below the regularization length scale and
+enlighten our perspective on the multiscale aspects of regularized fluid models.
 \end{abstract}
 
 \maketitle
@@ -69,8 +76,8 @@ A new singular vortex theory is presented for regularised Euler fluid equations 
 Vortices are important in hydrodynamics because they are the sources for the incompressible flow field. The vorticity distribution at any instant of time determines both the current state of the flow and its future evolution, for given boundary conditions. This property holds for any Hamiltonian system, and it can indeed be shown that the dynamics of vortices can be usefully expressed in Hamiltonian form. In the vorticity and stream function formulation of an ideal incompressible planar fluid, the evolution of the vorticity distribution $\omega(x,y,t)$ is given by
 \begin{align}
   \partial_t \omega + \{\omega,\psi\} := 
-  \partial_t \omega + \partial_x \omega  \partial_y \psi
-  - \partial_y \omega \partial_x \psi = 0\,, \label{eq:vorticity}
+  \partial_t \omega + \partial_x \, \omega  \partial_y \psi
+  - \partial_y \omega \, \partial_x \psi = 0\,, \label{eq:vorticity}
 \end{align}
 where $\omega = \Delta \psi$ is the vorticity and $\psi$ is the stream function.
 The corresponding $(x,y)$ components of the Eulerian velocity field are given by
@@ -115,7 +122,7 @@ We will find that this ansatz yields a closed finite dimensional system which ge
 \subsection{Main contributions}
 \begin{enumerate}
         \item Section \ref{sec:background} briefly reviews the background for vortex methods in fluid modeling.
-        \item Section \ref{sec:EOM} derives the equations of motion for point vortices and jet vortices as exact solutions of a regularized vorticity equation. Remark \ref{rmk:conserved} derives the conservation laws for these equations, such as energy, linear momentum, and angular momentum. Other conservation laws are explained in Appendix \ref{sec:symmetries}. The implications of Kelvin's circulation theorem for jet vortices are discussed in Section \S \ref{rmk:Kelvin}. The relation of the resulting closed dynamical systems for jet vortices to the equations of motion for the spatial moments of the vorticity distribution is explained in Remark \ref{rmk:moments}.
+        \item Section \ref{sec:EOM} derives the equations of motion for point vortices and jet vortices as exact solutions of a regularized vorticity equation. Remark \ref{rmk:conserved} derives the conservation laws for these equations, such as energy, linear momentum, and angular momentum. Other conservation laws are explained in Appendix \ref{sec:symmetries}. The implications of Kelvin's circulation theorem for jet vortices are discussed in Section \S \ref{rmk:Kelvin}. The relation of the resulting closed dynamical systems for jet vortices to the equations of motion for the spatial moments of the vorticity distribution is explained in section\ref{sec:moments}.
         \item Section \ref{sec:numerics} discusses numerical aspects of using jet vortices to model fluid dynamics. Section \ref{sec:grouping} shows how to reduce the number of pairwise interactions, by grouping nearby jet vortices into a single jet vortex of higher order. In Section \ref{sec:approximation}, we spectrally approximate an initial condition using jet vortices and plot the convergence rate. 
         \item   Section \ref{sec:numerical_experiments} presents the results of several numerical experiments involving small numbers of vortices, for $N=1,2$, and $3$.
         	\item Jet vortex dynamics is Hamiltonian. The symplectic and Hamiltonian structure of jet vortex dynamics is presented in Section \S \ref{sec:symplectic}.
@@ -505,11 +512,20 @@ The vorticity equation \eqref{eq:vorticity} admits the $N$th order jet vortex an
 	These conserved quantities can be interpreted as a finite dimensional manifestation of the conservation of circulation.
 \end{rmk}
 
-\begin{rmk}\label{rmk:moments}
-	The $(a,b)^{\rm th}$ moment of the vorticity centered around the vortex position $(x_i,y_i) \in \R^2$ is given by
+\section{Moments}
+\label{sec:moments}
+	\todo[inline]{It is still not clear to me why this is important.  I know too little about the usefulness of moments.  Why do physicists care about moments?}
+	In this section we present how the moments of the vorticity distribution evolve in time.
+	We will find that when the vorticity distribution is that of a jet-vortex, then the moments form a closed dynamical system at finite order.
+	
+	The $(a,b)^{\rm th}$ moment of the vorticity, $\omega$, centered around the vortex position $(x_i,y_i) \in \R^2$ is given by
 	\begin{align*}
 		\mu^{ab}_i := \int (x-x_i)^a (y-y_i)^b \omega dxdy\,.
 	\end{align*}
+	We call the integer $a+b$ the \emph{order} of the moment.
+	For a general vorticity, the evolution for the $n$th order moments will depend on the $(n+1)$th and higher order moments
+	and so we can not concoct a closed dynamical system for the moments of order $n$ and less.
+	However, this is not the case if $\omega$ satisfies the jet vortex ansatz, and the points $(x_i,y_i)$ are given by the locations of the jet-vortices.
 	If $\omega$ satisfies the jet vortex ansatz \eqref{eq:ansatz N} then
 	\begin{align*}
 		\mu^{ab}_i = \sum_{
@@ -525,15 +541,18 @@ The vorticity equation \eqref{eq:vorticity} admits the $N$th order jet vortex an
 	Given the points $z_i \in S$, one can write the moments in terms of the circulation
 	strengths, the $\Gamma$'s.
 	For the moment $\mu_i^{ab}$ with $a+b \leq N$ with $a,b \in \mathbb{N}$
-	we may invert this relationship to write $\Gamma_i^{mn}$ as a function of these moments.
+	we may invert this relationship to write $\Gamma_i^{mn} = \Gamma_i^{mn}( \mu)$, i.e. as a function of the moments.
 	Invoking the equation of motion for the $\Gamma$'s and substituting the identity between the $\Gamma$'s
 	and the $\mu$'s
 	would yield a closed dynamical system for the $\mu$'s.
-	That the equations of motion for the moments forms a closed system at order $N$
+	
+	\begin{rmk}
+	There exists systems for approximating the dynamics of moments which differ from the one presented here.
+	However, that the equations of motion for the moments forms a closed system at order $N$
 	is in contrast to other methods for deriving dynamical systems for moments
 	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
 	where a projection must be invoked in order to form a closed system.
-\end{rmk}
+	\end{rmk}
 
 \section{Numerical Aspects}
 \label{sec:numerics}
@@ -1073,6 +1092,13 @@ We found 1st order jet vortices correspond to vortex dipoles which simply propag
 Finally, we derived the symplectic structure of jet vortices using methods from  \cite{MarsdenWeinstein1983}.
 The resulting structure turned out to be a direct generalization of the standard
 symplectic structure for vortex blobs.
+
+The multiscale nature of ideal fluids is the principal obstacle to obtaining accurate models.\todo{Cite something}
+The use of jet vortices augments the standard vortex blob method by allowing for singular vorticity distributions which model dynamics
+below the regularization length scale (i.e. at order $\delta^k$ for a $k$th order jet-vortex).
+As the dynamics of jet vortices are relatively easy to derive, and the analysis is tractable, we believe that 
+jet vortices will be of great value in understanding the place of regularized fluid models within the computational fluids community at large
+and will provide renewed interest to the vortex blob method.
 
 Future avenues of inquiry could include:
 \begin{itemize}
