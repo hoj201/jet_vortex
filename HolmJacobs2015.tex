@@ -891,22 +891,16 @@ the Hamiltonian is a function on a symplectic manifold, which produces equations
 An important instance of a symplectic manifold is a coadjoint orbit (defined below).
 In this section we compute the coadjoint orbit of a jet vortex
 as well as the associated symplectic structure.
-For a general vorticity distribution $\omega$, the Hamiltonian is the kinetic energy
-\begin{align}
-  H(\omega) = \frac{1}{2} \int \omega(z) G_\delta(z-\tilde{z}) \omega(\tilde{z}) dz d\tilde{z}. \label{eq:Hamiltonian}
-\end{align}
-Where $\omega$ may be of the form \eqref{eq:ansatz N}.
-
-The coadjoint orbit of $\omega$ is the set
+The coadjoint orbit of some initial vorticity distribution $\omega_0$ is the set
 \begin{align*}
-  \Orb(\omega) := \{ \omega \circ \varphi^{-1} \mid \varphi \in \SDiff(\R^2) \}.
+  \Orb(\omega_0) := \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\R^2) \}.
 \end{align*}
 %where $\varphi_* \omega$ denotes the distribution defined by
 %\begin{align*}
 %	\int f(z) (\varphi_*\omega)(z) := \int f(\varphi(z)) \omega(z) \,,\quad \quad \forall f \in C^\infty(\R^2).
 %\end{align*}
-In fact $\Orb(\omega)$ inherits the structure of a smooth manifold,
-and a tangent vector on $\Orb(\omega)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
+In fact $\Orb(\omega_0)$ inherits the structure of a smooth manifold,
+and a tangent vector on $\Orb(\omega_0)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
 a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
 $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
 The symplectic structure is nothing more than a special case of the one derived via the Kirillov-Kostant-Souriau theorem \cite[see the boxed formula on p.303]{FOM}.
@@ -929,19 +923,20 @@ In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that
         for any $\varphi \in \SDiff( \R^2)$.
         Therefore $\Orb(\omega_0)$ is a finite-dimensional manifold when $\omega_0$ satisfies the jet-vortex ansatz.
 
-Finally, as a check, we can also prove that the equations of motion are identical to the equations of motion obtained using this symplectic structure.
+Having identified a symplectic manifold, $\Orb(\omega_0)$, we can then ask the question \emph{``are the dynamics Hamiltonian on $\Orb(\omega_0)$?"}
+Of course the answer is \emph{``yes."}.  This is the primary content of \cite{MarsdenWeinstein1983}.
+We provide our own explanation here for convenience.
 
-\begin{thm}
-	Let $H(\omega)$ be given by \eqref{eq:Hamiltonian}.  Then Hamilton's equations on $\Orb(\omega_0)$
-	are given by
-	\begin{align*}
-		\partial_t \omega + \partial_y \psi \, \partial_x \omega - \partial_x \psi \, \partial_y \omega \quad,\quad  \psi = G_\delta*\omega.
-	\end{align*}
-\end{thm}
-\begin{proof}
-  Let $\omega \in \Orb(\omega_0)$, and let $X_H(\omega) =  \pounds_{\vec{u}}[\omega]$ for some (non-unique) $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
+For a general vorticity distribution $\omega$, we may consider the kinetic energy Hamiltonian
+\begin{align}
+  H(\omega) = \frac{1}{2} \int \omega(z) G_\delta(z-\tilde{z}) \omega(\tilde{z}) dz d\tilde{z}. \label{eq:Hamiltonian}
+\end{align}
+Where $\omega$ may be of the form \eqref{eq:ansatz N}.
+  In order to find Hamilton's equations on $\Orb(\omega_0)$ choose some $\omega \in \Orb(\omega_0)$ and calculate the vector $X_H(\omega)$ tangent to $\Orb(\omega_0)$
+  given by Hamilton's equations.
+  It must be the case that $X_H(\omega) =  \pounds_{\vec{u}}[\omega]$ for some (non-unique) vector-field $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
   Our goal is to solve for $\vec{u}$.
-  By the definition of $X_H$ we see that for any
+  By the definition of the Hamiltonian vector field $X_H$ we see that for any
   $\vec{u}' = (u',v') \in \mathfrak{X}_{\rm div}(\R^2)$
   \begin{align*}
     \int \omega(z) \left( u(z) v'(z)  - v(z) u'(z) \right) dz &=
@@ -955,38 +950,19 @@ Finally, as a check, we can also prove that the equations of motion are identica
   \end{align*}
   We see that $\vec{u} = (-\partial_y \psi,\partial_x \psi)$ is one possible solution.
   As $\Omega$ is non-degenerate on the tangent spaces of $\Orb(\omega)$, this is the unique solution.
-\end{proof}
+  As a result, the evolution prescribed by $X_H$ is precisely \eqref{eq:vorticity}.
+  This proves that \eqref{eq:vorticity} can be seen as a Hamiltonian equation on $\Orb(\omega_0)$ with respect to the symplectic structure \eqref{eq:symplectic} and the Hamiltonian \eqref{eq:Hamiltonian}.
 
 \subsection{The first order case}
 Let us illustrate these Hamiltonian results for the case of the first order jet vortex.
-\begin{thm}
-Let $z_1,\dots,z_n \in \R^2$ be distinct.
-The coadjoint orbit of
+Let $z_1,\dots,z_n \in \R^2$ be distinct
+and define the initial vorticity distribution
 \begin{align*}
-  \omega = \sum_{i=1}^N \gamma_i \delta_{z_i} + \gamma_i^x \partial_x \delta_{z_i} + \gamma_i^y \partial_{y} \delta_{z_i}
+  \omega_0 = \sum_{i=1}^N \gamma_i \delta_{z_i} + \gamma_i^x \partial_x \delta_{z_i} + \gamma_i^y \partial_{y} \delta_{z_i}.
 \end{align*}
-is
-\begin{align*}
-  \Orb(\omega) &= \left\{ \sum_{i=1}^n \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{\tilde{z}_i} + \Gamma_i^y \partial_{y} \delta_{z_i}
-  \mid z_i \in \R^2, (\Gamma_i^x,\Gamma_i^y) \in \R^2 \backslash \{0\} \right\} \\
-  &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
-\end{align*}
-The symplectic structure is
-  \begin{align}
-  \begin{split}
-    \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
-    \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
-    &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
-    - \dot{\Gamma}_i^y \cdot \delta x_i
-    + \delta \Gamma_i^y \cdot \dot{x}_i 
-    - \delta \Gamma_i^x \cdot \dot{y}_i
-    \end{split} \label{eq:first_order_symplectic}
-  \end{align}
-\end{thm}
+We desire the to determine the coadjoint orbit, $\Orb(\omega_0)$, and the symplectic structure.
 
-\begin{proof}
-  Let $\omega$ be as above and consider some $\varphi \in \SDiff(\R^2)$.
-  We find that for any function $f$
+  Indeed, we find that for any function $f$
   \begin{align*}
     \int \omega \left(\varphi^{-1}(z)\right) f(z)dz &:= \int \omega (z)f\left(\varphi(z)\right) dz \\
     &= \gamma_i f(\varphi(Z_i)) \\
@@ -1014,8 +990,13 @@ The symplectic structure is
   By varying $\varphi$ we can obtain 
   any collection of distinct points $z_1,\dots,z_n \in \R^2$
   and any collection of non-zero vectors $\Gamma_1,\dots,\Gamma_n \in \R^2 \backslash \{0\}$.
-  This proves the first claim.
-
+  This proves
+  \begin{align*}
+  \Orb(\omega_0) &= \left\{ \sum_{i=1}^n \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{\tilde{z}_i} + \Gamma_i^y \partial_{y} \delta_{z_i}
+  \mid z_i \in \R^2, (\Gamma_i^x,\Gamma_i^y) \in \R^2 \backslash \{0\} \right\} \\
+  &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
+  \end{align*}
+  
   To derive the symplectic structure recall the symplectic structure for a general vorticity \eqref{eq:symplectic}.
   Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
   In this case the left hand side of \eqref{eq:symplectic} can be computed with respect to 
@@ -1039,8 +1020,19 @@ The symplectic structure is
     u^x_{,x}(z_i) \Gamma^x_i + u^x_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^x \\
     u^y_{,x}(z_i) \Gamma^x_i + u^y_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^y.
     \end{align*}
-    with those which appear in \eqref{eq:first_order_symplectic}.
-\end{proof}
+ This proves that the symplectic structure on $\Orb(\omega_0)$ is more concretely written as
+  \begin{align}
+  \begin{split}
+    \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
+    \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
+    &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
+    - \dot{\Gamma}_i^y \cdot \delta x_i
+    + \delta \Gamma_i^y \cdot \dot{x}_i 
+    - \delta \Gamma_i^x \cdot \dot{y}_i
+    \end{split} \label{eq:first_order_symplectic}
+  \end{align}
+
+In essence, we have determined a finite-dimensional Hamiltonian system whos solutions solve \eqref{eq:vorticity} when $\psi$ is related to $\omega$ via an appropriate regularization.
 
 \begin{rmk}
   The use of this symplectic structure shows that the map $(z_i, \Gamma_i,\Gamma_i^x,\Gamma_i^y) \mapsto \omega \in \Orb(\omega)$ is a symplectic momentum map.
