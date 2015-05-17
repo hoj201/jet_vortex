@@ -76,7 +76,7 @@ enlighten our perspective on the multiscale aspects of regularized fluid models.
 Vortices are important in hydrodynamics because they are the sources for the incompressible flow field. The vorticity distribution at any instant of time determines both the current state of the flow and its future evolution, for given boundary conditions. This property holds for any Hamiltonian system, and it can indeed be shown that the dynamics of vortices can be usefully expressed in Hamiltonian form. In the vorticity and stream function formulation of an ideal incompressible planar fluid, the evolution of the vorticity distribution $\omega(x,y,t)$ is given by
 \begin{align}
   \partial_t \omega + \{\omega,\psi\} := 
-  \partial_t \omega + \partial_x \, \omega  \partial_y \psi
+  \partial_t \omega + \partial_x  \omega\,  \partial_y \psi
   - \partial_y \omega \, \partial_x \psi = 0\,, \label{eq:vorticity}
 \end{align}
 where $\omega = \Delta \psi$ is the vorticity and $\psi$ is the stream function.
@@ -102,9 +102,9 @@ A point-vortex approximation to a continuous distribution of vorticity is proble
 
 For example, one may consider the regularized form of the vorticity equation given by
 choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ of width $\delta$ and defining the regularized vorticity as 
-$K_\delta* \omega = \Delta \psi$.
+$K_\delta* \omega = \Delta \psi$ while continuing to use \eqref{eq:vorticity} to evolve $\omega$ in time.
 For example, $K_\delta (z) = \exp( - \| z\|^2 / \delta^2)$ is considered in \cite{BealeMajda1985}.
-In this case the point vortex ansatz yields \eqref{eq:point_vortex} again, except that the Green's function $G$ is replaced by the kernel
+In this case the point vortex ansatz yields \eqref{eq:point_vortex} again, except that the singular Green's function $G$ is replaced by the smooth kernel
 \begin{align}
 	G_\delta(z) := K_\delta*G(z) = \frac{1}{4\pi} \left( {\rm Ei}(- \| z \|^2 / \delta^2) - 2\ln ( \| z \|) \right), \label{eq:kernel}
 \end{align}
@@ -160,17 +160,18 @@ and these formulas have made the method numerically tractable for a large number
 \section{Equations of motion}
 \label{sec:EOM}
 In this section we derive the equations of motion for the time-dependent parameters which specify the properties of jet vortices.
+We will begin by considering standard vortex blobs, which we will find are $0$th order jet vortices.
 
 \subsection{0th order}
 At 0th order, one considers the following ansatz for the vorticity
 \begin{align}
   \omega(z,t) = \sum_{i} \Gamma_i(t) \delta_{z_i(t)} \label{eq:ansatz 0}
 \end{align}
-for spatially constant, but potentially time dependent $\Gamma_i(t) \in \R$ for $i$ taking values in some finite set $S$
+for spatially constant, but apriori time dependent $\Gamma_i(t) \in \R$ for $i$ taking values in some finite set $S$
 and where the points $z_i \in \R^2$ are distinct.
 The stream function corresponding to this singular solution ansatz for vorticity is 
 \begin{align*}
-  \psi(z,t) = \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )\,.
+  \psi(z,t) := G_\delta * \omega(z,t) =  \sum_{i} \Gamma_i(t) G_\delta (z-z_i(t) )\,.
 \end{align*}
 Consequently, the induced velocity field is given by
 \begin{align}
@@ -514,7 +515,7 @@ The vorticity equation \eqref{eq:vorticity} admits the $N$th order jet vortex an
 
 \section{Moments}
 \label{sec:moments}
-	\todo[inline]{It is still not clear to me why this is important.  I know too little about the usefulness of moments.  Why do physicists care about moments?}
+	\todo[inline]{I think this section needs the justification.  I understand that it is cool that we obtain a closed system for the moments, which is new.  However, I don't understand why moments are important.}
 	In this section we present how the moments of the vorticity distribution evolve in time.
 	We will find that when the vorticity distribution is that of a jet-vortex, then the moments form a closed dynamical system at finite order.
 	
