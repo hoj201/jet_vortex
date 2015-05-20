@@ -87,8 +87,9 @@ The corresponding $(x,y)$ components of the Eulerian velocity field are given by
 
 If one is willing to view the vorticity $\omega$ as a distribution, one can consider point vortex solutions.
 In particular, point vortices are obtained if one considers the vorticity solution ansatz 
-\[\omega(z,t) = \sum_{i} \Gamma_i(t) \delta_{z_i}\,,\]
-where $\Gamma_i \in \mathbb{R}$, $z=(x,y) \in \mathbb{R}^2$ and $\delta_{z_i}$ is the Dirac delta distribution centered at the point $z_i = (x_i,y_i) \in \mathbb{R}^2$.
+\[\omega(z,t) = \sum_{i} \Gamma_i(t) \delta_{z_i(t)}\,,\]
+where $\Gamma_i(t) \in \mathbb{R}$, $z=(x,y) \in \mathbb{R}^2$ and $\delta_{z_i(t)}$ is the Dirac delta distribution centered at the point $z_i(t) = (x_i,y_i)(t) \in \mathbb{R}^2$
+at a given time $t \in \mathbb{R}$.
 Substitution of this ansatz into \eqref{eq:vorticity} yields the following well known finite dimensional system in the form  of Hamilton's canonical equations,
 \begin{align}
 \begin{cases}
@@ -98,7 +99,7 @@ Substitution of this ansatz into \eqref{eq:vorticity} yields the following well 
 \end{align}
 where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$ is the Green's function for the planar Laplacian. 
 
-A point-vortex approximation to a continuous distribution of vorticity is problematic, though, because a point vortex induces a flow velocity which becomes unbounded. However, when the point vortex is smoothed out and made bounded (regularized) the approximation becomes reasonable  \cite{Chorin1973}.
+A point-vortex approximation to a continuous distribution of vorticity for Euler's fluid equations is problematic, though, because a point vortex induces a flow velocity which becomes unbounded. However, when the point vortex is smoothed out and made bounded (regularized) the approximation becomes reasonable  \cite{Chorin1973}.
 
 For example, one may consider the regularized form of the vorticity equation given by
 choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ of width $\delta$ and defining the regularized vorticity as 
@@ -122,7 +123,8 @@ We will find that this ansatz yields a closed finite dimensional system which ge
 \subsection{Main contributions}
 \begin{enumerate}
         \item Section \ref{sec:background} briefly reviews the background for vortex methods in fluid modeling.
-        \item Section \ref{sec:EOM} derives the equations of motion for point vortices and jet vortices as exact solutions of a regularized vorticity equation. Remark \ref{rmk:conserved} derives the conservation laws for these equations, such as energy, linear momentum, and angular momentum. Other conservation laws are explained in Appendix \ref{sec:symmetries}. The implications of Kelvin's circulation theorem for jet vortices are discussed in Section \S \ref{rmk:Kelvin}. The relation of the resulting closed dynamical systems for jet vortices to the equations of motion for the spatial moments of the vorticity distribution is explained in section\ref{sec:moments}.
+        \item Section \ref{sec:EOM} derives the equations of motion for point vortices and jet vortices as exact solutions of a regularized vorticity equation. Remark \ref{rmk:conserved} derives the conservation laws for these equations, such as energy, linear momentum, and angular momentum. Other conservation laws are explained in Appendix \ref{sec:symmetries}. The implications of Kelvin's circulation theorem for jet vortices are discussed in Section~\ref{rmk:Kelvin}.
+        \item In Section \ref{sec:moments} the relation of the resulting closed dynamical systems for jet vortices to the equations of motion for the spatial moments of the vorticity distribution is explained.
         \item Section \ref{sec:numerics} discusses numerical aspects of using jet vortices to model fluid dynamics. Section \ref{sec:grouping} shows how to reduce the number of pairwise interactions, by grouping nearby jet vortices into a single jet vortex of higher order. In Section \ref{sec:approximation}, we spectrally approximate an initial condition using jet vortices and plot the convergence rate. 
         \item   Section \ref{sec:numerical_experiments} presents the results of several numerical experiments involving small numbers of vortices, for $N=1,2$, and $3$.
         	\item Jet vortex dynamics is Hamiltonian. The symplectic and Hamiltonian structure of jet vortex dynamics is presented in Section \S \ref{sec:symplectic}.
@@ -515,7 +517,6 @@ The vorticity equation \eqref{eq:vorticity} admits the $N$th order jet vortex an
 
 \section{Moments}
 \label{sec:moments}
-	\todo[inline]{I think this section needs the justification.  I understand that it is cool that we obtain a closed system for the moments, which is new.  However, I don't understand why moments are important.}
 	In this section we present how the moments of the vorticity distribution evolve in time.
 	We will find that when the vorticity distribution is that of a jet-vortex, then the moments form a closed dynamical system at finite order.
 	
@@ -547,9 +548,19 @@ The vorticity equation \eqref{eq:vorticity} admits the $N$th order jet vortex an
 	and the $\mu$'s
 	would yield a closed dynamical system for the $\mu$'s.
 	
+
+	\begin{rmk}
+	This is particularly important in the context of plasma physics.
+	After all, \eqref{eq:vorticity} can be interpreted as a one-dimensional plasma model.
+	Specifically, phase-space moments of the Vlasov probability distribution form an important standard dynamical link between Lagrangian-particle and Eulerian-continuum descriptions.
+	This is because the phase-space moments of the Vlasov probability distribution provide \emph{collective coordinates} for the Hamiltonian dynamics of ensembles of particles.
+	For more explanation of this property of Hamiltonian collectivization of the phase-space moments, see \cite{GuilleminSternberg1990,HolmLysenkoScovel1990,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}.
+	In plasma dynamics, the phase-space moments arise from a Taylor expansion of the Vlasov particle distribution, taken around its centroid in phase space. For planar incompressible flow of an ideal fluid, the phase space comprises the $(x,y)$ Lagrangian coordinates of a fluid particle, and the corresponding moments arise from Taylor expansions around the centroid of the (smooth) vorticity distribution. The duality between the resulting spatial moments of a smooth vorticity distribution and the jet vortices corresponding to higher-order singular vorticity distributions also obtained from a Taylor expansion raises the intriguing question of finding a relation between these two types of dynamical description. This question is particularly intriguing because the dynamics of moments beyond quadratic order in general does not close to form a finitite-dimensional Hamiltonian system, while the dynamics of the jet vortices closes at every order. 
+	\end{rmk}
+	
 	\begin{rmk}
 	There exists systems for approximating the dynamics of moments which differ from the one presented here.
-	However, that the equations of motion for the moments forms a closed system at order $N$
+	However, as mentioned in the previous remark, that the equations of motion for the moments forms a closed system at order $N$ here
 	is in contrast to other methods for deriving dynamical systems for moments
 	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
 	where a projection must be invoked in order to form a closed system.
@@ -1059,7 +1070,7 @@ In essence, we have determined a finite-dimensional Hamiltonian system whos solu
 \end{rmk}
 
 \begin{rmk}
-The corresponding Poisson bracket is given in tabular form by\\
+The corresponding Poisson bracket can be schematically described in tabular form by:\\
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -1071,6 +1082,16 @@ The corresponding Poisson bracket is given in tabular form by\\
 	$\Gamma^y$ & 1 & 0 & 0 & -1 & 0  \\ \hline
 \end{tabular}
 \end{center}
+
+The way to use this table is as follows.  Let $H = H(\xi)$ be our Hamiltonian where
+$\xi = (x_1,\dots,x_n,y_1,\dots,y_n,\Gamma_1,\dots,\Gamma_n,\Gamma_1^x,\dots,\Gamma_n^x,\Gamma_1^y,\dots,\Gamma_n^y)$.
+Hamilton's equations are then given by
+given by
+\begin{align*}
+	\partial_t f = \sum_{ij} B^{ij} \pder{f}{\xi^i} \pder{H}{\xi^j},
+\end{align*}
+for any function $f$, where $B^{ij}$ denotes the corresponding entry of the table.
+Poisson geometers call $B^{ij}$ a \emph{Poisson tensor} \cite{FOM}.
 \end{rmk}
 
 \section{Conclusion}
@@ -1094,7 +1115,7 @@ Finally, we derived the symplectic structure of jet vortices using methods from 
 The resulting structure turned out to be a direct generalization of the standard
 symplectic structure for vortex blobs.
 
-The multiscale nature of ideal fluids is the principal obstacle to obtaining accurate models.\todo{Cite something}
+The multiscale nature of ideal fluids is the principal obstacle to obtaining accurate models~\cite[Ch. 3]{Chorin1994}.
 The use of jet vortices augments the standard vortex blob method by allowing for singular vorticity distributions which model dynamics
 below the regularization length scale (i.e. at order $\delta^k$ for a $k$th order jet-vortex).
 As the dynamics of jet vortices are relatively easy to derive, and the analysis is tractable, we believe that 
