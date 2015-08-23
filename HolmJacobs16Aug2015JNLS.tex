@@ -1,0 +1,1445 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb,url}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+\usepackage{todonotes}
+\usepackage{hyperref}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+%  NEW REMARKS
+\theoremstyle{remark}
+\newtheorem{rmk}[thm]{Remark}
+
+
+%%%%%%%%%%%%%%% Holm Macros
+\def\MM#1{\boldsymbol{#1}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}} 
+\newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
+\newcommand{\dd}[2]{\frac{\diff #1}{\diff #2}} 
+\newcommand{\sothree}{\mathfrak{so}(3)}
+% \contract is a differential geometry contraction sign _|
+\def\contract{\makebox[1.2em][c]{\mbox{\rule{.6em}
+{.01truein}\rule{.01truein}{.6em}}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%  MATH OPERATORS
+\DeclareMathOperator{\SDiff}{SDiff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Jet}{Jet}
+\DeclareMathOperator{\Orb}{Orb}
+
+%  TITLE, AUTHOR, DATE
+\title[Multipole vortex blobs]{Multipole vortex blobs (MVB):\\ Symplectic geometry and dynamics}
+\author[D.D. Holm \& H.O. Jacobs]{Darryl D. Holm \& Henry O. Jacobs\\ \\
+Department of Mathematics\\
+Imperial College, London SW7 2AZ, UK}
+\date{16 August 2015}
+
+
+\begin{document}
+
+\begin{abstract}
+Vortex blob methods are typically characterized by a regularization length scale, below which the dynamics are trivial for isolated blobs.
+In this article we observe that the dynamics need not be trivial if one is willing to consider distributional derivatives of Dirac delta functionals as valid vorticity distributions.
+More specifically, a new singular vortex theory is presented for regularized Euler fluid equations of ideal incompressible flow in the plane.
+We determine the conditions under which such regularized Euler fluid equations may admit vorticity singularities which are stronger than delta functions, e.g., derivatives of delta functions.
+We also describe the symplectic geometry associated to these augmented vortex structures and we characterize the dynamics as Hamiltonian.
+Applications to the design of numerical methods similar to vortex blob methods are also discussed.
+Such findings illuminate the rich dynamics which occur below the regularization length scale and
+enlighten our perspective on the potential for regularized fluid models to capture multiscale phenomena.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:intro}
+Vortices are important in hydrodynamics because they are the sources for the incompressible flow field. The vorticity distribution at any instant of time determines both the current state of the flow and its future evolution, for given boundary conditions. This property holds for any Hamiltonian system, and it can indeed be shown that the dynamics of vortices can be usefully expressed in Hamiltonian form. In the vorticity and stream function formulation of an ideal incompressible planar fluid, the evolution of the vorticity distribution $\omega(x,y,t)$ is given by
+\begin{align}
+  \partial_t \omega + \{\omega,\psi\} := 
+  \partial_t \omega + \partial_x  \omega\,  \partial_y \psi
+  - \partial_y \omega \, \partial_x \psi = 0\,, \label{eq:vorticity}
+\end{align}
+where $\omega = \Delta \psi$ is the vorticity and $\psi$ is the stream function.
+The corresponding $(x,y)$ components of the Eulerian velocity field are given by
+\begin{align*}
+	 (u,v) = (\partial_y \psi , - \partial_x \psi).
+\end{align*}
+
+If one is willing to view the vorticity $\omega$ as a distribution, one can consider point vortex solutions.
+In particular, point vortices are obtained if one considers the vorticity solution ansatz 
+\[\omega(z,t) = \sum_{i} \Gamma_i(t) \delta_{z_i(t)}\,,\]
+where $\Gamma_i(t) \in \mathbb{R}$, $z=(x,y) \in \mathbb{R}^2$ and $\delta_{z_i(t)}$ is the Dirac delta distribution centered at the point $z_i(t) = (x_i(t),y_i(t)) \in \mathbb{R}^2$
+at a given time $t \in \mathbb{R}$.
+Substitution of this ansatz into \eqref{eq:vorticity} yields the following well known finite dimensional system in the form  of Hamilton's canonical equations,
+\begin{align}
+\begin{cases}
+	\frac{d \Gamma_i}{dt} = 0 \,,\quad  \quad \psi(z,t) = \sum_i  \Gamma_i(t) G(z-z_i(t)) \,, \\
+	\frac{dx_i}{dt} = \partial_y \psi(z_i) \,,\quad  \quad \frac{dy_i}{dt} = - \partial_x \psi(z_i)\,,
+\end{cases} \label{eq:point_vortex},
+\end{align}
+where $G(z) =  - (2\pi)^{-1} \ln( \| z \|)$ is the Green's function for the planar Laplacian. 
+
+A point-vortex approximation to a continuous distribution of vorticity for Euler's fluid equations is problematic, though, because a point vortex induces a flow velocity which becomes unbounded. However, when the point vortex is made smooth and bounded (regularized) the approximation becomes reasonable  \cite{Chorin1973}.
+
+For example, one may consider the regularized form of the vorticity equation given by
+choosing a translationally and rotationally invariant smoothing kernel $K_\delta$ of width $\delta > 0$ and defining the regularized vorticity as 
+$K_\delta* \omega = \Delta \psi$ while continuing to use \eqref{eq:vorticity} to evolve $\omega$ in time.
+For example, $K_\delta (z) = \exp( - \| z\|^2 / \delta^2)$ is considered in \cite{BealeMajda1985}.
+In this case the point vortex ansatz yields \eqref{eq:point_vortex} again, except that the singular Green's function $G$ is replaced by the smooth kernel
+\begin{align}
+	G_\delta(z) := K_\delta*G(z) = \frac{1}{4\pi} \left( {\rm Ei}(- \| z \|^2 / \delta^2) - 2\ln ( \| z \|) \right), \label{eq:kernel}
+\end{align}
+where ${\rm Ei}( \cdot )$ denotes the exponential integral function.
+The vorticity kernel $G_\delta$ has no singularity at the origin for $\delta > 0$, and is known as a \textit{vortex blob}.
+This system is the starting point for the vortex blob method, introduced in \cite{Chorin1973} (albeit with a different regularization).
+
+The economy of the vortex blob method derives from the property that Dirac delta distributions are hyper-local (i.e. parametrized by position), and the property that the vorticity equation  \eqref{eq:vorticity} admits Dirac delta distributions as solutions.
+However, there are many distributions which are localized to a similar degree (e.g. derivatives of delta functions, $\partial_x \delta_{z_i}$).
+
+In this paper, we study the more general vorticity solution ansatz,
+\[\omega(z,t) = \sum_{i,m,n} \Gamma_i^{mn}(t) \partial_x^m \partial_y^n \delta_{z_i}\,.\]
+We find that this ansatz yields a closed finite dimensional system which generalizes vortex blobs. We call these new carriers of vorticity \emph{MVBs}.
+
+\subsection{Main contributions}
+\begin{enumerate}
+        \item Section \ref{sec:background} briefly reviews the background for vortex methods in fluid modeling.
+        \item Section \ref{sec:EOM} derives the equations of motion for point vortices and MVBs as exact solutions of a regularized vorticity equation.
+        \item Section \ref{sec:conserved} derives the conservation laws for these equations, such as energy, linear momentum, and angular momentum, and circulation.
+        The derivation of these conserved quantities as symplectic momentum maps can be found in Appendix \ref{sec:symmetries}.
+        \item Section \ref{sec:moments} explains the relationship between the dynamical systems for MVBs and an implicitly defined \emph{closed} dynamical system which governs the spatial moments of the vorticity distribution.
+        \item Section \ref{sec:numerics} discusses numerical aspects of using MVBs to model fluid dynamics, such as approximations of initial conditions (subsection \ref{sec:approximation}), and grouping of computational nodes (subsection \ref{sec:grouping}).
+        \item  Section \ref{sec:numerical_experiments} presents the results of several numerical experiments involving small numbers of vortices, for $N=1,2$, and $3$.
+        	\item MVB dynamics is Hamiltonian. We present the symplectic and Hamiltonian structure of MVB dynamics in Section \ref{sec:symplectic}.
+%	This finding impacts on how one can approach a kinetic theory of MVBs (subsection \ref{sec:kinetic}).
+\end{enumerate}
+
+\section{Background}
+\label{sec:background}
+Vortex methods for fluid modeling predate the computer age
+and references to them can be found in the work of Helmholtz \cite[see the introductory section]{Smith2011}
+For example, the use of point vortices as idealized solutions can already be found in a 1931 paper concerning a ``line of discontinuity'' in planar fluid flow \cite{Rosenhead1931}.
+At the beginning of their development, the infinite velocities (and energies) associated to point vortices caused great difficulties, both numerically and theoretically.
+In fact, the point vortex approach did not produce a competitive numerical method until the 1970s, when the problems related to singularities were overcome by regularizing the singular vortex kernel to form a \emph{vortex blob}.
+Stochastic perturbations were further included to model viscosity \cite{Chorin1973}.
+These adjustments to the classical point vortex method yielded the \emph{vortex blob method}, which quickly became of practical use for realistic fluid flow modeling.
+In particular, the regularized system proved more amenable to error analysis.
+It was shown that the solutions of the vortex blob method converge to solutions of the Navier-Stokes equations in \cite{Hald1979}.
+Later, stronger convergence rates were achieved by judicious choice of vortex kernels.
+By convolving the singular vortex kernel with sums of Gaussian smoothing kernels, a sequence of vortex blob kernels with faster convergence rates was found.
+Specifically, the convergence rate of the $m$th kernel was found to be spectral, and of order $h^{mq}$ for any $q \in (0,1)$ where $h = \delta^q$
+is a grid-spacing parameter and $\delta > 0$ is a length scale associated to the smoothing kernel \cite{BealeMajda1982,BealeMajda1985}.
+
+Simultaneously, the symplectic geometry of point vortices was clarified in \cite{MarsdenWeinstein1983}
+by invoking Arnold's interpretation of ideal fluids \cite{Arnold1966}.
+The findings of \cite{MarsdenWeinstein1983} were developed further in \cite{GayBalmazVizman2012} to handle fluid flow on manifolds with nontrivial homology.
+While this theoretical development clarified the geometry of point vortices, vortex blobs were sometimes thought to be a numerical ``trick" which violated the geometric interpretation.
+However, this thought was banished with the invention of the Euler-$\alpha$ model, a regularized model of ideal fluids with a parameter $\alpha$ representing the typical correlation length of fluctuations away from the mean of a Lagrangian fluid path \cite{FoiasHolmTiti2001}. In particular, vortex blob solutions associated to a specific kernel serve as \emph{exact} solutions to the Euler-$\alpha$ model \cite{OliverShkoller2001}.
+The Euler-$\alpha$ kernel is different from the kernels used in \cite{Chorin1973} and \cite{BealeMajda1985}.
+A comparison of the Euler-$\alpha$ kernel to the $m=1$ kernel of \cite{BealeMajda1985} is given in \cite{HolmNitschePutkaradze2006} for vortex filament and vortex sheet motion.
+
+While vortex blobs performed well, they did not capture all of the qualitative richness observed in fluid vorticity dynamics.
+In particular, blobs of vorticity in real ideal fluids are known to change shape and deviate from initially circular distributions.
+A numerical method is proposed in \cite{Rossi1997,Rossi2005} to capture these shape dynamics by adding
+basis functions with non-trivial moments in the study of vortex merger (see for example \cite{MelanderZabuskyMcWilliams1998,DizesVerga2002,MeunierDizesLeweke2005}).
+Another distinct model obtained by projection onto a Hermite basis is described in \cite{NagemSandriUminskyWayne2009}.
+This projection yielded a finite-dimensional systems which modeled the (truncated) moments of the vorticity of an ideal incompressible fluid.
+The derivation of simplified combinatorial formulas invoked by the dynamics of this model were discovered in \cite{UminskyWayneBarbaro2010}
+and these formulas have made the method numerically tractable for a large number of moments.
+
+A dual approach to the moment based methods of the previous paragraph \cite{Rossi1997,Rossi2005,NagemSandriUminskyWayne2009} is to consider multipole based methods.
+This is the approach proposed in \cite{Nicolaides1986}, where an initial vortex ansatz consisting of sums of distributional derivatives of dirac delta distributions is considered.
+Such an idea has occured intermittently in various forms in the literature, over many years.
+For example, a regularized vortex blob model, in the spirit of \cite{BealeMajda1982,BealeMajda1985}, which considered vorticity distributions of the form $\omega = \sum \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$ was investigated in \cite{ChiuNivolaides1988}.
+Here it was proven that this augmentation of the traditional vortex method will yield faster spectral convergence than that of a traditional vortex blob method.
+The current article considers higher order derivatives and can be seen as a natural follow up to \cite{ChiuNivolaides1988}.
+More recently, dynamics have been derived for interactions of pure vortices and pure dipoles.
+These come from vorticity distributions of the form $\omega = \sum_{i} \Gamma_i \delta_{z_{v,i}} +  \sum_{j} \left(\Gamma_i^x \partial_x \delta_{z_{d,i}} + \Gamma_i^y \partial_y \delta_{z_{d,i}}\right)$
+\color{red}
+with the assumption that the locations of the dipoles and the vortices never overlap and that their self-interaction terms may be neglected \cite{Yanovsky2009,TurYanovskyKonstantin2011}.
+In a different approach, approximations of dipoles are created by holonomically constraining vortices of opposite strength to be a fixed distance from one another, \cite{TchieuKansoNewton2012}. The question remains, however, to what extent the dynamics of \cite{TchieuKansoNewton2012} approximates those of \cite{Yanovsky2009,TurYanovskyKonstantin2011} after self-interaction terms have been neglected.
+\color{black}
+In summary, the removal of self-interaction terms is one of the primary obstacles to obtaining a multipole based generalization of the point vortex method \cite{Smith2011}.
+Moreover, the spectral error decay rates found in \cite{Hald1979,BealeMajda1982,BealeMajda1985,ChiuNivolaides1988} arise from the use of vortex blobs in place of (singular) point vortices.
+In this article we will follow this regularization based approach.%, thus allowing us to sidestep the question of what to do with the divergent self-interaction terms which occur in the case of point vortices. 
+
+\section{Equations of motion}
+\label{sec:EOM}
+In this section we derive the equations of motion for the time-dependent parameters which specify multipole vortex blobs (MVBs).
+The zeroth order MVBs are just standard vortex blobs and the resulting equations of motion are those of the standard (non-stochastic) vortex blob algorithm \cite{Chorin1973}.
+The first order MVBs are regularized dipoles and the equations of motion are those of \cite{ChiuNivolaides1988}.
+Here we will derive the equations of motion for $N$th order MVBs following the approach of \cite{ChiuNivolaides1988}.
+
+Consider the ansatz for the vorticity,
+\begin{align}
+  \omega(z,t) = \sum_{i \in S} \sum_{m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n \delta_{z_i} \,,
+  \label{eq:ansatz N}
+\end{align}
+for spatially constant dynamical variables $\Gamma^{mn}_i(t) \in \R$ for $i \in S$ where $S$ is some countable set.
+The stream function is 
+\begin{align*}
+  \psi(z,t) = \sum_{i \in S} \sum_{m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^n G_\delta (z-z_i(t) )
+\,.\end{align*}
+The corresponding velocity field is given by
+\begin{align}
+\begin{cases}
+  u(z,t) = \partial_y \psi(z,t) =  \sum_{i \in S,m+n \leq N} \Gamma^{mn}_i(t) \partial_x^m \partial_y^{n+1} G_\delta (z-z_i(t) )
+  \,, \\
+  v(z,t) = -\partial_x \psi(z,t) =  - \sum_{i \in S, m+n \leq N} \Gamma^{mn}_i(t) \partial_x^{m+1} \partial_y^n G_\delta (z-z_i(t) )\,.
+\end{cases} \label{eq:u N}
+\end{align}
+Examples of the types of velocity fields produced are depicted in figures \ref{fig:zero} through \ref{fig:second} on page \pageref{fig:zero}.
+
+\begin{figure}[p] %  figure placement: here, top, bottom, or page
+   \centering
+	\includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.3\textwidth]{./images/zero.pdf} 
+	\caption{
+		A 0th order MVB with $z = 0$ and $\Gamma=1$, using the kernel $G_\delta$ of equation \eqref{eq:kernel}.
+		This form of the kernel produces one of the vortex blobs presented in\cite{BealeMajda1985}
+		and the resulting numerical method is identical.}
+	\label{fig:zero}
+	\includegraphics[clip,trim=0.6in 0.5in 0.6in 0.6in,width=0.4\textwidth]{./images/one.pdf} 
+	\caption{The flow field around a 1st order MVB with $\Gamma = 0,\Gamma^x = 1,\Gamma^y=1$ is that of a regularized dipole.}
+	\label{fig:one}
+	\includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xx.pdf} 
+	\includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xy.pdf} 
+	\includegraphics[clip,trim =1in 1in 1in 1in,width=0.3\textwidth]{./images/two_xx_yy.pdf} 
+	\caption{Various second order MVBs with $\Gamma^{00} = \Gamma^{1,0} = \Gamma^{0,1} = 0$.}
+	\label{fig:second}
+\end{figure}
+
+We seek equations of motion for the $\Gamma^{mn}_i(t)$'s and $z_i(t)$'s
+such that the velocity field \eqref{eq:u N} satisfies the vorticity equation \eqref{eq:vorticity}.
+In the following calculations, we will not show the explicit time dependence of the dynamical variables.
+
+
+We now find
+\begin{align*}
+  \partial_t \omega =	
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+  	\frac{d \Gamma_i^{mn}}{dt} \partial_x^m \partial_y^n \delta_{z_i} - \Gamma_i^{mn} \frac{dx_i}{dt} \partial_{x}^{m+1} \partial_y^{n} \delta_{z_i}
+	- \Gamma_i^{mn} \frac{dy_i}{dt} \partial_{x}^{m} \partial_y^{n+1} \delta_{z_i}\,,
+\end{align*}
+and
+\begin{align*}
+  \partial_y \psi \, \partial_x \omega = 
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N}}
+   \partial_y \psi \, \Gamma_i ^{mn}\partial_x^{m+1} \partial_y^n \delta_{z_i}\,.
+\end{align*}
+By invoking \eqref{eq:func times partial delta} of Appendix
+\ref{sec:distributions} we can rearrange the previous equation to
+obtain
+\begin{align*}
+  \partial_y \psi \, \partial_x \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N \\
+		\ell,k}}
+	\Gamma_i^{mn} (-1)^{m+n+1 + \ell + k} \binom{m+1}{\ell} \binom{n}{k} \partial_x^{\ell} \partial_y^{k+1} \psi(z_i) \partial_x^{m+1-\ell} \partial_y^{n-k} \delta_{z_i}.
+\end{align*}
+Similarly, we find
+\begin{align*}
+  \partial_x \psi \, \partial_y \omega &=
+  \sum_{
+  	\substack{
+		i \in S \\
+		m+n \leq N\\
+		\ell,k}
+	}
+	\Gamma_i^{mn} (-1)^{m+n+1 + \ell + k} \binom{m}{\ell} \binom{n+1}{k} \partial_x^{\ell+1} \partial_y^k \psi(z_i) \partial_x^{m-\ell} \partial_y^{n+1-k} \delta_{z_i}.
+\end{align*}
+Substitution of these expressions into \eqref{eq:vorticity} yields
+the vanishing of a linear combination of the distributions
+$\partial_x^m \partial_y^n \delta_{z_i}$
+for $m+n \leq N+1$.
+Since each of these distributions is linearly independent
+of the others (assuming the $z_i$'s are distinct),
+their individual coefficients must each vanish independently.
+Assuming sufficiently many of the $\Gamma_i^{m,n}$'s are non-zero 
+for $m+n = N$ we recover the dynamics for MVB cores
+\begin{align*}
+  \frac{dx_i}{dt} = \partial_y \psi (z_i) \,,\quad  \quad \frac{dy_i}{dt} = - \partial_x \psi(z_i).
+\end{align*}
+%We obtain dynamics for the $\Gamma$'s under this assumption.
+We may then extend these dynamics to the case of vanishing $\Gamma$'s by continuous extension.
+%The resulting extension yields the $0$th order MVB dynamics.
+The vanishing of the coefficient of $\delta_{z_i}$ yields
+\begin{align*}
+%	\frac{d\Gamma^{0,0}_i}{dt} + \sum_{0 < m+n \leq N} \Gamma^{m,n} ( \partial_x^{m+1}\partial_y^{n+1} \psi(z_i) - \partial_x^{m+1}\partial_y^{n+1} \psi(z_i) ) = 0.
+	\frac{d\Gamma^{0,0}_i}{dt}  = 0.
+\end{align*}
+
+For $\ell+k \leq N$ the vanishing of the coefficient of $\partial_{\ell,k} \delta_{z_i}$ yields
+\begin{align*}
+ \frac{d\Gamma_i^{\ell k}}{dt} = (-1)^{\ell + k}
+  \sum_{
+    \substack{
+      m > \ell \\
+      n > k \\
+      n+m \leq p}
+    }\Gamma_i^{mn} \Bigg[  \binom{n}{k} \binom{m}{\ell-1} +  \binom{n}{k-1} \binom{m}{\ell} \Bigg] \partial_{m-\ell+1,n-k+1} \psi(z_i) 
+\end{align*}
+Again, we have found equations of motion for the $z_i(t)$'s and the $\Gamma_i(t)$'s.
+The vorticity equation \eqref{eq:vorticity} admits the $N$th order MVB ansatz for the vorticity in \eqref{eq:ansatz N} as a solution when the $z_i(t)$'s and the $\Gamma_i(t)$'s satisfy these equations of motion.
+
+\section{Conserved Quantities}
+\label{sec:conserved}
+  The following quantities are conserved under the evolution:
+  \begin{align*}
+	  {\bf J}_{\rm ang} &= \sum_i \frac{\Gamma^{0,0}_i}{2} (x_i^2 + y_i^2) - \Gamma_i^{1,0} x_i - \Gamma_i^{0,1} y_i + \Gamma_i^{2,0} + \Gamma_i^{0,2} \,, \\
+	  {\bf J}_{\rm lin} &= \sum_i ( \Gamma_i^{0,1} - \Gamma^{0,0}_i y_i , \Gamma^{0,0}_i x_i -\Gamma^{1,0}_i ) \,, \\
+	  H &= \sum_{m,n,\ell,k,i} (-1)^{m+n+\ell +k} \Gamma^{mn}_i \Gamma_j^{\ell k} \partial_{m+\ell}^x \partial_{n+k}^y G(z_i-z_j)\,.
+  \end{align*}
+  The first two quantities, ${\bf J}_{\rm ang}$ and ${\bf J}_{\rm lin}$, are momenta derived from Noether's theorem for the rotational and translational symmetries of the fluid.
+  The quantity $H$ is the kinetic energy of the fluid.
+  In section \ref{sec:symplectic} we will characterize the MVB dynamics as Hamiltonian systems, with Hamiltonian $H$.
+  We will show that the linear and angular momentum serve as symplectic momentum maps.
+  We refer the reader to Appendix \ref{sec:symmetries} for these derivations.
+
+	To each individual MVB there are numerous conserved quantities which can be seen as a manifestation of the conservation of circulation.
+	To show this, let $\vec{u} = (u,v) = (\partial_y \psi, - \partial_x \psi)$ be a time-dependent vector field which satisfies \eqref{eq:vorticity}.
+	The flow of $\vec{u}$ is the diffeomorphism, $\Phi_t: \mathbb{R}^2 \to \mathbb{R}^2$,
+	which sends particle labels at time $0$ to their positions at time $t$.
+	If $\omega_t$ is the vorticity at time $t$ then $\omega_t( \Phi_t(z) ) = \omega_0$ is constant in time.
+	This conservation law can be seen as a corollary of Kelvin's circulation theorem \cite{ArnoldKhesin1992}.
+	As a consequence, the quantity
+	\begin{align*}
+		J(t) := \int \omega_t( \Phi_t(z) ) f(z) dz
+	\end{align*}
+	is constant in time for any $f \in C_0^\infty(\R^2)$.
+	By applying the change of variables formula and invoking the
+	incompressibility condition, $\det(D\Phi) = 1$, we find
+	\begin{align*}
+		J(t) = \int \omega_t( z) f(\Phi_t^{-1}(z)) dz.
+	\end{align*}
+	This form of writing $J(t)$ makes sense when $\omega_t$ is a distribution.
+	As a result, we find that for a vorticity of the form \eqref{eq:ansatz N} the quantity
+	\begin{align}
+		J(t) = \sum_{
+			\substack{
+				i \in S \\
+				m+n \leq N
+			}
+		} \Gamma_i^{mn} (-1)^{m+n} \partial_x^m\partial_y^n( f \circ \Phi_t^{-1}) |_{z = z_i(t)} \label{eq:conserved_circulation}
+	\end{align}
+	is conserved for any $f \in C_0^\infty(\R^2)$.
+	While this conservation law holds for all functions with compact support, $f$, we do not obtain infinitely many conserved
+	quantities when $\omega_t$ satisfies the MVB ansatz and $S$ is finite.
+	This is because the expression on the right hand side only depends on the $N$th order Taylor expansion of $f$ at $z_i(0) \equiv \Phi_t^{-1}(z_i(t) )$,
+	as is illustrated by the Fa\`a di Bruno formula.
+	We will not display the Fa\`a di Bruno formula here because it requires nearly a page of notational definitions before to writing it down
+	\cite{ConstantineSavits1996}.
+	Nonetheless, by computing the cardinality of jet spaces, one would obtain ${\rm card}(S) \frac{ N(N+1)}{2}$ independent conserved quantities
+	as a result of \eqref{eq:conserved_circulation}.
+	These conserved quantities can be interpreted as a finite dimensional manifestation of the conservation of circulation.
+
+
+\section{Moments}
+\label{sec:moments}
+	In this section we present how the moments of the vorticity distribution evolve in time.
+	We will find that when the vorticity distribution is that of a jet-vortex, then the moments form a closed dynamical system at finite order.
+	
+	The $(a,b)^{\rm th}$ moment of the vorticity, $\omega$, centered around the vortex position $(x_i,y_i) \in \R^2$ is given by
+	\begin{align*}
+		\mu^{ab}_i := \int (x-x_i)^a (y-y_i)^b \omega dxdy\,.
+	\end{align*}
+	We call the integer $a+b$ the \emph{order} of the moment.
+	For a general vorticity, the evolution for the $n$th order moments will depend on the $(n+1)$th and higher order moments
+	and so we can not concoct a closed dynamical system for the moments of order $n$ and less.
+	However, this is not the case if $\omega$ satisfies the MVB ansatz, and the points $(x_i,y_i)$ are given by the locations of the jet-vortices.
+	If $\omega$ satisfies the MVB ansatz \eqref{eq:ansatz N} then
+	\begin{align*}
+		\mu^{ab}_i = \sum_{
+			\substack{
+				j \in S \\
+				m \leq a ,
+				n \leq b
+			}
+		}
+		(-1)^{m+n} \frac{a! b!}{(a-m)!(b-n)!} \Gamma_j^{mn} (x_j - x_i)^{a-m} (y_j - y_i)^{b-n}\,,
+	\end{align*}
+	for $a+b \leq N$ and $i \in S$.
+	Given the points $z_i \in S$, one can write the moments in terms of the circulation
+	strengths, the $\Gamma$'s.
+	For the moment $\mu_i^{ab}$ with $a+b \leq N$ with $a,b \in \mathbb{N}$
+	we may invert this relationship to write $\Gamma_i^{mn} = \Gamma_i^{mn}( \mu)$, i.e. as a function of the moments.
+	Invoking the motion equations for the $\Gamma$'s and substituting the relation between the $\Gamma$'s and the $\mu$'s yields a closed dynamical system for the $\mu$'s.
+	
+
+	\begin{rmk}
+	This relation between the $\Gamma$'s and the $\mu$'s may also be important in the context of plasma physics, especially when one recalls that \eqref{eq:vorticity} can be interpreted as a one-dimensional plasma model.
+	Specifically, phase-space moments of the Vlasov probability distribution form an important  dynamical link between Lagrangian-particle and Eulerian-continuum descriptions.
+The phase-space moments of the Vlasov probability distribution provide \emph{collective coordinates} for the Hamiltonian dynamics of ensembles of particles.
+	For more explanation of this property of Hamiltonian collectivization of the phase-space moments, see \cite{GuilleminSternberg1990,HolmLysenkoScovel1990,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}.
+	In plasma dynamics, the phase-space moments arise from a Taylor expansion of the Vlasov particle distribution, taken around its centroid in phase space. For planar incompressible flow of an ideal fluid, the phase space comprises the $(x,y)$ Lagrangian coordinates of a fluid particle, and the corresponding moments arise from Taylor expansions around the centroid of the (smooth) vorticity distribution. The duality between the resulting spatial moments of a smooth vorticity distribution and the MVBs corresponding to higher-order singular vorticity distributions also obtained from a Taylor expansion raises the intriguing question of finding a relation between these two types of dynamical description. This question is particularly intriguing because the dynamics of moments beyond quadratic order in general does not close to form a finite-dimensional Hamiltonian system, while the dynamics of MVBs closes at every order. 
+	\end{rmk}
+	
+	\begin{rmk}
+	There exist other systems for approximating the dynamics of moments which differ from the one presented here.
+	In particular, the equations of motion for the moments here form a closed system at order $N$, whereas other methods for deriving dynamical systems for moments
+	\cite{UminskyWayneBarbaro2010, NagemSandriUminskyWayne2009,GibbonsHolmTronci2008a,GibbonsHolmTronci2008b}
+	require truncations in order to form a closed system.
+	\end{rmk}
+
+\section{Numerical Aspects}
+\label{sec:numerics}
+In this section we discuss various numerical aspects of using MVBs to model fluid dynamics.
+We will present an algorithm for constructing an initial condition of MVBs from a given stream
+function and the procedure for grouping sets of lower order MVBs into higher order ones.
+
+\begin{rmk}
+A full convergence proof is well beyond the scope of this article,
+which merely introduces the concept of MVBs and computes their dynamical equations.
+We refer to \cite{ChiuNivolaides1988} for a convergence proof and error analysis of the 1st order case.
+Nonetheless, convergence can be quickly verified by observing the convergence proof of the standard vortex blob method.
+The convergence of the standard vortex blob method begins by initializing a regular grid of vortex blobs
+and observing convergence as the grid spacing vanishes.
+In \S \ref{sec:approximation} we will obtain an approximation scheme for the initial condition.
+Under this approximation scheme, the order 1 and higher circulation coefficients will vanish as the 
+grid resolution vanishes (assuming the initial condition is sufficiently smooth).
+Consequently, the MVB blob approximation and the standard vortex blob method will converge to the same limit.
+As the standard vortex blob method converges to the solutions of the Euler equation, we also obtain convergence for the MVB approximation.
+In section \S \ref{sec:approximation} will will numerically verify that MVBs provide an improved approximation in space.
+\end{rmk}
+
+\subsection{Grouping and reduction of pairwise computations}
+\label{sec:grouping}
+
+Let us consider the vorticity distribution
+\begin{align*}
+	\omega = \Gamma_1 \delta_{z_1} + \Gamma_2 \delta_{z_2}\,.
+\end{align*}
+If $z_1$ and $z_2$ are close, we can define the quantities $\bar{z} = (z_1+z_2)/2$ and $\delta z = z_1 - z_2 $ to obtain the approximation
+\begin{align*}
+	\int \omega(z) f(z)dz &= \Gamma_1 f(z_1) + \Gamma_2 f(z_2) \\
+		&= \Gamma_1 \left( f(\bar{z}) + \partial_x f(\bar{z}) \cdot \frac{\delta x}{2} + \partial_y f(\bar{z}) \cdot \frac{\delta y}{2}  \right)\\
+		&\quad + \Gamma_2 \left( f(\bar{z}) - \partial_x f(\bar{z}) \cdot \frac{\delta x}{2} - \partial_y f(\bar{z}) \cdot \frac{\delta y}{2}  \right) + o( h ) 
+\end{align*}
+where $h = \| \delta z \|$.
+Therefore the distribution
+\begin{align*}
+	\tilde{\omega} = \Gamma \delta_{\bar{z}} + \Gamma^x \partial_x \delta_{\bar{z}} + \Gamma^y \partial_y \delta_{\bar{z}}
+\end{align*}
+with 
+\begin{align*}
+	\Gamma = \Gamma_1 + \Gamma_2 \quad,\quad \Gamma^x = \frac{\delta x}{2} (\Gamma_2 -\Gamma_1) \quad,\quad \Gamma^y = \frac{\delta y}{2} (\Gamma_2 -\Gamma_1)
+\end{align*}
+serves as a $o(h)$ approximation of $\omega$ in the sense of distributions.
+Moreover, the stream function $\tilde{\psi} := G_\delta * \tilde{\omega}$ is an $o(h)$ approximation of $\psi := G_\delta * \omega$ in the traditional sense of analysis on functions.
+
+We have just described the first case of grouping two $N$th order MVBs concentrated at $z_1$ and $z_2$ into a single $(N+1)$th order MVB concentrated at 
+the average position $\bar{z}$.
+More generally, we can consider the ansatz
+\begin{align*}
+	\omega = \sum_{m+n \leq N} \Gamma_1^{mn} \partial_x^m \partial_y^n \delta_{z_1} + \Gamma_2^{mn} \partial_x^m \partial_y^n \delta_{z_2}
+\end{align*}
+and observe
+\begin{align*}
+	&\int \omega(z) f(z)dz = \sum_{m+n \leq N} (-1)^{m+n} \left( \Gamma_1^{mn} \partial_x^m \partial_y^n f(z_1) + \Gamma_2^{mn}  \partial_x^m \partial_y^n f(z_2) \right)\\
+		&\quad= \Bigg\{ \sum_{m+n \leq N} (-1)^{m+n} \Gamma_1^{mn} \left( \partial_x^m \partial_y^n  f(\bar{z}) + \partial_x^{m+1} \partial_y^n  f(\bar(z)) \cdot \frac{\delta x}{2} + \partial_x^m \partial_y^{n+1} f(\bar(z)) \cdot \frac{\delta y}{2}  \right)\\
+		&\qquad +  (-1)^{m+n} \Gamma_2^{mn} \left( \partial_x^m \partial_y^n  f(\bar{z}) - \partial_x^{m+1} \partial_y^n  f(\bar(z)) \cdot \frac{\delta x}{2} - \partial_x^m \partial_y^{n+1} f(\bar(z)) \cdot \frac{\delta y}{2}  \right) \Bigg\} \\
+		&\qquad + o( h ) .
+\end{align*}
+The above computation implies that the quantity
+\begin{align*}
+	&\tilde{\omega} :=\\
+	 &\sum_{m+n \leq N+1} \left( \Gamma_1^{mn} + \Gamma_2^{mn}
+	- \frac{\delta x}{2}( \Gamma_1^{ m-1,n} - \Gamma_2^{m-1,n} ) - \frac{\delta y}{2} ( \Gamma_1^{m,n-1} - \Gamma_2^{m,n-1}) \right) \partial_x^m \partial_y^n \delta_{\bar{z}}
+\end{align*}
+serves as an $o(h)$ approximation of $\omega$.
+Of course, this again implies that the corresponding stream functions are approximated to order $h$ as well.
+Note that $\tilde{\omega}$ is concentrated above a single point, $\bar{z}$, while $\omega$ is concentrated above two points.
+
+\begin{rmk}
+Such reductions are even more dramatic when considering higher order jets.
+In particular, $2^N$ zeroth order MVBs can be approximated with a single $N$th order MVB by applying the above approximations iteratively.
+
+The computation of pairwise interactions in the vortex method was once a major bottleneck in implementing the standard vortex method for real-world applications.
+It was not until the invention of the fast multipole method, that it became tractable to compute millions of pairwise interactions by
+reducing the complexity from an $\mathcal{O}(n^2)$ calculation to an $\mathcal{O}(n \log (n))$ calculation, where $n$ is the number of vortices \cite{GreengardRokhlin1987}.
+However, in the case of viscous fluids with boundaries, vorticity is shed from the boundaries.
+As a result, the vortex blob method of \cite{Chorin1973} created new vortices at the boundary by using the Kutta condition as a creation criteria.
+For these applications, $n$ will grow in time without bound, and some means of discarding vortices must be invoked.
+It is here that the grouping of MVBs  could be useful.
+If one merges two $N$-MVBs to obtained a $(N+1)$-MVB, the amount of scalars and data typically increases.
+So one must still make a tough decision as to what data to discard (e.g. through some tolerance or by simply truncating at level $M$).
+Nonetheless, the analysis presented here could shed light on how best to implement this approach.
+\end{rmk}
+
+\begin{rmk}
+The merging of blobs of vorticity has been studied analytically \cite{MelanderZabuskyMcWilliams1998} and 
+numerically \cite{WeissMcWilliams1993,MelanderZabuskyMcWilliams1998,DizesVerga2002},
+as well as in the laboratory \cite{FineDriscollMalmbergMitchell1991}.
+All of this study has been in the slightly viscous (or nearly inviscid) regime.
+The grouping approach discussed here can be used to numerically resolve such collision events.
+In theory, there is no issue with collisions because we are considering regularized vortices where
+the induced velocity field from a single MVB is always finite.
+However, as $\delta$ becomes smaller, the velocity near the vortex core diverges.
+This should be of concern as the convergence analysis of the vortex method pre-supposes that $\delta \ll 1$.
+Typically such a near collision is handled by using a smaller time-step (as the ODE is quite stiff).
+Grouping of MVBs suggests an alternative by avoiding this pair-wise interaction altogether.
+Perhaps such an approach could be viewed as a variation of the punctuated dissipation events
+described in \cite{WeissMcWilliams1993} where an initial vorticity distribution is found to asymptotically
+approach a smoother axisymmetric vortex blob,
+and discrete vortex mergers are implemented to model this behavior.
+\end{rmk}
+
+\subsubsection{A numerical experiment with grouping}
+\label{sec:numerical_grouping}
+For illustrative purposes we can numerically group four 0th order MVBs into two 1st order MVBs, and then one 2nd order MVB.
+In particular, we can consider the initial condition
+\begin{align}
+	\begin{cases}
+		z_0 = (-0.25,-0.25) \quad,\quad \Gamma_0 = \phantom{-}0.3 \\
+		z_1 = (-0.25,\phantom{-}0.25) \quad,\quad \Gamma_1 = -0.35 \\
+		z_2 = (\phantom{-}0.25,\phantom{-}0.25) \quad,\quad \Gamma_2 = -0.2 \\
+		z_3 = (\phantom{-}0.25,-0.25) \quad,\quad \Gamma_3 = \phantom{-}0.4 \\		
+	\end{cases}
+	\label{eq:ic_0}
+\end{align}
+The corresponding dynamics are depicted in the top row of figure \ref{fig:grouping}.
+
+Next we group $z_1$ with $z_0$ and $z_2$ with $z_3$ in order to obtain two $1$st order MVBs with initial condition
+\begin{align}
+	\begin{cases}
+		z_0 = (-0.25,0.0) \quad,\quad \Gamma_0 = -0.05 \quad,\quad \Gamma^x = 0.0 \quad, \quad \Gamma^y = 0.1625\\
+		z_1 = (\phantom{-}0.25,0.0) \quad,\quad \Gamma_1 = \phantom{-}0.20 \quad, \quad \Gamma^x = 0.0 \quad,\quad \Gamma^y = 0.15\phantom{00}\\
+	\end{cases}
+	\label{eq:ic_1}
+\end{align}
+The corresponding dynamics are depicted in the middle row of Figure \ref{fig:grouping}.
+The dynamics appear qualitatively similar at the beginning of the evolution.
+Then the dynamics diverge around time $t=150$ when the two $1$st order MVBs separate from one another, 
+in contrast to the dynamics of the $0$th order MVBs.
+
+Finally, we group the two 1st order MVBs to obtain a single 2nd order MVB.
+Again, the dynamics appear qualitatively similar at the beginning of the the evolution.
+Oddly, the dynamics of the $2$nd order MVB appear qualitatively similar to the $0$th
+order case even at $t=253$.
+As there is only a single vortex, the separation of vortices mentioned in the $1$st order
+MVB experiment is not possible here.  As a result the dynamics of the original $0$th 
+order MVB dynamics appears to be approximately recovered.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_0_time_253}	
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_1_time_253}	
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_0}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_51}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_101}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_152}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_202}
+	\includegraphics[width=0.15\textwidth]{./images/grouping_frames/order_2_time_253}
+	\caption{Snapshots of the evolution for various initial conditions at time $t=0,51,101,152,202,253$.
+		The top row depicts the evolution of four 0th order MVBs given by the initial condition \eqref{eq:ic_0}.
+		The middle row depicts the evolution of two 1st order MVBs obtained by grouping.
+		The bottom row depicts the evolution of one 2nd order MVB obtained by grouping.
+		}
+	\label{fig:grouping}
+\end{figure}
+
+
+\subsection{Approximation of initial conditions}
+\label{sec:approximation}
+In this section we will illustrate how the use of MVBs can increase the accuracy of approximation of a vorticity field in a distributional sense.
+We can begin by defining an inner-product on the space of distributions on $\R^2$, given by
+\[
+	\langle \omega_1 , \omega_2 \rangle_{G_\delta} := \int \omega_1(z) G_\delta (z - \tilde{z}) \omega_2(\tilde{z}) dz d\tilde{z}.
+\]
+Consequently, the energy of the fluid is given by $H(\omega) = \frac{1}{2} \|\omega\|^2_{G_\delta} = \frac{1}{2} \langle \omega,\omega\rangle_{G_\delta}$.
+
+Let $0 < h \ll 1$ be small and define $h \mathbb{Z}^2 = \{ (ah,bh) \in \R^2 \mid (a,b) \in \mathbb{Z}^2 \}$.
+Given an $\omega \in \mathcal{D}'(\R^2)$, we can attempt to approximate $\omega$ via Dirac-deltas supported on $h \mathbb{Z}^2$.
+There is a natural way to do this with respect to the inner product $\langle \cdot , \cdot \rangle_{G_\delta}$.
+We could define $\omega_h^{(0)} = \sum_{i \in \mathbb{Z}^2} \Gamma_i \delta_{z_i}$ by requiring the error, $\omega_h^{(0)} - \omega$, to be $\langle \cdot , \cdot \rangle_{G_\delta}$-orthogonal to $\delta_z$ for each $z \in h \mathbb{Z}^2$.
+This means that $G_\delta *\omega(z) =  \sum_i \Gamma_i G_\delta (z-z_i)$ for each $z \in h\mathbb{Z}^2$.
+Thus $\psi_h^{(0)} = \sum_i \Gamma_i G_\delta (z-z_i)$ can be seen as a $0$th order approximation to $\psi = G_\delta *\omega$
+because $\psi_h^{(0)}(z) = \psi(z)$ for all $z \in h\mathbb{Z}$.
+ 
+The same reasoning applies if we consider $\omega^{(k)}_h = \sum_{i,m+n \leq N} \Gamma_i^{mn} \partial_x^m \partial_y^n \delta_{z_i}$.
+We define the scalars $\Gamma_i^{mn}$ via the equations
+\begin{align*}
+  \partial_x^\ell \partial_y^k \psi (z_i) = \sum_j (-1)^{m+n} \Gamma_j^{mn} \partial_x^{m+\ell} \partial_y^{n+k} G_\delta(z_i - z_j)
+\end{align*}
+for $\psi = G_\delta*\omega$, $z_i \in h \mathbb{Z}^2$, and $|\beta| \leq k$.
+Then $\psi^{(k)}_h (z)= \sum_{i,\alpha} (-1)^{m+n} \Gamma_k^{mn} \partial_x^m \partial_y^n G_\delta( z - z_i)$
+serves as an order $k$ approximation of $\psi$ when $\psi \in C^k$.
+
+This is not to say that the convergence rate is simply $O(h^k)$.
+The convergence of the initial condition, and in fact the full fluid system
+upon integrating the equations of motion, is a spectral convergence.
+Moreover, this spectral convergence rate of the full system relies heavily on the choice of kernel
+\cite{BealeMajda1982}.
+
+As an example, we numerically compute the corresponding approximations of the stream function
+\begin{align}
+        \psi(x,y) = \exp( - r^2 ) - \exp( - r^2 / 2 )
+        \label{eq:psi_exact}
+\end{align}
+The results are depicted in Figure \ref{fig:convergence}.
+As we are unable to grid all of $\mathbb{R}^2$, the error
+is only measured on a small subregion ($-3<x<3, -3<y<3$) within the region covered by our grid
+($-6<x<6, -6 < y < 6 $).
+We observe the predicted spectral convergence using MVBs at orders zero, one, and two.
+In each case, a grid spacing is reached where the convergence proceeds no further (possibly 
+due to machine precision).
+Nonetheless, higher order MVBs appear to out perform lower order ones for smaller grid spacings.
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./images/convergence.pdf}
+        \caption{A convergence plot of the error in the sup-norm
+        of the reconstructed stream function approximated using MVBs of order $0$, $1$, and $2$.
+        The method converges spectrally, so no specific convergence rate is observed.}
+        \label{fig:convergence}
+\end{figure}
+
+\section{Numerical experiments}
+\label{sec:numerical_experiments}
+In these section we present the results of numerical experiments involving small numbers of vortices, for $N=1,2$, and $3$.
+
+\subsection{Behavior of isolated MVBs}
+\label{sec:singles}
+Next, we will briefly explore the behavior of a single isolated $k$th order MVB with $\Gamma^{mn} = 0$ with $m+n < k$ for $k=0,1,2$.
+This case allows us to investigate the dynamics induced by the higher order circulation variables
+in the absence of the lower order ones.
+
+\subsection{Order 0}
+The behavior of a single $0$th order MVB is explicitly solvable because the dynamics are stationary.
+
+\subsection{Order 1}  
+The behavior of a single $1$st order MVB with $\Gamma= 0$ is explicitly solvable.
+Given the initial condition $(x(0) , y(0) ,  \Gamma (0) , \Gamma^x(0) , \Gamma^y(0) )$ with $\Gamma(0) = 0$ we find
+\begin{align*}
+	&x(t) = x(0) + v^x \,,\quad \quad y(t) = y(0) + v^y \,,\quad \quad \Gamma(t) = \Gamma(0) \\
+	&\Gamma^x(t) = \Gamma^x(0)\,,\quad \quad \Gamma^y(t) = \Gamma^y(0)
+\end{align*}
+where $v^x = \Gamma^x(0) \partial_{xy}G_\delta(0) + \Gamma^y(0) \partial_{yy}G_\delta(0)$
+and $v_y =  -\Gamma^y(0) \partial_{xy}G_\delta(0) - \Gamma^x(0) \partial_{xx}G_\delta(0)$.
+In Figure \ref{fig:singleton_order1}
+we depict such a trajectory with initial condition
+\begin{align}
+	x(0) = -3 , y(0) = -3 , \Gamma(0) = 0 , \Gamma^x = 1, \Gamma^y = 1 \label{eq:ic_order1}
+\end{align}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_0}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_5}
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_10}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_15}
+%	\includegraphics[width = 0.15\textwidth]{./images/singleton_order1/order_1_time_20}
+	\includegraphics[width = 0.3\textwidth]{./images/singleton_order1/order_1_time_25}
+	\caption{A $1$st order MVB with initial conditions given by \eqref{eq:ic_order1}
+		with snapshots taking at $t=0,10,25$.}
+	\label{fig:singleton_order1}
+\end{figure}
+
+\subsection{Order 2}
+The behavior of a second order vortex does not seem to be explicitly solvable.
+Here we consider initial conditions for which 
+\begin{align}
+	x(0) = 0 \,,\quad\quad y(0) = 0 \,,\quad\quad \Gamma(0)^{xx} = 1 \label{eq:ic_order2}
+\end{align}
+and all the other circulation variables are initially set to $0$.
+The results are depicted in Figure \ref{fig:singleton_order2}.
+We observe a structure which rigidly rotates counter-clockwise.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_0}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_5}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_10}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_15}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_20}
+	\includegraphics[width = 0.15\textwidth]{./images/singleton_order2/order_2_time_25}
+	\caption{A $1$st order MVB with initial conditions given by \eqref{eq:ic_order2}
+		with snapshots taking at $t=0,5,10,15,20,25$.}
+	\label{fig:singleton_order2}
+\end{figure}
+
+
+\subsection{A scattering expiriment}
+\label{sec:scattering}
+Next we consider two MVBs.  The first is a first order MVB with an initial velocity pointed just slightly above origin.
+The second MVB is a standard zeroth order vortex located at the origin.
+Specificaly, we consider the initial conditions
+\begin{align}
+	\begin{cases}
+	z_0 = (20.0 , \phantom{-}0.25)\quad, \quad \Gamma_0^{0,0} = 0.0 \quad,\quad \Gamma_0^{1,0} = 0.0 \quad,\quad \Gamma_0^{0,1} = -1.0 \\
+	z_1 = (\phantom{2}0.0 , -0.25)\quad, \quad \Gamma_0^{0,0} = 1.0 \quad,\quad \Gamma_0^{1,0} = 0.0 \quad,\quad \Gamma_0^{0,1} = \phantom{-}0.0
+	\end{cases}
+	\label{eq:ic}
+\end{align}
+with $\Gamma_i^{mn} = 0$ for $m+n > 1$ and $i=0,1$.
+The vortex at the origin appears to remain at the origin throughout the numerical run ($t=0$ to $t=150$).
+The first order MVB starts by moving to the left in a straightline until it comes into proximity of the zeroth order vortex.
+Then the first order MVB swings around the the zeroth order vortex, traversing an angle of roughly 30 degrees
+before zooming off into the lower left quadrant of the plane in a straight line.  These results are depicted in Figure \ref{fig:scatter}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_0}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_25}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_50}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_75}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_101}
+	\includegraphics[width=0.3\textwidth]{./images/scattering/frame_time_126}
+	\caption{A numerical run is shown with mirror image initial conditions for two 1st order MVBs, as given in \eqref{eq:ic}.
+		From left to right and top to bottom these are snapshots at times $t=0,25,50,75,100,125$ respectively.}
+	\label{fig:scatter}
+\end{figure}
+
+\subsection{The method of images}
+\label{sec:method_of_images}
+Here we incorporate first order MVBs into the method of images~\cite{Jackson1975}.
+We consider the initial conditions consisting of two first order MVBs which are mirror images of each other with respect to the $x$-axis.
+By symmetry, the resulting vector-field should be tangential to the $x$-axis, and provides a means of considering a boundary that satisfied the no-penetration condition.
+Specifically, we consider the initial condition:
+\begin{align}
+	\begin{cases}
+	z_0 = (1.5 , \phantom{-}1.5)\quad, \quad \Gamma_0^{0,0} = \phantom{-}0.5 \quad,\quad \Gamma_0^{1,0} = \phantom{-}0.5 \quad,\quad \Gamma_0^{0,1} = 1.5 \\
+	z_1 = (1.5,-1.5)\quad, \quad \Gamma_0^{0,0} = -0.5 \quad,\quad \Gamma_0^{1,0} = -0.5 \quad,\quad \Gamma_0^{0,1} =1.5
+	\end{cases}
+	\label{eq:ic moi}
+\end{align}
+with $\Gamma_i^{mn} = 0$ for $m+n > 1$ and $i=0,1$.
+
+The resulting dynamics depicted in Figure \ref{fig:moi} shows that as a first order MVB approaches a boundary it will turn its motion along the boundary and then move away so that its angle of reflection equals its angle of incidence. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_0}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_1p7}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_3p4}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_5}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_6p7}
+	\includegraphics[width=0.3\textwidth]{./images/moi_frames/time_8p4}
+	\caption{Numerical results are shown for two first order MVBs with mirror-image initial conditions given by \eqref{eq:ic moi}.
+		From left to right and top to bottom these are snapshots at times $t=0,1.7,3.4,5,6.7,8.4$ respectively. Apparently, a first order MVB reflects elastically from a fixed boundary, so that its angle of reflection equals its angle of incidence.}
+	\label{fig:moi}
+\end{figure}
+
+
+\section{Hamiltonians and symplectic structures}
+\label{sec:symplectic}
+In modern Hamiltonian mechanics, as described in~\cite{FOM,Arnold2000},
+the Hamiltonian is a function on a symplectic manifold, which produces equations of motion.
+An important instance of a symplectic manifold is a coadjoint orbit (defined below).
+In this section we compute the coadjoint orbit of a MVB
+as well as the associated symplectic structure.
+The coadjoint orbit of an initial vorticity distribution $\omega_0$ comprises the set
+\begin{align*}
+  \Orb(\omega_0) := \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\R^2) \}.
+\end{align*}
+%where $\varphi_* \omega$ denotes the distribution defined by
+%\begin{align*}
+%	\int f(z) (\varphi_*\omega)(z) := \int f(\varphi(z)) \omega(z) \,,\quad \quad \forall f \in C^\infty(\R^2).
+%\end{align*}
+In fact $\Orb(\omega_0)$ inherits the structure of a smooth manifold,
+and a tangent vector on $\Orb(\omega_0)$ at the point $\tilde{\omega} \in \Orb(\omega)$ is given by 
+a distribution of the form $\pounds_{\vec{u}}[\tilde{\omega}] := u \partial_x \tilde{\omega} + v \partial_y \tilde{\omega}$ for some (non-unique) divergence free vector field
+$\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
+The symplectic structure is nothing more than a special case of the one derived via the Kirillov-Kostant-Souriau theorem \cite[see the boxed formula on p.303]{FOM}.
+In particular, the symplectic structure on $\Orb(\omega)$ is given by
+\begin{align}
+  \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2}[\omega] ) = \int \omega(z)  ( u_1(z) v_2(z) - v_1(z) u_2(z) ) dz. \label{eq:symplectic}
+\end{align}
+When $\omega$ is a smooth distribution, the symplectic structure may be identified with a differential $2$-form and this formula matches the symplectic form derived on page 313 of \cite{MarsdenWeinstein1983}.
+In the case that $\omega$ satisfies the ansatz \eqref{eq:ansatz N}, we find that given any $\varphi \in \SDiff(\R^2)$
+	that
+	\begin{align*}
+		\int \omega_0(\varphi^{-1}(z)) f(z) dz &= \int \omega_0(z) , f (\varphi(z)) dz \\
+                &= \gamma_i^\alpha \partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z).
+	\end{align*}
+	Here we have used the change of variables formula and the fact that $\det( D\varphi) = 1$.
+	By the multivariate Fa\'a di Bruno formula, the expression $\partial_{\alpha}|_{z=Z_i} (f \circ\varphi)(z)$
+	is a sum of the partial derivatives of $f$ at the points $\varphi(Z_i)$
+	of order less than that of the multi-index $\alpha$ \cite{ConstantineSavits1996}.
+        Thus $ \omega_0 \circ \varphi^{-1}$ is contained in the finitely parametrized subset $M^{(k)} := \{ \sum_{|\alpha| \leq k} \Gamma_i^\alpha \partial_{\alpha} \delta_{Z_i} \}$
+        for any $\varphi \in \SDiff( \R^2)$.
+        Therefore $\Orb(\omega_0)$ is a finite-dimensional manifold when $\omega_0$ satisfies the jet-vortex ansatz.
+
+Having identified a symplectic manifold, $\Orb(\omega_0)$, we can then ask the question \emph{``are the dynamics Hamiltonian on $\Orb(\omega_0)$?"}
+Of course, the answer is \emph{``yes"}.  This is the primary content of \cite{MarsdenWeinstein1983}.
+We provide our own explanation here for convenience.
+
+For a general vorticity distribution $\omega$, we may consider the kinetic energy Hamiltonian
+\begin{align}
+  H(\omega) = \frac{1}{2} \int \omega(z) G_\delta(z-\tilde{z}) \omega(\tilde{z}) dz d\tilde{z}. \label{eq:Hamiltonian}
+\end{align}
+Where $\omega$ may be of the form \eqref{eq:ansatz N}.
+  In order to find Hamilton's equations on $\Orb(\omega_0)$ choose some $\omega \in \Orb(\omega_0)$ and calculate the vector $X_H(\omega)$ tangent to $\Orb(\omega_0)$
+  given by Hamilton's equations.
+  It must be the case that $X_H(\omega) =  \pounds_{\vec{u}}[\omega]$ for some (non-unique) vector-field $\vec{u} = (u,v) \in \mathfrak{X}_{\rm div}(\R^2)$.
+  Our goal is to solve for $\vec{u}$.
+  By the definition of the Hamiltonian vector field $X_H$ we see that for any
+  $\vec{u}' = (u',v') \in \mathfrak{X}_{\rm div}(\R^2)$
+  \begin{align*}
+    \int \omega(z) \left( u(z) v'(z)  - v(z) u'(z) \right) dz &=
+    \Omega_{\omega}( \pounds_{\vec{u}}[\omega] , \pounds_{\vec{u}'}[\omega] ) = - \int \frac{\delta H}{\delta \omega} (z) \left( \pounds_{\vec{u}'}[\omega] \right)(z) dz  \\
+    &= - \int G_\delta(z-\tilde{z}) \omega (\tilde{z}) \left( \pounds_{\vec{u}'}[\omega] \right)(z) d\tilde{z} dz .
+  \end{align*}
+  If we let $\psi := G_\delta*\omega = \int G_\delta(\cdot -\tilde{z}) \omega (\tilde{z}) d \tilde{z}$ then integration by parts implies
+  \begin{align*}
+     \int \omega(z) \pounds_{\vec{u}'}[\psi](z) 
+    =  \int \omega(z)  \left( u'(z) \partial_x \psi (z)+ v'(z) \partial_y \psi(z) \right) dz.
+  \end{align*}
+  We see that $\vec{u} = (-\partial_y \psi,\partial_x \psi)$ is one possible solution.
+  As $\Omega$ is non-degenerate on the tangent spaces of $\Orb(\omega)$, this is the unique solution.
+  As a result, the evolution prescribed by $X_H$ is precisely \eqref{eq:vorticity}.
+  This proves that \eqref{eq:vorticity} can be seen as a Hamiltonian equation on $\Orb(\omega_0)$ with respect to the symplectic structure \eqref{eq:symplectic} and the Hamiltonian \eqref{eq:Hamiltonian}.
+
+\subsection{The first order case}
+Let us illustrate these Hamiltonian results for the case of the first order MVB.
+Let $z_1,\dots,z_n \in \R^2$ be distinct
+and define the initial vorticity distribution
+\begin{align*}
+  \omega_0 = \sum_{i=1}^N \gamma_i \delta_{z_i} + \gamma_i^x \partial_x \delta_{z_i} + \gamma_i^y \partial_{y} \delta_{z_i}.
+\end{align*}
+We desire the to determine the coadjoint orbit, $\Orb(\omega_0)$, and the symplectic structure.
+
+  Indeed, we find that for any function $f$
+  \begin{align*}
+    \int \omega \left(\varphi^{-1}(z)\right) f(z)dz &:= \int \omega (z)f\left(\varphi(z)\right) dz \\
+    &= \gamma_i f(\varphi(Z_i)) \\
+    &\quad - \gamma_i^x \partial_x \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^x \partial_x \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)} \\
+    &\quad - \gamma_i^y \partial_y \varphi^x|_{z=Z_i} \partial_x f |_{z=\varphi(Z_i)}
+    - \gamma_i^y \partial_y \varphi^y|_{z=Z_i} \partial_y f |_{z=\varphi(Z_i)}
+  \end{align*}
+  Collecting like terms we find
+  \begin{align*}
+    \omega \circ \varphi^{-1} = \gamma_i \delta_{\varphi(Z_i)} + \Gamma_i^x \partial_x \delta_{\varphi(Z_i)} + \Gamma_i^y \partial_y \delta_{\varphi(Z_i)}
+  \end{align*}
+  where
+  \begin{align*}
+    \Gamma = 
+    \begin{bmatrix}
+      \Gamma_i^x \\ \Gamma_i^y 
+    \end{bmatrix}
+    =
+    D\varphi(Z_i) \cdot
+    \begin{bmatrix}
+      \gamma_i^x \\ \gamma_i^y
+    \end{bmatrix}
+  \end{align*}
+  By varying $\varphi$ we can obtain 
+  any collection of distinct points $z_1,\dots,z_n \in \R^2$
+  and any collection of non-zero vectors $\Gamma_1,\dots,\Gamma_n \in \R^2 \backslash \{0\}$.
+  This proves
+  \begin{align*}
+  \Orb(\omega_0) &= \left\{ \sum_{i=1}^n \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{\tilde{z}_i} + \Gamma_i^y \partial_{y} \delta_{z_i}
+  \mid z_i \in \R^2, (\Gamma_i^x,\Gamma_i^y) \in \R^2 \backslash \{0\} \right\} \\
+  &\cong  \{ (z_1,\dots,z_n,\Gamma_1,\dots,\Gamma_n) \mid z_i \in \R^2, \Gamma_i \in \R^2 \backslash \{0\} , ( i \neq j \implies z_i \neq z_j ) \}.
+  \end{align*}
+  
+  To derive the symplectic structure recall the symplectic structure for a general vorticity \eqref{eq:symplectic}.
+  Now let $\omega = \gamma_i \delta_{z_i} + \Gamma_i^x \partial_x\delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i}$.
+  In this case the left hand side of \eqref{eq:symplectic} can be computed with respect to 
+  divergence free vector field $\vec{u} = (u,v)$ and $\vec{u}' = (u',v')$ as
+  \begin{align*}
+    \int \omega(z) \left( u v' - v u' \right) (z) dz &= \gamma_i ( u(z_i)v'(z_i) - v(z_i) u'(z_i) ) \\
+    &\quad + \Gamma_i^x ( u_{,x} v' + u {v'}_{,x} - {u'}_{,x}v - u' v_{,x})|_{z = z_i} \\
+    &\quad + \Gamma_i^y ( u_{,y} v' + u {v'}_{,y} - {u'}_{,y}v - u' v_{,y})|_{z = z_i}
+  \end{align*}
+  Note that this is written entirely in terms of the 1st order Taylor expansion of $\vec{u}$ and $\vec{u}'$ evaluated 
+  at $z_i$.
+  Moreover, $\pounds_{\vec{u}}[\omega] = \gamma_0 u(z_i) \partial_x \delta_{z_i} + \dots$
+  also has the property that it only depends on
+  the one-jet of $u$ and $v$ at the points $z_1,\dots,z_n$.
+  Therefore, both sides of \eqref{eq:symplectic}
+  can be written as a function of the finite collection of 
+  numbers $u(z_i), Du(z_i), v(z_i),Dv(z_i)$.
+  The result then follows by identifying the scalars
+  \begin{align*}
+    u(z_i) \mapsto u_{z_i}\\
+    u^x_{,x}(z_i) \Gamma^x_i + u^x_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^x \\
+    u^y_{,x}(z_i) \Gamma^x_i + u^y_{,y}(z_i) \Gamma^y_i \mapsto \dot{\Gamma}_i^y.
+    \end{align*}
+ This proves that the symplectic structure on $\Orb(\omega_0)$ is more concretely written as
+  \begin{align}
+  \begin{split}
+    \Omega( (\dot{z},\dot{\Gamma}), (\delta z,\delta \Gamma) ) &=
+    \gamma_i ( \dot{x}_i \cdot \delta y_i - \delta x_i \cdot \dot{y}_i ) \\
+    &\quad + \dot{\Gamma}_i^x \cdot \delta y_i
+    - \dot{\Gamma}_i^y \cdot \delta x_i
+    + \delta \Gamma_i^y \cdot \dot{x}_i 
+    - \delta \Gamma_i^x \cdot \dot{y}_i
+    \end{split} \label{eq:first_order_symplectic}
+  \end{align}
+
+In essence, we have determined a finite-dimensional Hamiltonian system whos solutions solve \eqref{eq:vorticity} when $\psi$ is related to $\omega$ via an appropriate regularization.
+
+\begin{rmk}
+  The use of this symplectic structure shows that the map $(z_i, \Gamma_i,\Gamma_i^x,\Gamma_i^y) \mapsto \omega \in \Orb(\omega)$ is a symplectic momentum map.
+\end{rmk}
+
+\begin{rmk}
+The corresponding Poisson bracket can be represented in tabular form by:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+	$\{ \cdot , \cdot \}$ & $x$ & $y$ & $\Gamma$ & $\Gamma^x$  & $\Gamma^y$ \\ \hline
+	$x$ & 0 & 1 & 0 & 0 & 1 \\ \hline
+	$y$ & -1 & 0 & 0 & -1 & 0 \\ \hline 
+	$\Gamma$ & 0 & 0 & 0 & 0 & 0 \\ \hline
+	$\Gamma^x$ & 0 & -1 & 0 & 0 & 1 \\ \hline
+	$\Gamma^y$ & 1 & 0 & 0 & -1 & 0  \\ \hline
+\end{tabular}
+\end{center}
+
+The way to use this table is as follows.  Let $H = H(\xi)$ be our Hamiltonian where
+$\xi = (x_1,\dots,x_n,y_1,\dots,y_n,\Gamma_1,\dots,\Gamma_n,\Gamma_1^x,\dots,\Gamma_n^x,\Gamma_1^y,\dots,\Gamma_n^y)$.
+Hamilton's equations are then given by
+given by
+\begin{align*}
+	\frac{df}{dt} = \sum_{i,j} B^{ij} \pder{f}{\xi^i} \pder{H}{\xi^j},
+\end{align*}
+for any function $f$, where $B^{ij}$ denotes the corresponding entry of the table.
+In particular, when $f=\xi^i$, one recovers the equations of motion for the dynamics
+of the positions and strengths for a set of $n$ 1st order MVBs. 
+Poisson geometers call $B^{ij}$ a \emph{Poisson tensor} \cite{FOM}.
+\end{rmk}
+
+%\subsection{Kinetic Theory}
+%\label{sec:kinetic}
+%In this section we briefly discuss kinetic theoretic descriptions which result from a Hamiltonian formulation of jet particles.
+%The \emph{Louiville equation} is an evolution PDE for dynamics of a probability density on $S$
+%which is advected by a Hamiltonian vector-field.  In particular, if $X_H$ is the Hamiltonian vector-field,
+%then the Louiville equation can be written in coordinate free notation as
+%\begin{align*}
+%	\partial_t \mu + \pounds_{X_H}[ \mu] = 0
+%\end{align*}
+%where $\pounds_{X_H}[\mu]$ is the Lie-derivative of the probability distribution $\mu \in \mathcal{D}'(S)$.
+%In canonical coordinates this PDE is written as
+%\begin{align*}
+%	\partial_t \mu + \sum_{i=1}^{n} \pder{H}{p_i} \pder{\mu}{q^i} - \pder{H}{q^i} \pder{\mu}{p_i} = 0
+%\end{align*}
+%where $n = \frac{1}{2} \dim(S)$.
+%Alternatively, one can use the Poisson tensor mentioned in the previous section to find
+%\begin{align*}
+%	\partial_t \mu - \sum_{i,j} B^{ij} \pder{H}{\xi_i} \pder{\mu}{\xi^i} = 0.
+%\end{align*}
+%\todo[inline]{This section needs a good ending.  Since you (Darryl) proposed it be added, you know best why it was added.  Perhaps you can just write that reason here?}
+
+\section{Conclusion}
+\label{sec:Conclusion}
+In this paper we have considered a generalization of the standard vortex blob method, obtained 
+by augmenting the vortices with higher order circulation variables
+and dubbing them \emph{multipole vortex blobs} (MVBs).
+By viewing the vorticity equation as an advection equation, we have obtained equations of motion for these MVBs.
+
+The extra degrees of freedom of MVBs resulted in richer dynamics near the vortex core.
+Moreover, these new vorticity carrying elements exhibited a variety of novel types of solution behavior.
+We also observed faster convergence rates in space using higher order MVBs.
+Moreover, we proposed a scheme to decrease the number of pairwise interactions, by grouping
+MVBs of lower order into a smaller number of MVBs of higher order.
+Lastly, the implications of Kelvin's circulation theorem were substantially richer in the case of MVBs than they were for the standard vortex blob method.
+
+We have demonstrated the behavior of the MVBs with a sequence of simple numerical experiments consisting of small numbers of MVBs of various degrees.
+We found that 1st order MVBs correspond to sums of vortex blobs and regularized dipoles which simply propagate themselves forward, while the 2nd order circulation variables activate richer (non-propagating) dynamics near the vortex core.
+
+Finally, we derived the symplectic structure of MVBs using methods from  \cite{MarsdenWeinstein1983}.
+The resulting structure turned out to be a direct generalization of the standard
+symplectic structure for vortex blobs.
+
+The multiscale nature of ideal fluids is the principal obstacle to obtaining accurate models~\cite[Ch. 3]{Chorin1994}.
+The use of MVBs augments the standard vortex blob method by allowing for singular vorticity distributions which model dynamics below the regularization length scale (i.e. at order $\delta^k$ with $\delta\ll1$ for a $k$th order jet-vortex). As the dynamics of MVBs are relatively easy to derive, and their analysis is tractable, we believe that MVBs will be of considerable value in understanding the place of regularized fluid models within the computational fluids community at large
+and they should provide renewed interest in the vortex blob method.
+
+Future avenues of inquiry could include:
+\begin{itemize}
+	\item MVB filament methods for $3$ dimensional fluid modelling
+	\item MVBs on manifolds, such as the sphere
+	\item The convergence properties of the MVB method
+	\item An investigation of the kinetic theory of MVBs.
+	\todo{Darryl, did you want to cite something by Eva or Paul Newton at this point? -- \color{white} No, I don't, Henry. }
+	\item \todo[inline]{A sentence on swimmers/swarms/active suspensions.  Probably should cite \cite{KansoTsang2014,SaintillanShelley2007,SaintillanShelley2008} -- \color{white}Up to you, Henry. However, I think we might better say nothing about swimmers, since there is no real physical connection to them  -- the physics is completely different between the low-Reynolds swimmers and and the infinite-Reynolds vortices. }
+\end{itemize}
+
+\section{Acknowledgements}
+Both authors gratefully acknowledge partial support by the European Research
+Council Advanced Grant 267382 FCCA to DDH.
+
+\appendix
+
+\section{Distributions}
+\label{sec:distributions}
+The vorticity, $\omega$, should be viewed as a distribution
+and the term ``$\partial_x \omega$'' should be viewed
+as a distributional derivative.
+When $\omega \in \mathcal{D}'(\R^2)$ is a smooth distribution there is little harm in naively interpreting $\omega$ as a smooth function on $\R^2$.
+However, when $\omega$ is not smooth (e.g. a Dirac delta distribution),
+then one needs to invoke the mathematics of distributions
+as distinct from that of real valued functions.
+Therefore, we have included this appendix to remind the reader of the basic theory of distributions.
+The main reference for this section is \cite{Hormander2003}.
+
+The space of distributions $\mathcal{D}'(\R^2)$ is the dual-vector space to the space of smooth functions with compact supper $C^\infty_0(\R^2)$.
+Therefore a distribution is defined by how it maps functions to real numbers.
+%Given a distribution $\omega \in D(\R^2)$ and a function $f \in C^\infty(\R^2)$,
+%we use the notation $\langle \omega , f \rangle$ to denote the real number $\omega(f)$.
+%In the main text we will often use the notation $\int \omega(z) f(z) dz$ to denote this as well
+%because it is more common in the fluids literature.
+%However, this notation fallaciously suggests that we may view distributions as functions,
+%so we will drop its use here.
+
+The distributional derivative of a given distribution $\omega \in \mathcal{D}'(\R^2)$ in the $i$th coordinate direction may be defined as the distribution $\partial_i \omega$ obtained by
+\begin{align*}
+	\int \partial_i \omega (z) f(z) dz = - \int \omega(z) \partial_i f (z) dz.
+\end{align*}
+For example, the Dirac-delta distribution, $\delta_0$, is defined as the unique distribution such that
+\begin{align*}
+	\int \delta_0(z) , f (z) dz = f(0) \,,\quad \quad \forall f \in C_0^\infty(\R^2).
+\end{align*}
+The distributional derivative, $\partial_i \delta_0$, is given by
+\begin{align*}
+	\int \partial_i \delta_0 (z) f(z) dz = -\partial_i f(0) \,,\quad \quad \forall f \in C_0^\infty(\R^2).
+\end{align*}
+Given a distribution $\omega \in D(\R^2)$ and a function $g \in C_0^\infty(\R^2)$ one can define the
+distribution $g \, \omega$ as
+\begin{align*}
+	\int (g \, \omega)(z)  f(z) dz = \int \omega(z) g(z)f(z) dz \,,\quad \quad \forall f \in C_0^\infty(\R^2).
+\end{align*}
+For example, we find that $g \, \delta _0 = g(0) \delta_0$.
+A slightly more involved, but standard,  example is given by the computation of $g\, \partial_i \delta_0$.
+We find
+\begin{align*}
+	\int (g \, \partial_i \delta_0) (z)  f(z) dz = \int \partial_i \delta_0(z) g(z)f(z) dz =  - g(0) \partial_i f(0) - \partial_ig(0) f(0).
+\end{align*}
+Therefore
+\begin{align*}
+	g \, \partial_i \delta_0 = g(0) \partial_i \delta_0 - \partial_i g(0) \delta_0.
+\end{align*}
+On the left hand side, note that $g(0)$ and $\partial_i g(0)$ are merely real numbers,
+which are multiplying the distributions $\partial_i \delta_0$ and $\delta_0$.
+More generally, we find
+\begin{align*}
+	\int (g\, \partial_x^m \partial_y^n \delta_0)(z) f(z) dz &= (-1)^{m+n} \partial_x^m \partial_y^n (fg)(0) \\
+		&= (-1)^{m+n} \sum_{\ell,k=0}^{m,n} \binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{\ell} \partial_y^k f(0) \right) 
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+\end{align*}
+which means
+\begin{align}
+	g \, \partial_x^m \partial_y^n \delta_0 =
+		(-1)^{m+n} \sum_{\ell,k=0}^{m,n} (-1)^{\ell + k}
+		\binom{m}{\ell} \binom{n}{k}
+		\left(\partial_{x}^{m-\ell} \partial_y^{n-k} g(0) \right) 
+		\partial_{x}^{\ell} \partial_y^k \delta_0.
+                \label{eq:func times partial delta}
+\end{align}
+
+%Let $L$ be the pseudo-differential operator dual to $G*$.
+%Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+%and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+%for any $f$ in the RKHS produced by $G$.
+%Then $\langle \omega^{(0)}_h - \omega , f \rangle = \langle \psi - \psi_h^{(0)} , L[f] \rangle_{L^2}$,
+%and the sup-norm of $\psi-\psi_h^{(0)}$ is order $o(1)$, so that the whole expression is $o(1)$
+%for any $f$ in the RKHS produced by $G$.
+\section{Symmetries and conservation laws}
+\label{sec:symmetries}
+The main reference for the material presented in this section is \cite{FOM}.
+Let $G$ be a Lie group with Lie algebra $\mathfrak{g}$.
+We will denote the dual of $\mathfrak{g}$ by $\mathfrak{g}^*$.
+A (left) group action of $G$ on a manifold $S$ is a map $\varrho: G \times S \to S$
+such that $\varrho( g h , x) = \varrho(g , \varrho(h , x))$ for all $g,h, \in G$ and $x \in S$.
+\begin{rmk}
+The group action $\varrho$ is not to be confused with the fluid density, often denoted as $\rho$ in fluid mechanics.
+This appendix relates to more general mathematical constructions which are useful, but not necessarily in the usual purview of fluid mechanics.
+In particular, the symbol $\varrho$ is the Greek letter `r', which refers to the word ``representation''
+as in ``representation theory''.
+\end{rmk}
+One can also construct a group action, $D\varrho: G \times TS \to TS$,  given by
+$D\varrho( g , u ) := \left.\frac{d}{dt}\right|_{t=0} \rho(g, x(t) )$ for $u = \frac{dx}{dt} \in T_x S$ and $g \in G$.
+There is also a natural Lie-algebra action, which one could also denote by $\varrho: \mathfrak{g} \times S \to TS$
+defined by $\varrho( \xi , x) := \left. \frac{d}{d \epsilon} \right|_{\epsilon =0} \varrho( g_\epsilon , x)$.
+In particular, the map $\varrho( \xi , \cdot ) : S \to TS$ is a vector field on $S$ which we call the
+\emph{infinitesimal generator} of $\xi$.
+When no confusion arises, it is typical to use the notation $g \cdot x$, $g \cdot u$, and $\xi \cdot x$ to denote $\varrho(g,x)$,$D\varrho(g,u)$,  and $\varrho(\xi,x)$, respectively.
+Finally, if $(S,\Omega)$ is a symplectic manifold, then we say that $G$ acts \emph{symplectically} (or \emph{canonically})
+if $\Omega_{g \cdot x}( g \cdot u , g \cdot v) = \Omega_x(u,v)$ for all $g \in G$, $u,v \in T_x S$ and $x \in S$.
+
+Let us now recall the notion of a momentum map \cite[Definition 4.2.1]{FOM}.
+Given a symplectic manifold $(S,\Omega)$ and a Lie group $G$ which acts on $(S,\Omega)$ symplectically, a momentum map is a map ${\bf J}:S \to \mathfrak{g}^*$ such that
+\begin{align*}
+  d \langle {\bf J} , \xi \rangle = i_{\xi_S} \Omega\,,
+\end{align*}
+where $\langle {\bf J} , \xi \rangle$ denotes the real-valued function on $S$ obtained by pairing ${\bf J}$ with an arbitrary
+ $\xi \in \mathfrak{g}$, and where $\xi_S \in \mathfrak{X}(S)$ is the infinitesimal generator of $\xi$ on $S$.
+Equivalently, we could express the previous condition as
+\begin{align}
+  d \langle {\bf J},\xi \rangle(x) \cdot v_x = \Omega( \xi\cdot x , v_x ) \label{eq:momap}
+\end{align}
+for all $\xi \in \mathfrak{g}$, $x \in S$ and $v_x \in T_xS$.
+Momentum maps are significant for a number of reasons.
+In particular, given a Hamiltonian on $S$ with $G$-symmetry, the momentum map ${\bf J}$ will be conserved under the evolution of
+Hamilton's equations \cite[Theorem 4.2.2]{FOM}.
+This is the Hamiltonian version of Noether's theorem.
+
+In our case $S = {\rm Orb}(\omega_0) = \{ \omega_0 \circ \varphi^{-1} \mid \varphi \in \SDiff(\mathbb{R}^2) \}$ is a coadjoint orbit of some vorticity distribution on $\mathbb{R}^2$.
+Tangent vectors on $S$ are of the form $$\pounds_{\vec{u}} [\omega] := u \partial_x \omega + v \partial_y \omega$$ for a (perhaps non-unique) divergence free vector-field $\vec{u} = (u,v)$.
+Under this identification, the symplectic form at some $\omega \in S$ is given by an application of Kostant's formula \cite{FOM}.
+This is derived in section \ref{sec:symplectic} and found to be
+\begin{align*}
+  \Omega_\omega( \pounds_{\vec{u}_1}[\omega] , \pounds_{\vec{u}_2} [\omega] ) :=
+  \int \omega(z) ( \vec{u}_1(z) \times \vec{u}_2(z) ) dz.
+\end{align*}
+where $\vec{u}_1$ and $\vec{u}_2$ are divergence free vector-fields and $\times$ denotes the planar cross product.
+Here we interpret the planar cross product as taking values in the space of real-numbers so that $\vec{u}_1 \times \vec{u}_2$ is
+merely a smooth function.
+
+We now will translate formula \eqref{eq:momap} to this more specific scenario.
+Assume $G$ acts upon $\mathbb{R}^2$, then $G$ also acts upon distributions and upon $S$ by symplectic group actions.
+In this context, a momentum map ${\bf J}$ associated to a $G$-action is defined by the equation
+\begin{align}
+  \int \frac{\delta  \langle {\bf J} , \xi \rangle }{\delta \omega} (z)  \left( \pounds_{\vec{u}}[\omega] \right)(z) dz = \int \omega(z)  \left( (\xi \cdot z) \times \vec{u}(z) \right)dz \label{eq:momap2}
+\end{align}
+Where $\xi \cdot z$ denotes the action of $\xi \in \mathfrak{g}$ on $z \in \R^2$
+and ``$\times$'' denotes the planar cross-product.
+
+\subsection{Translational symmetry and ${\bf J}_{\rm lin}$}
+%In this section we consider the action of translation in $\R^2$.
+%This action on $\R^2$ will induce a symplectic group action on the symplectic manifold $S = {\rm Orb}(\omega_0)$ derived in \S \ref{sec:symplectic}.
+
+The group $\mathbb{R}^2$ acts upon $\mathbb{R}^2$ by translation.
+That is to say, by sending any $\tilde{z} \in \R^2$ to $z + \tilde{z} \in \R^2$ for any $\tilde{z}  \in \R^2$.
+This fact induces an action on smooth functions.
+In particular, there is a natural (right) action on $C^{\infty}(\mathbb{R}^2)$ sending the function $\phi(z)$ to the function  $(\tilde{z})^*\phi(z) := \phi(z-\tilde{z})$.
+We denote the inverse operation by $(\tilde{z})_* \phi(z) := \phi( z + \tilde{z})$.
+This induces a (left) action on distributions which sends $\omega \in \mathcal{D}'(\R^2)$ to the distribution $(\tilde{z})_*\omega(z) := \omega( z +\tilde{z})$.
+As a translation of $\mathbb{R}^2$ by $\tilde{z}$ is a volume-preserving diffeomorphism, we see that the coadjoint orbit $S \subset \mathcal{D}(\mathbb{R}^2)$ is invariant under this action.
+Moreover, we observe the action, restricted to $S$, is symplectic because
+\begin{align*}
+  \Omega_{ \tilde{z}_* \omega}( \tilde{z}_*\pounds_{u}[ \omega] , \tilde{z}_*\pounds_v[\omega] ) &= \Omega_{\tilde{z}_* \omega} ( \pounds_{\tilde{z}_*u}[ \tilde{z}_*\omega] ,
+  \pounds_{\tilde{z}_*v}[\tilde{z}_*\omega] ) \\
+  &= \int \tilde{z}_* \omega(z)  \left( \tilde{z}_*(u \times v) \right)(z) dz \\
+  &= \int \omega( z+\tilde{z}) \left(u \times v \right)(z + \tilde{z}) dz \\ 
+  &= \int \omega(z) \left( u \times v \right)(z) dz  \\
+  &= \Omega_{\omega}( \pounds_u[\omega], \pounds_v[\omega]).
+\end{align*}
+
+Given this symplectic action, we can seek a momentum map, ${\bf J}_{\rm lin}:S \to (\mathbb{R}^2)^*$.  Consider an arbitrary element of the Lie-algebra $\delta \tilde{z}  = (\delta \tilde{x}, \delta \tilde{y}) \in \mathbb{R}^2$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \int \frac{\delta \langle {\bf J}_{\rm lin} , \delta \tilde{z} \rangle}{\delta \omega}(z)   \pounds_{\vec{u}}[\omega] dz
+  = \int \omega(z) \left( \delta \tilde{x} \, v(z) - \delta \tilde{y} \, u(z) \right) dz
+\end{align*}
+We can re-write the right hand side as
+\begin{align*}
+  = \int \omega(z)  \pounds_{\vec{u}} [ \delta \tilde{x} \, y - \delta \tilde{y} \, x] dz
+\end{align*}
+and upon integrating by parts this is equivalent to
+\begin{align*}
+  = - \int \pounds_{\vec{u}}[\omega](z)  \left( \delta \tilde{x}\, y - \delta \tilde{y}\, x \right) dz
+\end{align*}
+Therefore, ``cancelling'' the arbitrary vector $\pounds_v[\omega]$ from both sides we find
+\begin{align*}
+  \frac{\delta  \langle {\bf J}_{\rm lin} , \delta \tilde{z} \rangle}{\delta \omega} = \delta \tilde{y} x - \delta \tilde{x} y
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+%  \boxed{
+    {\bf J}_{\rm lin}(\omega) = \left( -\int \omega(z) y dz \, , \, \int \omega(z) x dz \right) \in (\mathbb{R}^2)^* \equiv \mathbb{R}^2
+ % }
+\end{align*}
+If $\omega$ satisfies the MVB ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  {\bf J}_{\rm lin}(\omega) = \sum_i ( \Gamma_i^{y} - \Gamma_i y_i , \Gamma_i x_i -\Gamma_i^{x} ).
+\end{align*}
+The terms of the MVBs beyond the first order do not influence ${\bf J}_{\rm lin}$.
+
+\subsection{Rotational symmetry and ${\bf J}_{\rm ang}$}
+The group $\SO(2)$ acts upon $\mathbb{R}^2$ by rotations about the origin sending $z \in \R^2$ to $R_\theta \cdot z := ( \cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y )$.
+For any $\theta \in \SO(2)$, there is a natural action on $C^{\infty}(\mathbb{R}^2)$ sending the function $\phi \in C^{\infty}(\mathbb{R}^2)$ to the function $\theta^*\phi(x,y) := \phi(\cos(\theta)x-\sin(\theta)y,\sin(\theta)x+\cos(\theta)y)$.  The corresponding action on vector-fields and all other objects on $\mathbb{R}^2$ follows naturally.  
+ In particular, the left-action on distributions sends $\omega \in \mathcal{D}'(\mathbb{R}^2)$ to the distribution $\theta_* \omega(z) := \omega( R_\theta \cdot z)$.
+Again, we can verify that the coadjoint orbit $S$ is invariant under this action, and that $\SO(2)$ acts symplectically upon $S$
+through computations which are analogous to those performed in the previous subsection.
+Given this symplectic action, we can seek a momentum map, ${\bf J}_{\rm ang}:S \to \mathfrak{so}(2)^* \equiv \mathbb{R}$.  Consider an arbitrary element of the Lie-algebra $\xi \in \mathfrak{so}(2) \equiv \mathbb{R}$ and use \eqref{eq:momap2} to obtain
+\begin{align*}
+  \int  \frac{\delta  \langle {\bf J}_{\rm ang} (z) , \xi \rangle }{\delta \omega} (z) \, \pounds_{\vec{u}}[\omega] (z) dz
+  = \int \omega(z) \left( -y\xi v - x\xi u \right) dz
+\end{align*}
+We can re-write the right hand side and integrate by parts to find
+\begin{align*}
+  = -\xi \int \omega(z) \pounds_{\vec{u}} \left[\frac{x^2+y^2}{2}\right] dz
+  = \xi \int \pounds_{\vec{u}}[\omega](z) \left( \frac{x^2+y^2}{2} \right) dz.
+\end{align*}
+As the vector $\pounds_{\vec{u}}[\omega] \in T_\omega S$ is arbitrary we find
+\begin{align*}
+  \frac{\delta \langle {\bf J}_{\rm ang} , \xi \rangle}{\delta \omega} = \xi \frac{x^2+y^2}{2}
+\end{align*}
+Integrating by $\omega$ we find
+\begin{align*}
+%  \boxed{
+    {\bf J}_{\rm ang}(\omega) = \frac{1}{2}\int \omega(z) ( x^2 + y^2) dz \in \mathbb{R} \equiv \mathfrak{so}(2)^*
+ %   }
+\end{align*}
+If $\omega$ satisfies the MVB ansatz
+\begin{align*}
+  \omega = \Gamma_i \delta_{z_i} + \Gamma_i^x \partial_x \delta_{z_i} + \Gamma_i^y \partial_y \delta_{z_i} + \Gamma_i^{xx} \partial_{xx} \delta_{z_i} + \dots
+\end{align*}
+then
+\begin{align*}
+  {\bf J}_{\rm ang}(\omega) = \frac{\Gamma_i}{2} (x_i^2 + y_i^2) - \Gamma_i^x x_i - \Gamma_i^y y_i + \Gamma_i^{xx} + \Gamma_i^{yy} .
+\end{align*}
+The terms of the MVBs beyond the second order do not influence the angular momentum ${\bf J}_{\rm ang}$.
+
+%\bibliographystyle{amsalpha}
+%\bibliography{hoj}
+
+
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{FDMM91}
+
+\bibitem[AK92]{ArnoldKhesin1992}
+V.~I. Arnold and B.~A. Khesin, \emph{Topological methods in hydrodynamics},
+  Applied Mathematical Sciences, vol.~24, Springer Verlag, 1992.
+
+\bibitem[AM78]{FOM}
+R~Abraham and J~E Marsden, \emph{Foundations of {M}echanics}, Benjamin/Cummings
+  Publishing Co. Inc. Advanced Book Program, Reading, Mass., 1978, Second
+  edition, revised and enlarged, with the assistance of Tudor Ratiu and Richard
+  Cushman. Reprinted by AMS Chelsea, 2008.
+
+\bibitem[Arn66]{Arnold1966}
+V~I Arnold, \emph{Sur la g\'{e}om\'{e}trie diff\'{e}rentielle des groupes de
+  {L}ie de dimension infinie et ses applications \`{a} l'hydrodynamique des
+  fluides parfaits}, Annales de l'Institute Fourier \textbf{16} (1966),
+  316--361.
+
+\bibitem[Arn00]{Arnold2000}
+V.~I. Arnold, \emph{Mathematical methods of classical mechanics}, 2nd ed.,
+  Springer, 2000.
+
+\bibitem[BM82]{BealeMajda1982}
+J.~Thomas Beale and Andrew Majda, \emph{Vortex methods. {II}. {H}igher order
+  accuracy in two and three dimensions}, Math. Comp. \textbf{39} (1982),
+  no.~159, 29--52. \MR{658213 (83i:65069b)}
+
+\bibitem[BM85]{BealeMajda1985}
+\bysame, \emph{High-order accurate vortex methods with explicit velocity
+  kernels}, Journal of Computational Physics \textbf{58} (1985), 188--208.
+
+\bibitem[Cho73]{Chorin1973}
+A.~Chorin, \emph{A numerical study of slightly viscous flow}, Journal of Fluid
+  Mechanics \textbf{57} (1973), 785--796.
+
+\bibitem[Cho94]{Chorin1994}
+\bysame, \emph{Vorticity and turbulence}, Applied Mathematical Sciences, vol.
+  103, Springer, 1994.
+
+\bibitem[CN88]{ChiuNivolaides1988}
+C.~Chiu and R.~A. Nicolaides, \emph{Convergence of a higher-order vortex method
+  for two-dimensional {E}uler equations}, Math. Comp. \textbf{51} (1988),
+  no.~184, 507--534. \MR{935078 (89c:65117)}
+
+\bibitem[CS96]{ConstantineSavits1996}
+G.~M. Constantine and T.~H. Savits, \emph{A multivariate {F}a\`a di {B}runo
+  formula with applications}, Trans. Amer. Math. Soc. \textbf{348} (1996),
+  no.~2, 503--520. \MR{1325915 (96g:05008)}
+
+\bibitem[DS07]{SaintillanShelley2007}
+M.~J.~Shelley D.~Saintillan, \emph{Orientational order and instabilities in
+  suspensions of self-locomoting rods}, Physical Review Letters \textbf{99}
+  (2007).
+
+\bibitem[DS08]{SaintillanShelley2008}
+\bysame, \emph{Instabilities and pattern formation in active particle
+  suspensions: Kinetic theory and continuum simulations}, Physical Review
+  Letters \textbf{100} (2008).
+
+\bibitem[FDMM91]{FineDriscollMalmbergMitchell1991}
+K.~S. Fine, C.~F. Driscoll, J.~H. Malmberg, and T.~B. Mitchell,
+  \emph{Measurements of symmetric vortex merger}, Phys. Rev. Lett. \textbf{67}
+  (1991), 588--591.
+
+\bibitem[FHT01]{FoiasHolmTiti2001}
+C.~Foias, D.~D. Holm, and E.~S. Titi, \emph{The navier--stokes-alpha model of
+  fluid turbulence}, Physica D: Nonlinear Phenomena \textbf{152--153} (2001),
+  no.~0, 505 -- 519, <ce:title>Advances in Nonlinear Mathematics and Science: A
+  Special Issue to Honor Vladimir Zakharov</ce:title>.
+
+\bibitem[GBV12]{GayBalmazVizman2012}
+F~Gay-Balmaz and C~Vizman, \emph{Dual pairs in fluid dynamics}, Annals of
+  Global Analysis and Geometry \textbf{41} (2012), no.~1, 1--24.
+
+\bibitem[GHT08a]{GibbonsHolmTronci2008b}
+John Gibbons, Darryl~D. Holm, and Cesare Tronci, \emph{Singular solutions for
+  geodesic flows of {V}lasov moments}, Probability, geometry and integrable
+  systems, Math. Sci. Res. Inst. Publ., vol.~55, Cambridge Univ. Press,
+  Cambridge, 2008, pp.~199--220. \MR{2407598 (2010b:37206)}
+
+\bibitem[GHT08b]{GibbonsHolmTronci2008a}
+\bysame, \emph{Vlasov moments, integrable systems and singular solutions},
+  Phys. Lett. A \textbf{372} (2008), no.~7, 1024--1033. \MR{2393592
+  (2009m:37189)}
+
+\bibitem[GR87]{GreengardRokhlin1987}
+L.~Greengard and V.~Rokhlin, \emph{A fast algorithm for particle simulations},
+  J. Comput. Phys. \textbf{73} (1987), no.~2, 325--348. \MR{918448 (88k:82007)}
+
+\bibitem[GS90]{GuilleminSternberg1990}
+Victor Guillemin and Shlomo Sternberg, \emph{Symplectic techniques in physics},
+  Cambridge University Press, 1990.
+
+\bibitem[Hal79]{Hald1979}
+Ole~H. Hald, \emph{Convergence of vortex methods for {E}uler's equations.
+  {II}}, SIAM J. Numer. Anal. \textbf{16} (1979), no.~5, 726--755. \MR{543965
+  (81b:76015b)}
+
+\bibitem[HLS90]{HolmLysenkoScovel1990}
+DD~Holm, WP~Lysenko, and JC~Scovel, \emph{Moment invariants for the vlasov
+  equation}, Journal of mathematical physics \textbf{31} (1990), no.~7,
+  1610--1615.
+
+\bibitem[HNP06]{HolmNitschePutkaradze2006}
+D.~D. {Holm}, M.~{Nitsche}, and V.~{Putkaradze}, \emph{{Euler-alpha and vortex
+  blob regularization of vortex filament and vortex sheet motion}}, Journal of
+  Fluid Mechanics \textbf{555} (2006), 149--176.
+
+\bibitem[H{\"o}r03]{Hormander2003}
+Lars H{\"o}rmander, \emph{The analysis of linear partial differential
+  operators. {I}}, Classics in Mathematics, Springer-Verlag, Berlin, 2003,
+  Distribution theory and Fourier analysis, Reprint of the second (1990)
+  edition [Springer, Berlin; MR1065993 (91m:35001a)]. \MR{1996773}
+
+\bibitem[Jac75]{Jackson1975}
+John~David Jackson, \emph{Classical electrodynamics}, second ed., John Wiley \&
+  Sons, Inc., New York-London-Sydney, 1975. \MR{0436782 (55 \#9721)}
+
+\bibitem[KT14]{KansoTsang2014}
+Eva Kanso and Alan Cheng~Hou Tsang, \emph{Dipole models of self-propelled
+  bodies}, Fluid Dynamics Research \textbf{46} (2014), no.~6, 061407.
+
+\bibitem[LDV02]{DizesVerga2002}
+St{\'e}phane Le~Diz{\`e}s and Alberto Verga, \emph{Viscous interactions of two
+  co-rotating vortices before merging}, J. Fluid Mech. \textbf{467} (2002),
+  389--410. \MR{1928942 (2003h:76044)}
+
+\bibitem[LS11]{Smith2011}
+Stefan~G. Llewellyn~Smith, \emph{How do singularities move in potential flow?},
+  Phys. D \textbf{240} (2011), no.~20, 1644--1651. \MR{2845244 (2012j:76033)}
+
+\bibitem[MLDL05]{MeunierDizesLeweke2005}
+P.~Meunier, S.~Le~Diz{\`e}s, and T.~Leweke, \emph{Physics of vortex merging},
+  Comptes Rendus Physique \textbf{6} (2005), no.~4-5 SPEC. ISS., 431--450,
+  cited By 50.
+
+\bibitem[MW83]{MarsdenWeinstein1983}
+J~E Marsden and A~Weinstein, \emph{Coadjoint orbits, vortices, and clebsch
+  variables for incompressible fluids}, Physica D: Nonlinear Phenomena
+  \textbf{7} (1983), no.~1--3, 305 -- 323.
+
+\bibitem[MZM88]{MelanderZabuskyMcWilliams1998}
+M.~V. Melander, N.~J. Zabusky, and J.~C. Mcwilliams, \emph{Symmetric vortex
+  merger in two dimensions: causes and conditions}, Journal of Fluid Mechanics
+  \textbf{195} (1988), 303--340.
+
+\bibitem[Nic86]{Nicolaides1986}
+R.~A. Nicolaides, \emph{Construction of higher order accurate vortex and
+  particle methods}, Appl. Numer. Math. \textbf{2} (1986), no.~3-5, 313--320.
+  \MR{863990 (87k:65119)}
+
+\bibitem[NSUW09]{NagemSandriUminskyWayne2009}
+Raymond Nagem, Guido Sandri, David Uminsky, and C.~Eugene Wayne,
+  \emph{Generalized {H}elmholtz-{K}irchhoff model for two-dimensional
+  distributed vortex motion}, SIAM J. Appl. Dyn. Syst. \textbf{8} (2009),
+  no.~1, 160--179. \MR{2481280 (2009k:76045)}
+
+\bibitem[OS01]{OliverShkoller2001}
+M.~Oliver and S.~Shkoller, \emph{{The vortex blob method as a second-grade
+  non-Newtonian fluid}}, Communications in Partial Differential Equations
+  \textbf{22} (2001), 295--314.
+
+\bibitem[Ros31]{Rosenhead1931}
+L.~Rosenhead, \emph{The formation of vortices from a surface of discontinuity},
+  Proceedings of the Royal Society of London A: Mathematical, Physical and
+  Engineering Sciences \textbf{134} (1931), no.~823, 170--192.
+
+\bibitem[Ros97]{Rossi1997}
+Louis~F. Rossi, \emph{Merging computational elements in vortex simulations},
+  SIAM Journal on Scientific Computing \textbf{18} (1997), no.~4, 1014--1027.
+
+\bibitem[Ros05]{Rossi2005}
+\bysame, \emph{Achieving high-order convergence rates with deforming basis
+  functions}, SIAM Journal on Scientific Computing \textbf{26} (2005), no.~3,
+  885--906.
+
+\bibitem[TKN12]{TchieuKansoNewton2012}
+Andrew~A. Tchieu, Eva Kanso, and Paul~K. Newton, \emph{The finite-dipole
+  dynamical system}, Proc. R. Soc. Lond. Ser. A Math. Phys. Eng. Sci.
+  \textbf{468} (2012), no.~2146, 3006--3026. \MR{2972367}
+
+\bibitem[TYK11]{TurYanovskyKonstantin2011}
+Anatoly Tur, Vladimir Yanovsky, and Konstantin Kulik, \emph{Vortex structures
+  with complex points singularities in two-dimensional {E}uler equations. {N}ew
+  exact solutions}, Phys. D \textbf{240} (2011), no.~13, 1069--1079.
+  \MR{2812358 (2012d:35279)}
+
+\bibitem[UWB12]{UminskyWayneBarbaro2010}
+D.~Uminsky, C.~E. Wayne, and A.~Barbaro, \emph{A multi-moment vortex method for
+  2d viscous fluids}, Journal of Computational Physics \textbf{231} (2012),
+  1705--1727.
+
+\bibitem[WM93]{WeissMcWilliams1993}
+Jeffrey~B Weiss and James~C McWilliams, \emph{Temporal scaling behavior of
+  decaying two-dimensional turbulence}, Physics of Fluids A: Fluid Dynamics
+  \textbf{5} (1993), no.~3, 608--621.
+
+\bibitem[YTK09]{Yanovsky2009}
+V.V. Yanovsky, A.V. Tur, and K.N. Kulik, \emph{Singularities motion equations
+  in 2-dimensional ideal hydrodynamics of incompressible fluid}, Physics
+  Letters A \textbf{373} (2009), no.~29, 2484 -- 2487.
+
+\end{thebibliography}
+
+
+\end{document}
